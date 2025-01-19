@@ -51,27 +51,29 @@ function Elib.LoadDirectoryRecursive(basePath)
 	end
 end
 
-Elib.LoadDirectoryRecursive("elib")
+Elib.LoadDirectoryRecursive("elib_v3")
 
 hook.Run("Elib.FullyLoaded")
 
 if CLIENT then return end
 
---[[
-resource.AddWorkshop("2468112758")
+--resource.AddWorkshop("2468112758")
+
+MsgC(Color(207, 144, 49), "\n[Elib] ", Color(230, 230, 230), "version " .. Elib.Version .. " loaded\n")
+// server - Color(49, 149, 207)
+// client - Color(207, 144, 49)
 
 hook.Add("Think", "Elib.UI.VersionChecker", function()
 	hook.Remove("Think", "Elib.UI.VersionChecker")
 
-	http.Fetch("https://raw.githubusercontent.com/TomDotBat/pixel-ui/master/VERSION", function(body)
+	http.Fetch("https://raw.githubusercontent.com/EveHaddox/elib_v3/master/version", function(body)
 		if Elib.Version ~= string.Trim(body) then
 			local red = Color(192, 27, 27)
 
-			MsgC(red, "[Elib] There is an update available, please download it at: https://github.com/TomDotBat/pixel-ui/releases\n")
+			MsgC(red, "[Elib] There is an update available, please download it at: https://github.com/EveHaddox/elib_v3\n")
 			MsgC(red, "\nYour version: " .. Elib.Version .. "\n")
 			MsgC(red, "New  version: " .. body .. "\n")
 			return
 		end
 	end)
 end)
-]]
