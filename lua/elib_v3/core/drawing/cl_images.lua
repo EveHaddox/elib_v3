@@ -119,3 +119,84 @@ function Elib.GetImgur(id, callback, _, matSettings)
     local url = "https://i.imgur.com/" .. id .. ".png"
     Elib.GetImage(url, callback, matSettings)
 end
+
+
+local progressMat
+
+local drawProgressWheel
+local setMaterial = surface.SetMaterial
+local setDrawColor = surface.SetDrawColor
+
+do
+    local min = math.min
+    local curTime = CurTime
+    local drawTexturedRectRotated = surface.DrawTexturedRectRotated
+
+    function Elib.DrawProgressWheel(x, y, w, h, col)
+        local progSize = min(w, h)
+        setMaterial(progressMat)
+        setDrawColor(col.r, col.g, col.b, col.a)
+        drawTexturedRectRotated(x + w * .5, y + h * .5, progSize, progSize, -curTime() * 100)
+    end
+    drawProgressWheel = Elib.DrawProgressWheel
+end
+
+local materials = {}
+local grabbingMaterials = {}
+
+local getImage = Elib.GetImage
+getImage(Elib.ProgressImageURL, function(mat)
+    progressMat = mat
+end)
+
+local drawTexturedRect = surface.DrawTexturedRect
+function Elib.DrawImage(x, y, w, h, url, col)
+    if not materials[url] then
+        drawProgressWheel(x, y, w, h, col)
+
+        if grabbingMaterials[url] then return end
+        grabbingMaterials[url] = true
+
+        getImage(url, function(mat)
+            materials[url] = mat
+            grabbingMaterials[url] = nil
+        end)
+
+        return
+    end
+
+    setMaterial(materials[url])
+    setDrawColor(col.r, col.g, col.b, col.a)
+    drawTexturedRect(x, y, w, h)
+end
+
+local drawTexturedRectRotated = surface.DrawTexturedRectRotated
+function Elib.DrawImageRotated(x, y, w, h, rot, url, col)
+    if not materials[url] then
+        drawProgressWheel(x - w * .5, y - h * .5, w, h, col)
+
+        if grabbingMaterials[url] then return end
+        grabbingMaterials[url] = true
+
+        getImage(url, function(mat)
+            materials[url] = mat
+            grabbingMaterials[url] = nil
+        end)
+
+        return
+    end
+
+    setMaterial(materials[url])
+    setDrawColor(col.r, col.g, col.b, col.a)
+    drawTexturedRectRotated(x, y, w, h, rot)
+end
+
+function Elib.DrawImgur(x, y, w, h, imgurId, col)
+    local url = "https://i.imgur.com/" .. imgurId .. ".png"
+    Elib.DrawImage(x, y, w, h, url, col)
+end
+
+function Elib.DrawImgurRotated(x, y, w, h, rot, imgurId, col)
+    local url = "https://i.imgur.com/" .. imgurId .. ".png"
+    Elib.DrawImageRotated(x, y, w, h, rot, url, col)
+end

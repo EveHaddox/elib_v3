@@ -1,0 +1,223 @@
+--[[
+	PIXEL UI - Copyright Notice
+	© 2023 Thomas O'Sullivan - All rights reserved
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>.
+--]]
+
+local PANEL = {}
+
+AccessorFunc(PANEL, "m_bBorder", "DrawBorder")
+AccessorFunc(PANEL, "m_bDeleteSelf", "DeleteSelf")
+AccessorFunc(PANEL, "m_iMinimumWidth", "MinimumWidth")
+AccessorFunc(PANEL, "m_bDrawColumn", "DrawColumn")
+AccessorFunc(PANEL, "m_iMaxHeight", "MaxHeight")
+AccessorFunc(PANEL, "m_pOpenSubMenu", "OpenSubMenu")
+
+function PANEL:Init()
+    self:SetIsMenu(true)
+    self:SetDrawBorder(true)
+    self:SetPaintBackground(true)
+    self:SetMinimumWidth(Elib.Scale(100))
+    self:SetDrawOnTop(true)
+    self:SetMaxHeight(ScrH() * 0.3)
+    self:SetDeleteSelf(true)
+    self:SetBarDockShouldOffset(true)
+
+    self:SetPadding(0)
+
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
+
+    RegisterDermaMenuForClose(self)
+end
+
+function PANEL:AddPanel(pnl)
+    self:AddItem(pnl)
+    pnl.ParentMenu = self
+end
+
+function PANEL:AddOption(strText, funcFunction)
+    local pnl = vgui.Create("Elib.MenuOption", self)
+    pnl:SetMenu(self)
+    pnl:SetText(strText)
+    if funcFunction then pnl.DoClick = funcFunction end
+
+    self:AddPanel(pnl)
+
+    return pnl
+end
+
+function PANEL:AddCVar(strText, convar, on, off, funcFunction)
+    local pnl = vgui.Create("Elib.MenuOptionCVar", self)
+    pnl:SetMenu(self)
+    pnl:SetText(strText)
+    if funcFunction then pnl.DoClick = funcFunction end
+
+    pnl:SetConVar(convar)
+    pnl:SetValueOn(on)
+    pnl:SetValueOff(off)
+
+    self:AddPanel(pnl)
+
+    return pnl
+end
+
+function PANEL:AddSpacer(text, func)
+    local pnl = vgui.Create("Panel", self)
+
+    local spacerCol = Elib.OffsetColor(Elib.Colors.Background, 6)
+    pnl.Paint = function(p, w, h)
+        surface.SetDrawColor(spacerCol)
+        surface.DrawRect(0, 0, w, h)
+    end
+
+    pnl:SetTall(Elib.Scale(3))
+    self:AddPanel(pnl)
+
+    return pnl
+end
+
+function PANEL:AddSubMenu(strText, funcFunction)
+    local pnl = vgui.Create("Elib.MenuOption", self)
+    local subMenu = pnl:AddSubMenu(strText, funcFunction)
+
+    pnl:SetText(strText)
+    if funcFunction then pnl.DoClick = funcFunction end
+
+    self:AddPanel(pnl)
+
+    return subMenu, pnl
+end
+
+function PANEL:Hide()
+    local openmenu = self:GetOpenSubMenu()
+    if openmenu then
+        openmenu:Hide()
+    end
+
+    self:SetVisible(false)
+    self:SetOpenSubMenu(nil)
+end
+
+function PANEL:OpenSubMenu(item, menu)
+    local openmenu = self:GetOpenSubMenu()
+    if IsValid(openmenu) and openmenu:IsVisible() then
+        if menu and openmenu == menu then return end
+
+        self:CloseSubMenu(openmenu)
+    end
+
+    if not IsValid(menu) then return end
+
+    local x, y = item:LocalToScreen(self:GetWide(), 0)
+    menu:Open(x, y, false, item)
+
+    self:SetOpenSubMenu(menu)
+end
+
+function PANEL:CloseSubMenu(menu)
+    menu:Hide()
+    self:SetOpenSubMenu(nil)
+end
+
+function PANEL:Paint(w, h)
+    Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol)
+end
+
+function PANEL:ChildCount()
+    return #self:GetCanvas():GetChildren()
+end
+
+function PANEL:GetChild(num)
+    return self:GetCanvas():GetChildren()[num]
+end
+
+function PANEL:LayoutContent(w, h)
+    w = self:GetMinimumWidth()
+
+    local children = self:GetCanvas():GetChildren()
+    for k, pnl in pairs(children) do
+        pnl:InvalidateLayout(true)
+        w = math.max(w, pnl:GetWide())
+    end
+
+    self:SetWide(w)
+
+    local y = 0
+    for k, pnl in pairs(children) do
+        pnl:SetWide(w)
+        pnl:SetPos(0, y)
+        pnl:InvalidateLayout(true)
+
+        y = y + pnl:GetTall()
+    end
+
+    y = math.min(y, self:GetMaxHeight())
+
+    self:SetTall(y)
+
+    local overlap = select(2, self:LocalToScreen(0, y)) - ScrH()
+    if overlap > 0 then
+        self:SetPos(self:GetPos(), select(2, self:GetPos()) - overlap)
+    end
+end
+
+function PANEL:Open(x, y, skipanimation, ownerpanel)
+    RegisterDermaMenuForClose(self)
+
+    local maunal = x and y
+    x = x or gui.MouseX()
+    y = y or gui.MouseY()
+
+    local ownerHeight = 0
+    if ownerpanel then ownerHeight = ownerpanel:GetTall() end
+
+    self:InvalidateLayout(true)
+
+    local w, h = self:GetWide(), self:GetTall()
+
+    self:SetSize(w, h)
+
+    if y + h > ScrH() then y = ((maunal and ScrH()) or (y + ownerHeight)) - h end
+    if x + w > ScrW() then x = ((maunal and ScrW()) or x) - w end
+    if y < 1 then y = 1 end
+    if x < 1 then x = 1 end
+
+    self:SetPos(x, y)
+
+    self:MakePopup()
+    self:SetVisible(true)
+    self:SetKeyboardInputEnabled(false)
+end
+
+function PANEL:OptionSelectedInternal(option)
+    self:OptionSelected(option, option:GetText())
+end
+
+function PANEL:OptionSelected(option, text) end
+
+function PANEL:ClearHighlights()
+    for k, pnl in pairs(self:GetCanvas():GetChildren()) do
+        pnl.Highlight = nil
+    end
+end
+
+function PANEL:HighlightItem(item)
+    for k, pnl in pairs(self:GetCanvas():GetChildren()) do
+        if pnl == item then
+            pnl.Highlight = true
+        end
+    end
+end
+
+vgui.Register("Elib.Menu", PANEL, "Elib.ScrollPanel")
