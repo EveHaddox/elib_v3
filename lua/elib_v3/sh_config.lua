@@ -32,7 +32,7 @@ Elib.ProgressImageURL = "https://pixel-cdn.lythium.dev/i/47qh6kjjh"
 --[[
     The location at which downloaded assets should be stored (relative to the data folder).
 ]]
-Elib.DownloadPath = "pixel/images/"
+Elib.DownloadPath = "elib/images/"
 
 --[[
     Colour definitions.
@@ -46,7 +46,7 @@ Elib.Colors = {
     SecondaryText = Color(220, 220, 220),
     DisabledText = Color(40, 40, 40),
 
-    Primary = Color(47, 128, 200),
+    Primary = Color(200, 47, 47),
     Disabled = Color(180, 180, 180),
     Positive = Color(66, 134, 50),
     Negative = Color(164, 50, 50),
