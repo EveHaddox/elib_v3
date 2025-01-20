@@ -15,11 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 --]]
 
-function Elib.ScaleW(value)
-    return math.max(value * (ScrW() / 1920), 1)
-end
-
-function Elib.ScaleH(value)
+function Elib.Scale(value)
     return math.max(value * (ScrH() / 1080), 1)
 end
 
@@ -27,7 +23,7 @@ local constants = {}
 local scaledConstants = {}
 function Elib.RegisterScaledConstant(varName, size)
     constants[varName] = size
-    scaledConstants[varName] = Elib.ScaleH(size)
+    scaledConstants[varName] = Elib.Scale(size)
 end
 
 function Elib.GetScaledConstant(varName)
@@ -36,6 +32,6 @@ end
 
 hook.Add("OnScreenSizeChanged", "Elib.UpdateScaledConstants", function()
     for varName, size in pairs(constants) do
-        scaledConstants[varName] = Elib.ScaleH(size)
+        scaledConstants[varName] = Elib.Scale(size)
     end
 end)
