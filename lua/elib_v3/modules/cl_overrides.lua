@@ -15,27 +15,20 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 --]]
 
-function Elib.ScaleW(value)
-    return math.max(value * (ScrW() / 1920), 1)
-end
+Elib.Overrides = Elib.Overrides or {}
 
-function Elib.ScaleH(value)
-    return math.max(value * (ScrH() / 1080), 1)
-end
-
-local constants = {}
-local scaledConstants = {}
-function Elib.RegisterScaledConstant(varName, size)
-    constants[varName] = size
-    scaledConstants[varName] = Elib.ScaleH(size)
-end
-
-function Elib.GetScaledConstant(varName)
-    return scaledConstants[varName]
-end
-
-hook.Add("OnScreenSizeChanged", "Elib.UpdateScaledConstants", function()
-    for varName, size in pairs(constants) do
-        scaledConstants[varName] = Elib.ScaleH(size)
+function Elib.CreateToggleableOverride(method, override, toggleGetter)
+    return function(...)
+        return toggleGetter(...) and override(...) or method(...)
     end
-end)
+end
+
+local overridePopupsCvar = CreateClientConVar("elib_ui_override_popups", (Elib.OverrideDermaMenus > 1) and "1" or "0", true, false, "Should the default derma popups be restyled with Elib UI?", 0, 1)
+function Elib.ShouldOverrideDermaPopups()
+    local overrideSetting = Elib.OverrideDermaMenus
+
+    if not overrideSetting or overrideSetting == 0 then return false end
+    if overrideSetting == 3 then return true end
+
+    return overridePopupsCvar:GetBool()
+end
