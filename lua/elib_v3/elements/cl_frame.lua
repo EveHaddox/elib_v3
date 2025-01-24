@@ -18,6 +18,7 @@
 local PANEL = {}
 
 AccessorFunc(PANEL, "Draggable", "Draggable", FORCE_BOOL)
+AccessorFunc(PANEL, "CanFullscreen", "CanFullscreen", FORCE_BOOL)
 AccessorFunc(PANEL, "Sizable", "Sizable", FORCE_BOOL)
 AccessorFunc(PANEL, "MinWidth", "MinWidth", FORCE_NUMBER)
 AccessorFunc(PANEL, "MinHeight", "MinHeight", FORCE_NUMBER)
@@ -51,24 +52,27 @@ function PANEL:Init()
 		self:Close()
 	end
 
-	self.FullscreenButton = vgui.Create("Elib.ImageButton", self)
-	self.FullscreenButton:SetImageURL("https://construct-cdn.physgun.com/images/b3531bb5-c708-4d40-a263-48350672ea91.png")
-	self.FullscreenButton:SetNormalColor(Elib.Colors.PrimaryText)
-	self.FullscreenButton:SetHoverColor(Elib.Colors.Positive)
-	self.FullscreenButton:SetClickColor(Elib.Colors.Positive)
-	self.FullscreenButton:SetDisabledColor(Elib.Colors.DisabledText)
+	if GetCanFullscreen() then
+		self.FullscreenButton = vgui.Create("Elib.ImageButton", self)
+		self.FullscreenButton:SetImageURL("https://construct-cdn.physgun.com/images/b3531bb5-c708-4d40-a263-48350672ea91.png")
+		self.FullscreenButton:SetNormalColor(Elib.Colors.PrimaryText)
+		self.FullscreenButton:SetHoverColor(Elib.Colors.Positive)
+		self.FullscreenButton:SetClickColor(Elib.Colors.Positive)
+		self.FullscreenButton:SetDisabledColor(Elib.Colors.DisabledText)
 
-	self.FullscreenButton.DoClick = function(s)
-		self:Fullscreen()
+		self.FullscreenButton.DoClick = function(s)
+			self:Fullscreen()
+		end
+
+		self.IsFullscreen = false
 	end
-
-	self.IsFullscreen = false
 
 	self.ExtraButtons = {}
 
 	self:SetTitle("Elib Frame")
 
 	self:SetDraggable(true)
+	self:SetCanFullscreen(true)
 	self:SetScreenLock(true)
 	self:SetRemoveOnClose(true)
 
@@ -269,6 +273,8 @@ function PANEL:OnClose() end
 
 function PANEL:Fullscreen()
 	
+	if not GetCanFullscreen() then return end
+
 	if self.IsFullscreen then
 		local w, h = unpack(self.LastSize)
 		self:SizeTo(w, h, .25)
