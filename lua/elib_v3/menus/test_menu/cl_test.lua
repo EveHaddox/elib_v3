@@ -20,6 +20,7 @@ Elib.TestFrame:SetSize(Elib.Scale(900), Elib.Scale(600))
 Elib.TestFrame:Center()
 Elib.TestFrame:MakePopup()
 Elib.TestFrame:SetRemoveOnClose(false)
+Elib.TestFrame:SetCanFullscreen(false)
 
 // Content
 local pages = {}

@@ -52,20 +52,18 @@ function PANEL:Init()
 		self:Close()
 	end
 
-	if GetCanFullscreen() then
-		self.FullscreenButton = vgui.Create("Elib.ImageButton", self)
-		self.FullscreenButton:SetImageURL("https://construct-cdn.physgun.com/images/b3531bb5-c708-4d40-a263-48350672ea91.png")
-		self.FullscreenButton:SetNormalColor(Elib.Colors.PrimaryText)
-		self.FullscreenButton:SetHoverColor(Elib.Colors.Positive)
-		self.FullscreenButton:SetClickColor(Elib.Colors.Positive)
-		self.FullscreenButton:SetDisabledColor(Elib.Colors.DisabledText)
+	self.FullscreenButton = vgui.Create("Elib.ImageButton", self)
+	self.FullscreenButton:SetImageURL("https://construct-cdn.physgun.com/images/b3531bb5-c708-4d40-a263-48350672ea91.png")
+	self.FullscreenButton:SetNormalColor(Elib.Colors.PrimaryText)
+	self.FullscreenButton:SetHoverColor(Elib.Colors.Positive)
+	self.FullscreenButton:SetClickColor(Elib.Colors.Positive)
+	self.FullscreenButton:SetDisabledColor(Elib.Colors.DisabledText)
 
-		self.FullscreenButton.DoClick = function(s)
-			self:Fullscreen()
-		end
-
-		self.IsFullscreen = false
+	self.FullscreenButton.DoClick = function(s)
+		self:Fullscreen()
 	end
+
+	self.IsFullscreen = false
 
 	self.ExtraButtons = {}
 
@@ -216,6 +214,7 @@ function PANEL:PerformLayout(w, h)
 		btnPad = btnPad + btnSize + btnSpacing
 	end
 
+	if not self:GetCanFullscreen() and IsValid(self.FullscreenButton) then self.FullscreenButton:Remove() end
 	if IsValid(self.FullscreenButton) then
 		local btnSize = headerH * .6
 		self.FullscreenButton:SetSize(btnSize, btnSize)
@@ -272,8 +271,8 @@ end
 function PANEL:OnClose() end
 
 function PANEL:Fullscreen()
-	
-	if not GetCanFullscreen() then return end
+
+	if not self:GetCanFullscreen() then return end
 
 	if self.IsFullscreen then
 		local w, h = unpack(self.LastSize)
