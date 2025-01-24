@@ -131,7 +131,7 @@ function PANEL:CloseSubMenu(menu)
 end
 
 function PANEL:Paint(w, h)
-    Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol)
+    Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol)
 end
 
 function PANEL:ChildCount()

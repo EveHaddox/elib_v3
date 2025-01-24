@@ -41,7 +41,7 @@ Elib.RegisterFont("UI.FrameTitle", "Open Sans Bold", 22)
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("Elib.ImageButton", self)
-	self.CloseButton:SetImageURL("https://pixel-cdn.lythium.dev/i/fh640z2o")
+	self.CloseButton:SetImageURL("https://construct-cdn.physgun.com/images/204e6270-1a86-4af6-9350-66cfd5dd8b5a.png") -- https://pixel-cdn.lythium.dev/i/fh640z2o pixel ui one
 	self.CloseButton:SetNormalColor(Elib.Colors.PrimaryText)
 	self.CloseButton:SetHoverColor(Elib.Colors.Negative)
 	self.CloseButton:SetClickColor(Elib.Colors.Negative)
@@ -50,6 +50,19 @@ function PANEL:Init()
 	self.CloseButton.DoClick = function(s)
 		self:Close()
 	end
+
+	self.FullscreenButton = vgui.Create("Elib.ImageButton", self)
+	self.FullscreenButton:SetImageURL("https://construct-cdn.physgun.com/images/b3531bb5-c708-4d40-a263-48350672ea91.png")
+	self.FullscreenButton:SetNormalColor(Elib.Colors.PrimaryText)
+	self.FullscreenButton:SetHoverColor(Elib.Colors.Positive)
+	self.FullscreenButton:SetClickColor(Elib.Colors.Positive)
+	self.FullscreenButton:SetDisabledColor(Elib.Colors.DisabledText)
+
+	self.FullscreenButton.DoClick = function(s)
+		self:Fullscreen()
+	end
+
+	self.IsFullscreen = false
 
 	self.ExtraButtons = {}
 
@@ -180,21 +193,29 @@ function PANEL:CreateSidebar(defaultItem, imageURL, imageScale, imageYOffset, bu
 end
 
 function PANEL:AddHeaderButton(elem, size)
-	elem.HeaderIconSize = size or .45
+	elem.HeaderIconSize = size or .6
 	return table.insert(self.ExtraButtons, elem)
 end
 
 function PANEL:LayoutContent(w, h) end
 
 function PANEL:PerformLayout(w, h)
-	local headerH = Elib.Scale(30)
+	local headerH = Elib.Scale(40)
 	local btnPad = Elib.Scale(6)
 	local btnSpacing = Elib.Scale(6)
 
 	if IsValid(self.CloseButton) then
-		local btnSize = headerH * .45
+		local btnSize = headerH * .6
 		self.CloseButton:SetSize(btnSize, btnSize)
 		self.CloseButton:SetPos(w - btnSize - btnPad, (headerH - btnSize) / 2)
+
+		btnPad = btnPad + btnSize + btnSpacing
+	end
+
+	if IsValid(self.FullscreenButton) then
+		local btnSize = headerH * .6
+		self.FullscreenButton:SetSize(btnSize, btnSize)
+		self.FullscreenButton:SetPos(w - btnSize - btnPad, (headerH - btnSize) / 2)
 
 		btnPad = btnPad + btnSize + btnSpacing
 	end
@@ -218,13 +239,25 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:Open()
-	self:SetAlpha(0)
-	self:SetVisible(true)
-	self:AlphaTo(255, .1, 0)
+
+	local w, h = self:GetSize()
+
+	timer.Simple(0, function()
+		self:SetAlpha(0)
+		self:SetVisible(true)
+		self:AlphaTo(255, .25, 0)
+		self:SetSize( 35, 35 )
+		self:SizeTo( w, 35, 0.25 )
+		self:SizeTo( w, h, 0.25, 0.25 )
+		self:SetPos( ScrW()/2, ScrH()/2 -35/2 )
+		self:MoveTo( ScrW()/2 -w/2, ScrH()/2 -35/2, 0.25 )
+		self:MoveTo( ScrW()/2 -w/2, ScrH()/2 -h/2, 0.25, 0.25 )
+	end)
+	
 end
 
 function PANEL:Close()
-	self:AlphaTo(0, .1, 0, function(anim, pnl)
+	self:AlphaTo(0, .25, 0, function(anim, pnl)
 		if not IsValid(pnl) then return end
 		pnl:SetVisible(false)
 		pnl:OnClose()
@@ -234,6 +267,30 @@ end
 
 function PANEL:OnClose() end
 
+function PANEL:Fullscreen()
+	
+	if self.IsFullscreen then
+		local w, h = unpack(self.LastSize)
+		self:SizeTo(w, h, .25)
+		self:MoveTo(ScrW()/2 - w/2, ScrH()/2 - h/2, .25)
+		self:Center()
+		if self.shouldDrag then
+			self:SetDraggable(true)
+		end
+	else
+		self.LastSize = {self:GetSize()}
+		timer.Simple(0, function()
+			self:SizeTo(ScrW(), ScrH(), 0.25)
+			self:MoveTo(0, 0, 0.25, 0, -ScrH()/2)
+			self:Center()
+			self.shouldDrag = self:GetDraggable()
+			self:SetDraggable(false)
+		end)
+	end
+
+	self.IsFullscreen = not self.IsFullscreen
+end
+
 function PANEL:PaintHeader(x, y, w, h)
 	Elib.DrawRoundedBoxEx(Elib.Scale(6), x, y, w, h, Elib.Colors.Header, true, true)
 
@@ -241,7 +298,7 @@ function PANEL:PaintHeader(x, y, w, h)
 	if imageURL then
 		local iconSize = h * .6
 		Elib.DrawImage(Elib.Scale(6), x + (h - iconSize) / 2, y + iconSize, iconSize, imageURL, color_white)
-		Elib.DrawSimpleText(self:GetTitle(), "UI.FrameTitle", x + Elib.Scale(12) + iconSize, y + h / 2, Elib.Colors.PrimaryText, nil, TEXT_ALIGN_CENTER)
+		Elib.DrawSimpleText(self:GetTitle(), "UI.FrameTitle", x + Elib.Scale(10) + iconSize, y + h / 2, Elib.Colors.PrimaryText, nil, TEXT_ALIGN_CENTER)
 		return
 	end
 
@@ -249,8 +306,14 @@ function PANEL:PaintHeader(x, y, w, h)
 end
 
 function PANEL:Paint(w, h)
-	Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, Elib.Colors.Background)
-	self:PaintHeader(0, 0, w, Elib.Scale(30))
+
+	local CornerRadius = Elib.Scale(6)
+	if self.IsFullscreen then
+		CornerRadius = 0
+	end
+
+	Elib.DrawRoundedBox(CornerRadius, 0, 0, w, h, Elib.Colors.Background)
+	self:PaintHeader(0, 0, w, Elib.Scale(40))
 end
 
 vgui.Register("Elib.Frame", PANEL, "EditablePanel")

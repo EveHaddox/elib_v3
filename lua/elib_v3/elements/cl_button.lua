@@ -105,7 +105,7 @@ function PANEL:PaintExtra(w, h) end
 
 function PANEL:Paint(w, h)
     if not self:IsEnabled() then
-        Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.DisabledCol)
+        Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.DisabledCol)
         self:PaintExtra(w, h)
         return
     end
@@ -120,7 +120,7 @@ function PANEL:Paint(w, h)
 
     self.BackgroundCol = Elib.LerpColor(FrameTime() * 12, self.BackgroundCol, bgCol)
 
-    Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol)
+    Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol)
 
     self:PaintExtra(w, h)
 end

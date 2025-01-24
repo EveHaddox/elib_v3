@@ -317,7 +317,7 @@ function PANEL:Paint(w, h)
 	local activeTab = self:GetActiveTab()
 	local offset = activeTab and activeTab:GetTall() or 0
 
-	Elib.DrawRoundedBox(Elib.Scale(4), 0, offset, w, h - offset, self.BackgroundCol)
+	Elib.DrawRoundedBox(Elib.Scale(6), 0, offset, w, h - offset, self.BackgroundCol)
 end
 
 vgui.Register("Elib.PropertySheet", PANEL, "Panel")

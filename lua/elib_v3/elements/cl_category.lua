@@ -33,13 +33,13 @@ end
 
 local lerp = Lerp
 function PANEL:Paint(w, h)
-    Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol)
+    Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol)
     Elib.DrawSimpleText(self.Title, "UI.CategoryHeader", Elib.Scale(10), h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
     self.ArrowRotation = lerp(FrameTime() * 10, self.ArrowRotation, self:GetParent():GetExpanded() and 0 or 90)
 
     local arrowSize = h * .45
-    Elib.DrawImageRotated(w - h * .3 - Elib.Scale(4), h / 2, arrowSize, arrowSize, self.ArrowRotation, "https://pixel-cdn.lythium.dev/i/5r7ovslav", Elib.Colors.PrimaryText)
+    Elib.DrawImageRotated(w - h * .3 - Elib.Scale(6), h / 2, arrowSize, arrowSize, self.ArrowRotation, "https://pixel-cdn.lythium.dev/i/5r7ovslav", Elib.Colors.PrimaryText)
 end
 
 vgui.Register("Elib.CategoryHeader", PANEL, "Elib.Button")
@@ -87,7 +87,7 @@ function PANEL:SetTitle(title)
 end
 
 function PANEL:Paint(w, h)
-    Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol)
+    Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol)
 end
 
 function PANEL:SetContents(contents)

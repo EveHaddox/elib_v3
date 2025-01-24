@@ -60,7 +60,7 @@ function PANEL:Paint(w, h)
 	self.TextCol = Elib.LerpColor(animTime, self.TextCol, textCol)
 	self.BackgroundCol = Elib.LerpColor(animTime, self.BackgroundCol, backgroundCol)
 
-	if self:GetDrawOutline() then Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol, Elib.Scale(1)) end
+	if self:GetDrawOutline() then Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol, Elib.Scale(1)) end
 
 	local imageURL = self:GetImageURL()
 	if imageURL then
