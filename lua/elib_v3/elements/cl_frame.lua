@@ -279,8 +279,11 @@ function PANEL:Fullscreen()
 		self:SizeTo(w, h, .25)
 		self:MoveTo(ScrW()/2 - w/2, ScrH()/2 - h/2, .25)
 		self:Center()
-		if self.shouldDrag then
+		if self.shouldSizeble then
 			self:SetDraggable(true)
+		end
+		if self.shouldSizeble then
+			self:SetSizable(true)
 		end
 	else
 		self.LastSize = {self:GetSize()}
@@ -289,6 +292,7 @@ function PANEL:Fullscreen()
 			self:MoveTo(0, 0, 0.25, 0, -ScrH()/2)
 			self:Center()
 			self.shouldDrag = self:GetDraggable()
+			self.shouldSizeble = self:GetSizable()
 			self:SetDraggable(false)
 		end)
 	end
