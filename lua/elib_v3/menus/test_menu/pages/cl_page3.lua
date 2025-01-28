@@ -1,4 +1,4 @@
-/// Welcome Page | Page 1
+/// IDK Page | Page 3
 local PANEL = {}
 
 Elib.RegisterFont("Elib.Test.Title", "Open Sans SemiBold", 38)

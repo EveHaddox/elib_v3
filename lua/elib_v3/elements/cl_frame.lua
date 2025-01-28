@@ -279,7 +279,7 @@ function PANEL:Fullscreen()
 		self:SizeTo(w, h, .25)
 		self:MoveTo(ScrW()/2 - w/2, ScrH()/2 - h/2, .25)
 		self:Center()
-		if self.shouldSizeble then
+		if self.shouldDrag then
 			self:SetDraggable(true)
 		end
 		if self.shouldSizeble then
