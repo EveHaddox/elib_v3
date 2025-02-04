@@ -55,6 +55,8 @@ Elib.LoadDirectoryRecursive("elib_v3")
 
 hook.Run("Elib.FullyLoaded")
 
+Elib.FullyLoaded = true // If the library finishes loading before addons hook this will make them load
+
 if CLIENT then return end
 
 --resource.AddWorkshop("2468112758")
