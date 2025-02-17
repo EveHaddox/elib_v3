@@ -301,7 +301,46 @@ function PANEL:Fullscreen()
 end
 
 function PANEL:PaintHeader(x, y, w, h)
-	Elib.DrawRoundedBoxEx(Elib.Scale(6), x, y, w, h, Elib.Colors.Header, true, true)
+	--Elib.DrawRoundedBoxEx(Elib.Scale(6), x, y, w, h, Elib.Colors.Header, true, true)
+
+	local CornerRadius = Elib.Scale(6)
+	if self.IsFullscreen then
+		CornerRadius = 0
+	end
+
+	-- 1) Enable stencil
+    render.SetStencilEnable(true)
+        
+    -- 2) Clear stencil to zero
+    render.ClearStencil()
+    
+    -- 3) Configure stencil
+    render.SetStencilWriteMask(255)
+    render.SetStencilTestMask(255)
+    render.SetStencilReferenceValue(1)
+
+    render.SetStencilCompareFunction(STENCIL_ALWAYS)
+    render.SetStencilPassOperation(STENCIL_REPLACE)
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+
+    -- 4) Draw the rectangle that will define our "allowed" area
+    Elib.DrawFullRoundedBoxEx(CornerRadius, 0, 0, w, h, Elib.Colors.Header, true, true)
+
+    -- 5) Now switch to only drawing where the stencil == 1
+    render.SetStencilCompareFunction(STENCIL_EQUAL)
+    render.SetStencilPassOperation(STENCIL_KEEP)
+
+    -- 6) Draw anything that should appear *inside* the rectangle
+	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, 5))  
+    surface.SetMaterial(Material("gui/gradient_up"))
+    surface.DrawTexturedRect(0, 0, w, h)
+
+	-- 7) Disable stencil
+    render.SetStencilEnable(false)
+
+	surface.SetDrawColor(Color(45, 45, 45))
+	surface.DrawRect(0, h - 1, w, 1)
 
 	local imageURL = self:GetImageURL()
 	if imageURL then
@@ -314,6 +353,8 @@ function PANEL:PaintHeader(x, y, w, h)
 	Elib.DrawSimpleText(self:GetTitle(), "UI.FrameTitle", x + Elib.Scale(6), y + h / 2, Elib.Colors.PrimaryText, nil, TEXT_ALIGN_CENTER)
 end
 
+local gradientMat = Material("gui/center_gradient")
+
 function PANEL:Paint(w, h)
 
 	local CornerRadius = Elib.Scale(6)
@@ -321,7 +362,40 @@ function PANEL:Paint(w, h)
 		CornerRadius = 0
 	end
 
-	Elib.DrawRoundedBox(CornerRadius, 0, 0, w, h, Elib.Colors.Background)
+	-- 1) Enable stencil
+    render.SetStencilEnable(true)
+        
+    -- 2) Clear stencil to zero
+    render.ClearStencil()
+    
+    -- 3) Configure stencil
+    render.SetStencilWriteMask(255)
+    render.SetStencilTestMask(255)
+    render.SetStencilReferenceValue(1)
+
+    render.SetStencilCompareFunction(STENCIL_ALWAYS)
+    render.SetStencilPassOperation(STENCIL_REPLACE)
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+
+    -- 4) Draw the rectangle that will define our "allowed" area
+    Elib.DrawFullRoundedBox(CornerRadius, 0, 0, w, h, Elib.Colors.Background)
+
+    -- 5) Now switch to only drawing where the stencil == 1
+    render.SetStencilCompareFunction(STENCIL_EQUAL)
+    render.SetStencilPassOperation(STENCIL_KEEP)
+
+    -- 6) Draw anything that should appear *inside* the rectangle
+	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, 5))  
+    surface.SetMaterial(gradientMat)
+    surface.DrawTexturedRect(0, 0, w, h)
+	Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/bb26c4a0-cf84-4043-ab87-bff0cc9af57f.png", Color(255, 255, 255, 20))
+	Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/299b15c9-d403-44f9-bf4a-0b4dce07baf1.png", Color(255, 255, 255, 255))
+
+    -- 7) Disable stencil
+    render.SetStencilEnable(false)
+
+	--Elib.DrawRoundedBox(CornerRadius, 0, 0, w, h, Elib.Colors.Background)
 	self:PaintHeader(0, 0, w, Elib.Scale(40))
 end
 

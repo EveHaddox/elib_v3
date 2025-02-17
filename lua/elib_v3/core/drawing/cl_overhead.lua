@@ -46,8 +46,9 @@ local function drawOverhead(ent, pos, text, ang, scale)
 
     start3d2d(pos, ang, scale or 0.05)
     if not Icon then
-        Elib.DrawRoundedBox(12, x, y, w, h, Elib.Colors.Primary)
+        Elib.DrawRoundedBox(12, x, y, w, h, Elib.Colors.Background)
         Elib.DrawText(text, "UI.Overhead", 0, y + 1, Elib.Colors.PrimaryText, TEXT_ALIGN_CENTER)
+        Elib.DrawOutlinedRoundedBox(10, x, y, w, h, Color(45, 45, 45), 3)
     else
         x = x - 40
         Elib.DrawRoundedBox(12, x, y, h, h, Elib.Colors.Primary)

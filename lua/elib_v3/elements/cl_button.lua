@@ -30,9 +30,9 @@ function PANEL:Init()
     local btnSize = Elib.Scale(30)
     self:SetSize(btnSize, btnSize)
 
-    self.NormalCol = Elib.CopyColor(Elib.Colors.Primary)
-    self.HoverCol = Elib.OffsetColor(self.NormalCol, -15)
-    self.ClickedCol = Elib.OffsetColor(self.NormalCol, 15)
+    self.NormalCol = Color(35, 35, 35) --Elib.CopyColor(Color(32, 32, 32))
+    self.HoverCol = Elib.OffsetColor(self.NormalCol, -5)
+    self.ClickedCol = Elib.OffsetColor(self.NormalCol, 5)
     self.DisabledCol = Elib.CopyColor(Elib.Colors.Disabled)
 
     self.BackgroundCol = self.NormalCol
@@ -103,6 +103,8 @@ end
 
 function PANEL:PaintExtra(w, h) end
 
+local gradientMat = Material("gui/gradient_up")
+
 function PANEL:Paint(w, h)
     if not self:IsEnabled() then
         Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.DisabledCol)
@@ -120,7 +122,38 @@ function PANEL:Paint(w, h)
 
     self.BackgroundCol = Elib.LerpColor(FrameTime() * 12, self.BackgroundCol, bgCol)
 
-    Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol)
+    -- 1) Enable stencil
+    render.SetStencilEnable(true)
+        
+    -- 2) Clear stencil to zero
+    render.ClearStencil()
+    
+    -- 3) Configure stencil
+    render.SetStencilWriteMask(255)
+    render.SetStencilTestMask(255)
+    render.SetStencilReferenceValue(1)
+
+    render.SetStencilCompareFunction(STENCIL_ALWAYS)
+    render.SetStencilPassOperation(STENCIL_REPLACE)
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+
+    -- 4) Draw the rectangle that will define our "allowed" area
+    Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h, Color(14, 14, 14))
+
+    -- 5) Now switch to only drawing where the stencil == 1
+    render.SetStencilCompareFunction(STENCIL_EQUAL)
+    render.SetStencilPassOperation(STENCIL_KEEP)
+
+    -- 6) Draw anything that should appear *inside* the rectangle
+    surface.SetDrawColor(self.BackgroundCol)  
+    surface.SetMaterial(gradientMat)
+    surface.DrawTexturedRect(0, 0, w, h)
+
+    -- 7) Disable stencil
+    render.SetStencilEnable(false)
+
+    Elib.DrawOutlinedRoundedBox(Elib.Scale(5), 0, 0, w, h, Color(45, 45, 45), 1)
 
     self:PaintExtra(w, h)
 end
