@@ -30,7 +30,7 @@ function PANEL:Init()
     local btnSize = Elib.Scale(30)
     self:SetSize(btnSize, btnSize)
 
-    self.NormalCol = Color(35, 35, 35) --Elib.CopyColor(Color(32, 32, 32))
+    self.NormalCol = Elib.CopyColor(Elib.OffsetColor(Elib.Colors.Background, 10)) --Color(35, 35, 35)
     self.HoverCol = Elib.OffsetColor(self.NormalCol, -5)
     self.ClickedCol = Elib.OffsetColor(self.NormalCol, 5)
     self.DisabledCol = Elib.CopyColor(Elib.Colors.Disabled)
@@ -139,7 +139,7 @@ function PANEL:Paint(w, h)
     render.SetStencilZFailOperation(STENCIL_KEEP)
 
     -- 4) Draw the rectangle that will define our "allowed" area
-    Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h, Color(14, 14, 14))
+    Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h, Elib.OffsetColor(self.NormalCol, -15))
 
     -- 5) Now switch to only drawing where the stencil == 1
     render.SetStencilCompareFunction(STENCIL_EQUAL)
@@ -153,7 +153,7 @@ function PANEL:Paint(w, h)
     -- 7) Disable stencil
     render.SetStencilEnable(false)
 
-    Elib.DrawOutlinedRoundedBox(Elib.Scale(5), 0, 0, w, h, Color(45, 45, 45), 1)
+    Elib.DrawOutlinedRoundedBox(Elib.Scale(5), 0, 0, w, h, Elib.OffsetColor(self.NormalCol, 30), 1)
 
     self:PaintExtra(w, h)
 end

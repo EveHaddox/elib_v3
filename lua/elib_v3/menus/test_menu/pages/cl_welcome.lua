@@ -9,7 +9,7 @@ function PANEL:Init()
     self.panel = self:Add("DPanel")
     self.panel:Dock(TOP)
     self.panel:DockMargin(0, 0, 0, 8)
-    self.panel:SetTall(40)
+    self.panel:SetTall(Elib.Scale(40))
 
     self.panel.Paint = function(self, w, h)
         Elib.DrawSimpleText("Welcome to the test menu", "Elib.Test.Title", w / 2, 0, Elib.Colors.PrimaryText, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
