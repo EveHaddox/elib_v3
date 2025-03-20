@@ -53,7 +53,9 @@ end
 
 Elib.LoadDirectoryRecursive("elib_v3")
 
-hook.Run("Elib.FullyLoaded")
+hook.Add("Elib:ConfigLoaded", "Elib:FullyLoaded", function()
+	hook.Run("Elib.FullyLoaded")
+end)
 
 Elib.FullyLoaded = true // If the library finishes loading before addons hook this will make them load
 
