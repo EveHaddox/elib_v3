@@ -19,7 +19,7 @@
 --]]
 
 Elib = Elib or {}
-Elib.Version = "1.1"
+Elib.Version = "1.2"
 
 function Elib.LoadDirectory(path)
 	local files, folders = file.Find(path .. "/*", "LUA")

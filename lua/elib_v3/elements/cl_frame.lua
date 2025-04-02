@@ -170,6 +170,8 @@ end
 function PANEL:CreateSidebar(defaultItem, imageURL, imageScale, imageYOffset, buttonYOffset)
 	if IsValid(self.SideBar) then return end
 	self.SideBar = vgui.Create("Elib.Sidebar", self)
+	
+	self.SideBar:SetDrawShadow(true)
 
 	if defaultItem then
 		timer.Simple(0, function()
@@ -332,15 +334,19 @@ function PANEL:PaintHeader(x, y, w, h)
     render.SetStencilPassOperation(STENCIL_KEEP)
 
     -- 6) Draw anything that should appear *inside* the rectangle
-	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, 5))  
-    surface.SetMaterial(Material("gui/gradient_up"))
-    surface.DrawTexturedRect(0, 0, w, h)
+	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, 5))
+	surface.SetMaterial(Material("gui/gradient_up"))
+	surface.DrawTexturedRect(0, 0, w, h)
 
 	-- 7) Disable stencil
     render.SetStencilEnable(false)
 
 	surface.SetDrawColor(Color(45, 45, 45))
 	surface.DrawRect(0, h - 1, w, 1)
+
+	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, -5))
+	surface.SetMaterial(Material("gui/gradient_down"))
+	surface.DrawTexturedRect(0, h + 1, w, Elib.Scale(10))
 
 	local imageURL = self:GetImageURL()
 	if imageURL then
@@ -386,10 +392,8 @@ function PANEL:Paint(w, h)
     render.SetStencilPassOperation(STENCIL_KEEP)
 
     -- 6) Draw anything that should appear *inside* the rectangle
-	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, 5))  
-    surface.SetMaterial(gradientMat)
-    surface.DrawTexturedRect(0, 0, w, h)
-	Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/bb26c4a0-cf84-4043-ab87-bff0cc9af57f.png", Color(255, 255, 255, 20))
+	
+	--Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/bb26c4a0-cf84-4043-ab87-bff0cc9af57f.png", Color(255, 255, 255, 20))
 	Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/299b15c9-d403-44f9-bf4a-0b4dce07baf1.png", Color(255, 255, 255, 255))
 
     -- 7) Disable stencil

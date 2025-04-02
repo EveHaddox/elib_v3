@@ -81,6 +81,7 @@ AccessorFunc(PANEL, "ImageURL", "ImageURL", FORCE_STRING)
 AccessorFunc(PANEL, "ImageScale", "ImageScale", FORCE_NUMBER)
 AccessorFunc(PANEL, "ImageOffset", "ImageOffset", FORCE_NUMBER)
 AccessorFunc(PANEL, "ButtonOffset", "ButtonOffset", FORCE_NUMBER)
+AccessorFunc(PANEL, "DrawShadow", "DrawShadow", FORCE_BOOL)
 
 AccessorFunc(PANEL, "ImgurID", "ImgurID", FORCE_STRING) -- Deprecated
 AccessorFunc(PANEL, "ImgurScale", "ImgurScale", FORCE_NUMBER) -- Deprecated
@@ -201,6 +202,12 @@ function PANEL:Paint(w, h)
 	if imageURL then
 		local imageSize = w * self:GetImageScale()
 		Elib.DrawImage((w - imageSize) / 2, self:GetImageOffset() + Elib.Scale(15), imageSize, imageSize, imageURL, color_white)
+	end
+
+	if self:GetDrawShadow() then
+		surface.SetDrawColor(Elib.OffsetColor(self.BackgroundCol, -5))
+		surface.SetMaterial(Material("gui/gradient_down"))
+		surface.DrawTexturedRect(0, 0, w, Elib.Scale(10))
 	end
 end
 

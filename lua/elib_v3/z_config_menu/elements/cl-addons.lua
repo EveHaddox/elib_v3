@@ -22,7 +22,7 @@ function PANEL:Init()
     self.spacing = 4
 
     self.NormalCol = Elib.CopyColor(Elib.OffsetColor(Elib.Colors.Background, 10)) --Color(35, 35, 35)
-    self.HoverCol = Elib.OffsetColor(self.NormalCol, -5)
+    self.HoverCol = Elib.OffsetColor(self.NormalCol, -10)
     self.ClickedCol = Elib.OffsetColor(self.NormalCol, 5)
     self.DisabledCol = Elib.CopyColor(Elib.Colors.Disabled)
 
@@ -38,9 +38,9 @@ function PANEL:Init()
         
             local bgCol = self.NormalCol
         
-            if pnl:IsDown() then
+            if self.buttons[i]:IsDown() then
                 bgCol = self.ClickedCol
-            elseif pnl:IsHovered() then
+            elseif self.buttons[i]:IsHovered() then
                 bgCol = self.HoverCol
             end
         
@@ -63,7 +63,7 @@ function PANEL:Init()
             render.SetStencilZFailOperation(STENCIL_KEEP)
         
             -- 4) Draw the rectangle that will define our "allowed" area
-            Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h - 4, Elib.OffsetColor(self.NormalCol, -15))
+            Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h - 4, Elib.OffsetColor(self.NormalCol, -12))
         
             -- 5) Now switch to only drawing where the stencil == 1
             render.SetStencilCompareFunction(STENCIL_EQUAL)
@@ -78,6 +78,13 @@ function PANEL:Init()
             render.SetStencilEnable(false)
         
             Elib.DrawOutlinedRoundedBox(Elib.Scale(5), 0, 0, w, h - 4, Elib.OffsetColor(self.NormalCol, 30), 1)
+        end
+    end
+
+    self.OnSizeChanged = function(w, h)
+        self.buttonsHolder:SetHeight(h / 1.5)
+        for k, v in ipairs(self.buttons) do
+            v:SetHeight(h / 1.5)
         end
     end
 
@@ -115,26 +122,16 @@ local function CreateConfigMenu()
     Elib.Config.Menu.Addons = Elib.Config.Menu:Add("Elib.Config.Addons")
     Elib.Config.Menu.Addons:Dock(FILL)
 
-    timer.Simple(0.1, function()
-        Elib.Config.Menu:SetVisible(false)
-        timer.Simple(0.1, function()
-            hook.Run("Elib:AssetsLoaded")
-        end)
-    end)
+    Elib.Config.Menu:MakePopup()
 end
 
 if IsValid(Elib.Config.Menu) then Elib.Config.Menu:Remove() CreateConfigMenu() end
-
-hook.Add("Elib.FullyLoaded", "Elib_PlayerFullyInGame:ConfigMenu", function()
-    timer.Simple(.1, function()
-        CreateConfigMenu()
-    end)
-end)
 
 concommand.Add("elib_config", function()
 
     if not IsValid(Elib.Config.Menu) then
         CreateConfigMenu()
+        return
     end
     if not IsValid(Elib.Config.Menu) then return end
     if Elib.Config.Menu:IsVisible() then

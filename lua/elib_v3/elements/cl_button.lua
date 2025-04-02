@@ -139,7 +139,7 @@ function PANEL:Paint(w, h)
     render.SetStencilZFailOperation(STENCIL_KEEP)
 
     -- 4) Draw the rectangle that will define our "allowed" area
-    Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h, Elib.OffsetColor(self.NormalCol, -15))
+    Elib.DrawFullRoundedBox(Elib.Scale(8), 0, 0, w, h, Elib.OffsetColor(self.NormalCol, -12))
 
     -- 5) Now switch to only drawing where the stencil == 1
     render.SetStencilCompareFunction(STENCIL_EQUAL)

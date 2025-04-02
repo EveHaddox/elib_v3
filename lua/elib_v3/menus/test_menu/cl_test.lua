@@ -41,7 +41,7 @@ local function CreateTestMenu()
     pages[3] = page3
 
     // Sidebar
-    local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/bb26c4a0-cf84-4043-ab87-bff0cc9af57f.png", 1, -15, 5)
+    local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/9affef38-1103-4689-9215-dc1e6bd4c5bc.png", .8, -5, 15)
 
     sidebar:AddItem(1, "Welcome", "https://construct-cdn.physgun.com/images/1e154095-79b2-436e-80a3-cb6b924d14a2.png", function(id) // (id, name, imageURL, doClick, order)
         currentPage = 1
@@ -60,26 +60,16 @@ local function CreateTestMenu()
 
     sidebar:SelectItem(1)
 
-    timer.Simple(0.1, function()
-        Elib.TestFrame:SetVisible(false)
-        timer.Simple(0.1, function()
-            hook.Run("Elib:AssetsLoaded")
-        end)
-    end)
+    Elib.TestFrame:MakePopup()
 end
 
 if IsValid(Elib.TestFrame) then Elib.TestFrame:Remove() CreateTestMenu() end
-
-hook.Add("Elib.FullyLoaded", "Elib_PlayerFullyInGame", function()
-    timer.Simple(.1, function()
-        CreateTestMenu()
-    end)
-end)
 
 concommand.Add("elib_test", function()
 
     if not IsValid(Elib.TestFrame) then
         CreateTestMenu()
+        return
     end
     if not IsValid(Elib.TestFrame) then return end
     if Elib.TestFrame:IsVisible() then
