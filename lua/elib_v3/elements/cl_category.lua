@@ -19,7 +19,7 @@ local PANEL = {}
 
 AccessorFunc(PANEL, "Title", "Title", FORCE_STRING)
 
-Elib.RegisterFont("UI.CategoryHeader", "Open Sans Bold", 19)
+Elib.RegisterFont("UI.CategoryHeader", "Space Grotesk Bold", 19)
 
 function PANEL:Init()
     self.ArrowRotation = 0

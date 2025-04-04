@@ -22,7 +22,7 @@ AccessorFunc(PANEL, "TextAlign", "TextAlign", FORCE_NUMBER)
 AccessorFunc(PANEL, "TextSpacing", "TextSpacing", FORCE_NUMBER)
 AccessorFunc(PANEL, "Font", "Font", FORCE_STRING)
 
-Elib.RegisterFont("UI.TextButton", "Open Sans SemiBold", 20)
+Elib.RegisterFont("UI.TextButton", "Space Grotesk SemiBold", 20)
 
 function PANEL:Init()
     self:SetText("Button")

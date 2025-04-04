@@ -21,7 +21,7 @@ AccessorFunc(PANEL, "m_sText", "Text")
 AccessorFunc(PANEL, "m_pPropertySheet", "PropertySheet")
 AccessorFunc(PANEL, "m_pPanel", "Panel")
 
-Elib.RegisterFont("UI.Tab", "Open Sans Bold", 16)
+Elib.RegisterFont("UI.Tab", "Space Grotesk Bold", 16)
 
 function PANEL:Init()
 	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, -4)

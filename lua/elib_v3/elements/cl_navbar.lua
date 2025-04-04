@@ -20,7 +20,7 @@ local PANEL = {}
 AccessorFunc(PANEL, "Name", "Name", FORCE_STRING)
 AccessorFunc(PANEL, "Color", "Color")
 
-Elib.RegisterFont("UI.NavbarItem", "Open Sans SemiBold", 22)
+Elib.RegisterFont("UI.NavbarItem", "Space Grotesk SemiBold", 22)
 
 function PANEL:Init()
     self:SetName("N/A")

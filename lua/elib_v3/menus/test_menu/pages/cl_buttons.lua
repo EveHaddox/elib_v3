@@ -1,7 +1,7 @@
 /// Button Page | Page 2
 local PANEL = {}
 
-Elib.RegisterFont("Elib.Test.Title", "Open Sans SemiBold", 32)
+Elib.RegisterFont("Elib.Test.Title", "Space Grotesk SemiBold", 32)
 
 function PANEL:Init()
 

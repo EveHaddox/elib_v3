@@ -24,7 +24,7 @@ AccessorFunc(PANEL, "Text", "Text", FORCE_STRING)
 AccessorFunc(PANEL, "TextAlign", "TextAlign", FORCE_NUMBER)
 AccessorFunc(PANEL, "Font", "Font", FORCE_STRING)
 
-Elib.RegisterFont("UI.MenuOption", "Open Sans SemiBold", 18)
+Elib.RegisterFont("UI.MenuOption", "Space Grotesk SemiBold", 18)
 
 function PANEL:Init()
     self:SetTextAlign(TEXT_ALIGN_LEFT)

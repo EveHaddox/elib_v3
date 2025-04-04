@@ -38,7 +38,7 @@ function PANEL:GetImgurID()
 	return self:GetImageURL():match("https://i.imgur.com/(.-).png")
 end
 
-Elib.RegisterFont("UI.FrameTitle", "Open Sans Bold", 22)
+Elib.RegisterFont("UI.FrameTitle", "Space Grotesk Bold", 22)
 
 function PANEL:Init()
 	self.CloseButton = vgui.Create("Elib.ImageButton", self)
@@ -352,7 +352,7 @@ function PANEL:PaintHeader(x, y, w, h)
 	if imageURL then
 		local iconSize = h * .6
 		Elib.DrawImage(Elib.Scale(6), x + (h - iconSize) / 2, y + iconSize, iconSize, imageURL, color_white)
-		Elib.DrawSimpleText(self:GetTitle(), "UI.FrameTitle", x + Elib.Scale(10) + iconSize, y + h / 2, Elib.Colors.PrimaryText, nil, TEXT_ALIGN_CENTER)
+		Elib.DrawSimpleText(self:GetTitle(), "UI.FrameTitle", x + Elib.Scale(10) + iconSize, y + h / 2 - 2, Elib.Colors.PrimaryText, nil, TEXT_ALIGN_CENTER)
 		return
 	end
 

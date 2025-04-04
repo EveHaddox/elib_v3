@@ -1,8 +1,8 @@
 /// IDK Page | Page 3
 local PANEL = {}
 
-Elib.RegisterFont("Elib.Test.Title", "Open Sans SemiBold", 38)
-Elib.RegisterFont("Elib.Test.Normal", "Open Sans SemiBold", 20)
+Elib.RegisterFont("Elib.Test.Title", "Space Grotesk SemiBold", 38)
+Elib.RegisterFont("Elib.Test.Normal", "Space Grotesk SemiBold", 20)
 
 function PANEL:Init()
 

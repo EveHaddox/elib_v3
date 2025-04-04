@@ -26,7 +26,7 @@ AccessorFunc(PANEL, "m_txtPlaceholder", "PlaceholderText", FORCE_STRING)
 
 Derma_Install_Convar_Functions(PANEL)
 
-Elib.RegisterFont("UI.TextEntry", "Open Sans SemiBold", 18)
+Elib.RegisterFont("UI.TextEntry", "Space Grotesk SemiBold", 18)
 
 function PANEL:Init()
     self:SetHistoryEnabled(false)

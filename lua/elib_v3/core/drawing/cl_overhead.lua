@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 --]]
 
-Elib.RegisterFontUnscaled("UI.Overhead", "Open Sans Bold", 100)
+Elib.RegisterFontUnscaled("UI.Overhead", "Space Grotesk Bold", 100)
 
 local localPly
 local function checkDistance(ent)
