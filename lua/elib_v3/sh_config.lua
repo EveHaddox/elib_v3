@@ -38,18 +38,18 @@ Elib.DownloadPath = "elib/images/"
     Colour definitions.
 ]]
 Elib.Colors = {
-    Background = Color(22, 22, 22),
-    Header = Color(28, 28, 28),
-    Scroller = Color(61, 61, 61),
+    Background = Color(26, 26, 26),         -- Neutral matte base
+    Header = Color(36, 36, 36),             -- Flat section separator
+    Scroller = Color(42, 42, 42),           -- Visible but non-distracting
 
-    PrimaryText = Color(255, 255, 255),
-    SecondaryText = Color(220, 220, 220),
-    DisabledText = Color(40, 40, 40),
+    PrimaryText = Color(240, 240, 240),     -- Clear, readable
+    SecondaryText = Color(200, 200, 200),   -- Less prominent info
+    DisabledText = Color(100, 100, 100),    -- Muted/inactive
 
-    Primary = Color(200, 47, 47),
-    Disabled = Color(180, 180, 180),
-    Positive = Color(66, 134, 50),
-    Negative = Color(164, 50, 50),
+    Primary = Color(180, 58, 58),           -- Strong modern red
+    Disabled = Color(120, 120, 120),        -- Grayed-out UI
+    Positive = Color(70, 175, 70),          -- Green for success
+    Negative = Color(190, 65, 65),          -- Red for errors
 
     Gold = Color(214, 174, 34),
     Silver = Color(192, 192, 192),
