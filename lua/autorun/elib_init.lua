@@ -80,7 +80,7 @@ end
 
 // loading the library
 Elib.LoadDirectoryRecursive("elib_v3")
-Elib.IncludeShared("e_config_menu")
+Elib.IncludeShared("e_config_menu/sh_loader")
 
 hook.Add("Elib:ConfigLoaded", "Elib:FullyLoaded", function()
 	hook.Run("Elib.FullyLoaded")

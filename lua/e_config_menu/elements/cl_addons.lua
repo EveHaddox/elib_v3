@@ -9,6 +9,9 @@ if SERVER then return end
 
 Elib.Config = Elib.Config or {}
 
+Elib.RegisterFont("Elib.Config.Title", "Space Grotesk SemiBold", 24)
+Elib.RegisterFont("Elib.Config.normal", "Space Grotesk SemiBold", 20)
+
 local PANEL = {}
 
 function PANEL:Init()
@@ -18,11 +21,44 @@ function PANEL:Init()
     self.Scroll = self:Add("Elib.ScrollPanel")
     self.Scroll:Dock(FILL)
 
-    for k, v in pairs(Elib.Config.Addons) do
-        local addon = self.Scroll:Add("Elib.Config.Addon")
-        addon:SetAddon(v)
+    for k, v in ipairs(Elib.Config.Addons) do
+        self.addons[k] = self.Scroll:Add("DPanel")
+        local addon = self.addons[k]
+
         addon:Dock(TOP)
-        addon:DockMargin(0, 0, 0, Elib.Scale(5))
+        addon:DockMargin(0, 0, 0, Elib.Scale(4))
+        addon:SetHeight(Elib.Scale(30))
+
+        addon.hovered = false
+
+        addon.Paint = function(pnl, w, h)
+            Elib.DrawRoundedBox(6, 0, 0, w, h, addon.hovered and Elib.OffsetColor(Elib.Colors.Background, 5) or Elib.Colors.Background)
+            Elib.DrawSimpleText(v.name, "Elib.Config.Title", 10, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+
+            Elib.DrawSimpleText(v.author.name, "Elib.Config.normal", w - h - 2, h / 2, Elib.Colors.SecondaryText, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+        end
+
+        addon.OnCursorEntered = function(pnl)
+            addon.hovered = true
+        end
+        addon.OnCursorExited = function(pnl)
+            addon.hovered = false
+        end
+
+        addon.OnMousePressed = function(pnl, mcode)
+            if mcode == MOUSE_LEFT then
+                -- Open the addon menu
+                -- Elib.Config.Addons[k].Open()
+            end
+        end
+
+        addon.Avatar = addon:Add("Elib.Avatar")
+        addon.Avatar:Dock(RIGHT)
+        addon.Avatar:DockMargin(0, 4, 4, 4)
+        addon.Avatar:SetWide(Elib.Scale(30) - 8)
+        addon.Avatar:SetMaskSize(16)
+
+        addon.Avatar:SetSteamID(v.author.steamid, 256)
 
         self.addons[k] = addon
     end
@@ -30,7 +66,12 @@ function PANEL:Init()
 end
 
 function PANEL:PerformLayout(w, h)
-
+    --[[
+    for k, v in ipairs(self.addons) do
+        
+        v.Avatar:Dock(RIGHT)
+    end
+    ]]
 end
 
 function PANEL:Paint(w, h)

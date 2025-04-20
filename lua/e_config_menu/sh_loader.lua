@@ -5,14 +5,13 @@
 //////////////////////////////
 // Initialising Config Menu //
 //////////////////////////////
-if (CLIENT) then
-    local path = "e_config_menu/"
+local path = "e_config_menu/"
 
-    Elib.IncludeClient(path .."elements/cl_menu")
-    Elib.IncludeClient(path .."elements/cl_addons")
-end
+Elib.IncludeShared(path .. "modules/main/sh_main")
+Elib.IncludeServer(path .. "modules/main/sv_main")
 
-//////////////////////////////
+Elib.IncludeClient(path .."elements/cl_menu")
+Elib.IncludeClient(path .."elements/cl_addons")
 
 ////////////
 // Values //

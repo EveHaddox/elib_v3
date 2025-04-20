@@ -1,2 +1,4 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
 local x = 1
-print("menu loaded")
