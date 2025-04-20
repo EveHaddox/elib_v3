@@ -1,3 +1,7 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
+
 /// Button Page | Page 2
 local PANEL = {}
 

@@ -1,3 +1,7 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
+
 /// IDK Page | Page 3
 local PANEL = {}
 

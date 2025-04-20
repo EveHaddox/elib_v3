@@ -1,3 +1,7 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
+
 local PANEL = {}
  
 function PANEL:Init()

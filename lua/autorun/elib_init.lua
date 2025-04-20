@@ -21,6 +21,7 @@
 Elib = Elib or {}
 Elib.Version = "1.2"
 
+// Automatic loader
 function Elib.LoadDirectory(path)
 	local files, folders = file.Find(path .. "/*", "LUA")
 
@@ -51,7 +52,35 @@ function Elib.LoadDirectoryRecursive(basePath)
 	end
 end
 
+// manual loader
+function Elib.IncludeClient(path)
+    local str = path .. ".lua"
+
+    if (CLIENT) then
+        include(str)
+    end
+
+    if (SERVER) then
+        AddCSLuaFile(str)
+    end
+end
+
+function Elib.IncludeServer(path)
+    local str = path .. ".lua"
+
+    if (SERVER) then
+        include(str)
+    end
+end
+
+function Elib.IncludeShared(path)
+    Elib.IncludeServer(path)
+    Elib.IncludeClient(path)
+end
+
+// loading the library
 Elib.LoadDirectoryRecursive("elib_v3")
+Elib.IncludeShared("e_config_menu")
 
 hook.Add("Elib:ConfigLoaded", "Elib:FullyLoaded", function()
 	hook.Run("Elib.FullyLoaded")
