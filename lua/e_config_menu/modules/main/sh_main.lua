@@ -9,17 +9,17 @@ Elib.Config.Addons = {
     {
         name = "Addon 1",
         order = 1,
-        author = {name = "Eve Haddox", steamid = "76561198847312396"},
+        author = { name = "Eve Haddox", steamid = "76561198847312396" },
     },
     {
         name = "Addon 2",
         order = 2,
-        author = {name = "Eve Haddox", steamid = "76561198847312396"},
+        author = { name = "Eve Haddox", steamid = "76561198847312396" },
     },
     {
         name = "Addon 3",
         order = 3,
-        author = {name = "Eve Haddox", steamid = "76561198847312396"},
+        author = { name = "Eve Haddox", steamid = "76561198847312396" },
     },
 }
 

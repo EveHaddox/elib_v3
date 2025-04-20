@@ -17,6 +17,10 @@ local PANEL = {}
 function PANEL:Init()
 
     self.addons = {}
+
+    self.BackkgroundCol = Elib.OffsetColor(Elib.Colors.Background, 6)
+    self.HoverCol = Elib.OffsetColor(Elib.Colors.Background, 12)
+    self.ClickedCol = Elib.CopyColor(Elib.Colors.Background)
     
     self.Scroll = self:Add("Elib.ScrollPanel")
     self.Scroll:Dock(FILL)
@@ -29,28 +33,34 @@ function PANEL:Init()
         addon:DockMargin(0, 0, 0, Elib.Scale(4))
         addon:SetHeight(Elib.Scale(30))
 
-        addon.hovered = false
+        addon.Color = self.BackkgroundCol
+
+        addon.OnCursorEntered = function(pnl)
+            addon.Color = self.HoverCol
+        end
+        addon.OnCursorExited = function(pnl)
+            addon.Color = self.BackkgroundCol
+        end
+
+        addon.OnMousePressed = function(pnl, mcode)
+            if mcode == MOUSE_LEFT then
+                addon.Color = self.ClickedCol
+            end
+        end
+        addon.OnMouseReleased = function(pnl, mcode)
+            if mcode == MOUSE_LEFT then
+                addon.Color = self.HoverCol
+            end
+        end
 
         addon.Paint = function(pnl, w, h)
-            Elib.DrawRoundedBox(6, 0, 0, w, h, addon.hovered and Elib.OffsetColor(Elib.Colors.Background, 5) or Elib.Colors.Background)
+            Elib.DrawRoundedBox(6, 0, 0, w, h, addon.Color)
             Elib.DrawSimpleText(v.name, "Elib.Config.Title", 10, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
             Elib.DrawSimpleText(v.author.name, "Elib.Config.normal", w - h - 2, h / 2, Elib.Colors.SecondaryText, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
         end
 
-        addon.OnCursorEntered = function(pnl)
-            addon.hovered = true
-        end
-        addon.OnCursorExited = function(pnl)
-            addon.hovered = false
-        end
-
-        addon.OnMousePressed = function(pnl, mcode)
-            if mcode == MOUSE_LEFT then
-                -- Open the addon menu
-                -- Elib.Config.Addons[k].Open()
-            end
-        end
+        
 
         addon.Avatar = addon:Add("Elib.Avatar")
         addon.Avatar:Dock(RIGHT)
@@ -66,12 +76,10 @@ function PANEL:Init()
 end
 
 function PANEL:PerformLayout(w, h)
-    --[[
+    local barSpacing = self.Scroll:GetVBar().Enabled and PIXEL.Scale(6) or 0
     for k, v in ipairs(self.addons) do
-        
-        v.Avatar:Dock(RIGHT)
+        v:DockMargin(0, 4, barSpacing, 0)
     end
-    ]]
 end
 
 function PANEL:Paint(w, h)
