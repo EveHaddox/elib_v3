@@ -40,7 +40,7 @@ Elib.DownloadPath = "elib/images/"
 Elib.Colors = {
     Background = Color(26, 26, 26),         -- Neutral matte base
     Header = Color(36, 36, 36),             -- Flat section separator
-    Scroller = Color(42, 42, 42),           -- Visible but non-distracting
+    Scroller = Color(56, 56, 56),           -- Visible but non-distracting
 
     PrimaryText = Color(240, 240, 240),     -- Clear, readable
     SecondaryText = Color(200, 200, 200),   -- Less prominent info

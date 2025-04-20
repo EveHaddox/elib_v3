@@ -40,27 +40,39 @@ function PANEL:Init()
 	self.TextCol = Elib.CopyColor(Elib.Colors.SecondaryText)
 	self.BackgroundCol = Elib.CopyColor(Elib.Colors.Transparent)
 	self.BackgroundHoverCol = ColorAlpha(Elib.Colors.Scroller, 80)
+	self.AccentCol = Elib.CopyColor(Elib.Colors.Primary)
+
+	self.AnimH = 0
 end
 
 function PANEL:Paint(w, h)
 	local textCol = Elib.Colors.SecondaryText
 	local backgroundCol = Elib.Colors.Transparent
+	local Animate = false
 
 	if self:IsHovered() then
 		textCol = Elib.Colors.PrimaryText
 		backgroundCol = self.BackgroundHoverCol
+		Animate = true
 	end
 
 	if self:IsDown() or self:GetToggle() then
 		textCol = Elib.Colors.PrimaryText
 		backgroundCol = self.BackgroundHoverCol
+		Animate = true
 	end
 
 	local animTime = FrameTime() * 12
 	self.TextCol = Elib.LerpColor(animTime, self.TextCol, textCol)
 	self.BackgroundCol = Elib.LerpColor(animTime, self.BackgroundCol, backgroundCol)
+	if Animate and h != self.AnimH or not Animate and self.AnimH != 0 then
+		self.AnimH = Lerp(animTime, self.AnimH, Animate and h or 0)
+		self.AnimH = math.Clamp(self.AnimH, 0, h)
+	end
+	
 
 	if self:GetDrawOutline() then Elib.DrawRoundedBox(Elib.Scale(6), 0, 0, w, h, self.BackgroundCol, Elib.Scale(1)) end
+	Elib.DrawRoundedBox(Elib.Scale(6), 0, (h - self.AnimH) / 2, Elib.Scale(3), self.AnimH, self.AccentCol)
 
 	local imageURL = self:GetImageURL()
 	if imageURL then
@@ -133,7 +145,7 @@ function PANEL:Init()
 	self:SetImageOffset(0)
 	self:SetButtonOffset(0)
 
-	self.BackgroundCol = Elib.CopyColor(Elib.Colors.Header)
+	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Header, -5)
 end
 
 function PANEL:AddItem(id, name, imageURL, doClick, order)
