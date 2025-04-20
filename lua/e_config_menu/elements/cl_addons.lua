@@ -7,8 +7,6 @@
 //////////////////
 if SERVER then return end
 
-Elib.Config = Elib.Config or {}
-
 Elib.RegisterFont("Elib.Config.Title", "Space Grotesk SemiBold", 24)
 Elib.RegisterFont("Elib.Config.normal", "Space Grotesk SemiBold", 20)
 
@@ -25,12 +23,12 @@ function PANEL:Init()
     self.Scroll = self:Add("Elib.ScrollPanel")
     self.Scroll:Dock(FILL)
 
-    for k, v in ipairs(Elib.Config.Addons) do
+    for k, v in pairs(Elib.Config.Addons) do
         self.addons[k] = self.Scroll:Add("DPanel")
         local addon = self.addons[k]
 
         addon:Dock(TOP)
-        addon:DockMargin(0, 0, 0, Elib.Scale(4))
+        addon:DockMargin(0, 0, 0, 4)
         addon:SetHeight(Elib.Scale(30))
 
         addon.Color = self.BackkgroundCol
@@ -77,8 +75,8 @@ end
 
 function PANEL:PerformLayout(w, h)
     local barSpacing = self.Scroll:GetVBar().Enabled and PIXEL.Scale(6) or 0
-    for k, v in ipairs(self.addons) do
-        v:DockMargin(0, 4, barSpacing, 0)
+    for k, v in pairs(self.addons) do
+        v:DockMargin(0, 0, barSpacing, 4)
     end
 end
 
