@@ -5,8 +5,6 @@
 //////////////////
 // Addons Panel //
 //////////////////
-if SERVER then return end
-
 Elib.RegisterFont("Elib.Config.Title", "Space Grotesk SemiBold", 24)
 Elib.RegisterFont("Elib.Config.normal", "Space Grotesk SemiBold", 20)
 
@@ -19,9 +17,12 @@ function PANEL:Init()
     self.BackkgroundCol = Elib.OffsetColor(Elib.Colors.Background, 6)
     self.HoverCol = Elib.OffsetColor(Elib.Colors.Background, 12)
     self.ClickedCol = Elib.CopyColor(Elib.Colors.Background)
+
+    self.func = function() end
     
     self.Scroll = self:Add("Elib.ScrollPanel")
     self.Scroll:Dock(FILL)
+    self.Scroll:DockMargin(6, 6, 6, 6)
 
     for k, v in pairs(Elib.Config.Addons) do
         self.addons[k] = self.Scroll:Add("DPanel")
@@ -43,6 +44,7 @@ function PANEL:Init()
         addon.OnMousePressed = function(pnl, mcode)
             if mcode == MOUSE_LEFT then
                 addon.Color = self.ClickedCol
+                self.func(v.name)
             end
         end
         addon.OnMouseReleased = function(pnl, mcode)
@@ -73,6 +75,10 @@ function PANEL:Init()
 
 end
 
+function PANEL:SetFunc(func)
+    self.func = func
+end
+
 function PANEL:PerformLayout(w, h)
     local barSpacing = self.Scroll:GetVBar().Enabled and PIXEL.Scale(6) or 0
     for k, v in pairs(self.addons) do
@@ -96,8 +102,34 @@ local function CreateConfigMenu()
     Elib.Config.Menu:Center()
     Elib.Config.Menu:SetRemoveOnClose(false)
 
+    Elib.Config.Menu:SetPadding(0)
+
     Elib.Config.Menu.Addons = Elib.Config.Menu:Add("Elib.Config.Addons")
     Elib.Config.Menu.Addons:Dock(FILL)
+
+    // slide anim
+    Elib.Config.Menu.Addons:SetFunc(function(name)
+        local leftPanel = Elib.Config.Menu.Addons
+        local parent = leftPanel:GetParent()
+        local parentW, parentH = parent:GetSize()
+        local startY = leftPanel:GetY()
+
+        leftPanel:Dock(NODOCK)
+        leftPanel:SetPos(0, startY)
+        leftPanel:SetSize(parentW, parentH)
+
+        leftPanel:MoveTo(-parentW, startY, 0.3, 0, nil, function()
+            leftPanel:Remove()
+        end)
+
+        local detailPanel = vgui.Create("Elib.Config.Menu", parent)
+        detailPanel:SetPos(parentW, startY)
+        detailPanel:SetSize(parentW - 8, parentH - Elib.Scale(45) - 8)
+
+        detailPanel:MoveTo(0, startY, 0.3, 0, nil, function()
+            detailPanel:Dock(FILL)
+        end)
+    end)
 
     Elib.Config.Menu:MakePopup()
 end

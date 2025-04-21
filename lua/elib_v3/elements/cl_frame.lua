@@ -29,6 +29,8 @@ AccessorFunc(PANEL, "Title", "Title", FORCE_STRING)
 AccessorFunc(PANEL, "ImgurID", "ImgurID", FORCE_STRING) -- Deprecated
 AccessorFunc(PANEL, "ImageURL", "ImageURL", FORCE_STRING)
 
+AccessorFunc(PANEL, "Padding", "Padding", FORCE_NUMBER)
+
 function PANEL:SetImgurID(id)
 	self:SetImageURL("https://i.imgur.com/" .. id .. ".png")
 	self.ImgurID = id
@@ -73,6 +75,8 @@ function PANEL:Init()
 	self:SetCanFullscreen(true)
 	self:SetScreenLock(true)
 	self:SetRemoveOnClose(true)
+
+	self:SetPadding(6)
 
 	local size = Elib.Scale(200)
 	self:SetMinWidth(size)
@@ -237,7 +241,7 @@ function PANEL:PerformLayout(w, h)
 		self.SideBar:SetSize(Elib.Scale(200), h - headerH)
 	end
 
-	local padding = Elib.Scale(6)
+	local padding = Elib.Scale(self:GetPadding())
 	self:DockPadding(self.SideBar and Elib.Scale(200) + padding or padding, headerH + padding, padding, padding)
 
 	self:LayoutContent(w, h)
