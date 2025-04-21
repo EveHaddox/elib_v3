@@ -158,10 +158,12 @@ concommand.Add("elib_config", function()
 end)
 
 // Button in the c menu (cause ppl can't find the command)
+Elib.GetImage("https://construct-cdn.physgun.com/images/d8c3bd49-e01e-4c44-a8fd-f6b05dd7597c.png", function(mat) end)
+
 hook.Add("ContextMenuCreated","Elib.context_button",function(context)
     list.Set( "DesktopWindows", "Elib", {
         title = "EConfig",
-        icon = "materials/esclib/esclib_logo.png",
+        icon = "data/elib/images/construct-cdn.physgun.com/images/d8c3bd49-e01e-4c44-a8fd-f6b05dd7597c.png",
         init = function(icon, window)
             RunConsoleCommand("elib_config")
         end

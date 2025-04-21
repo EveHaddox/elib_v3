@@ -54,6 +54,8 @@ vgui.Register("Elib.NavbarItem", PANEL, "Elib.Button")
 
 PANEL = {}
 
+AccessorFunc(PANEL, "DrawShadow", "DrawShadow", FORCE_BOOL)
+
 function PANEL:Init()
     self.Items = {}
 
@@ -115,6 +117,12 @@ end
 function PANEL:Paint(w, h)
     surface.SetDrawColor(self.BackgroundCol)
     surface.DrawRect(0, 0, w, h)
+
+    if self:GetDrawShadow() then
+		surface.SetDrawColor(Elib.OffsetColor(self.BackgroundCol, -5))
+		surface.SetMaterial(Material("gui/gradient_down"))
+		surface.DrawTexturedRect(0, 0, w, Elib.Scale(10))
+	end
 
     if not self.SelectedItem then
         self.SelectionX = Lerp(FrameTime() * 10, self.SelectionX, 0)
