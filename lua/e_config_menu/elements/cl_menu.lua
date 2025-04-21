@@ -5,9 +5,23 @@ local PANEL = {}
 
 function PANEL:Init()
 
-    self.realmNav = self:Add("Elib.Navbar")
-    self.realmNav:Dock(TOP)
-    self.realmNav:SetHeight(Elib.Scale(30))
+    self.realm = "client"
+
+    if LocalPlayer():IsSuperAdmin() then
+        self.realmNav = self:Add("Elib.Navbar")
+        self.realmNav:Dock(TOP)
+        self.realmNav:SetHeight(Elib.Scale(32))
+
+        local function SwichRealm(id)
+            self.realm = id
+        end
+
+        self.realmNav:AddItem("client", "client", SwichRealm, 1, Color(207, 144, 49))
+        self.realmNav:AddItem("server", "server", SwichRealm, 2, Color(49, 149, 207))
+
+        self.realmNav:SelectItem("client")
+    end
+    
 
 end
 

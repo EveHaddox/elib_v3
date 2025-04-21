@@ -24,9 +24,18 @@ function PANEL:Init()
     self.Scroll:Dock(FILL)
     self.Scroll:DockMargin(6, 6, 6, 6)
 
+    local addonEntries = {}
     for k, v in pairs(Elib.Config.Addons) do
-        self.addons[k] = self.Scroll:Add("DPanel")
-        local addon = self.addons[k]
+        table.insert(addonEntries, v)
+    end
+
+    table.sort(addonEntries, function(a, b)
+        return a.order < b.order
+    end)
+
+    for _, v in ipairs(addonEntries) do
+        self.addons[v.name] = self.Scroll:Add("DPanel")
+        local addon = self.addons[v.name]
 
         addon:Dock(TOP)
         addon:DockMargin(0, 0, 0, 4)
@@ -56,11 +65,8 @@ function PANEL:Init()
         addon.Paint = function(pnl, w, h)
             Elib.DrawRoundedBox(6, 0, 0, w, h, addon.Color)
             Elib.DrawSimpleText(v.name, "Elib.Config.Title", 10, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-
             Elib.DrawSimpleText(v.author.name, "Elib.Config.normal", w - h - 2, h / 2, Elib.Colors.SecondaryText, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
         end
-
-        
 
         addon.Avatar = addon:Add("Elib.Avatar")
         addon.Avatar:Dock(RIGHT)
@@ -69,8 +75,6 @@ function PANEL:Init()
         addon.Avatar:SetMaskSize(16)
 
         addon.Avatar:SetSteamID(v.author.steamid, 256)
-
-        self.addons[k] = addon
     end
 
 end
@@ -151,4 +155,15 @@ concommand.Add("elib_config", function()
         Elib.Config.Menu:MakePopup() -- it has open
     end
     
+end)
+
+// Button in the c menu (cause ppl can't find the command)
+hook.Add("ContextMenuCreated","Elib.context_button",function(context)
+    list.Set( "DesktopWindows", "Elib", {
+        title = "EConfig",
+        icon = "materials/esclib/esclib_logo.png",
+        init = function(icon, window)
+            RunConsoleCommand("elib_config")
+        end
+    })
 end)
