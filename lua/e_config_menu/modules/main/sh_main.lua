@@ -57,40 +57,4 @@ Elib.Config:AddAddon("Addon 1")
 Elib.Config:AddAddon("Addon 2")
 Elib.Config:AddAddon("Addon 3")
 
-Elib.Config:AddValue("Elib", "client", "Main", "test_num", "Test Number", 2, 2, "number")
-
-Elib.Config.Values = {
-    {
-        name = "value",
-        descruption = "changes the value",
-        type = "number",
-        default = 0,
-        realm = "server",
-        onComplete = function(value)
-            print("Value changed to: " .. value)
-        end,
-        order = 1,
-    },
-    {
-        name = "value2",
-        descruption = "changes the value",
-        type = "number",
-        default = 0,
-        realm = "server",
-        onComplete = function(value)
-            print("Value changed to: " .. value)
-        end,
-        order = 2,
-    },
-    {
-        name = "value3",
-        descruption = "changes the value",
-        type = "number",
-        default = 0,
-        realm = "server",
-        onComplete = function(value)
-            print("Value changed to: " .. value)
-        end,
-        order = 3,
-    },
-}
+Elib.Config:AddValue("Elib", "client", "Main", "test_num", "Test Number", 2, 2, "Number")

@@ -7,6 +7,8 @@
 //////////////////////////////
 local path = "e_config_menu/"
 
+Elib.LoadDirectory(path .."panels")
+
 Elib.IncludeShared(path .. "modules/main/sh_main")
 Elib.IncludeServer(path .. "modules/main/sv_main")
 
