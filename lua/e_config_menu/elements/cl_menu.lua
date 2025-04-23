@@ -9,6 +9,8 @@ function PANEL:Init()
     self.realm = "client"
     self.category = 1
 
+    self.panels = {}
+
     if LocalPlayer():IsSuperAdmin() then
         self.realmNav = self:Add("Elib.Navbar")
         self.realmNav:Dock(TOP)
@@ -24,6 +26,10 @@ function PANEL:Init()
     self.categoryNav = self:Add("Elib.Navbar")
     self.categoryNav:Dock(TOP)
     self.categoryNav:SetHeight(Elib.Scale(32))
+
+    self.scroll = self:Add("Elib.ScrollPanel")
+    self.scroll:Dock(FILL)
+    self.scroll:DockMargin(6, 6, 6, 6)
 
     if LocalPlayer():IsSuperAdmin() then
         self.realmNav:AddItem("client", "client", self.SwichRealm, 1, Color(207, 144, 49))
@@ -46,12 +52,13 @@ function PANEL:GenerateCategories()
     end
 
     local function SwichCat(item)
-        self.category = self.categoryNav.SelectedItem
+        self.category = string.lower(self.categoryNav.Items[self.categoryNav.SelectedItem]:GetName())
         self:GeneratePage()
     end
 
     if Elib.Config.Addons[self.addon][self.realm] == nil then 
         self.categoryNav:AddItem(1, "No Data", function() end, 1)
+        self.scroll:Clear()
         return
     end
 
@@ -65,7 +72,33 @@ function PANEL:GenerateCategories()
 end
 
 function PANEL:GeneratePage()
-    
+
+    self.scroll:Clear()
+
+    if Elib.Config.Addons[self.addon][self.realm][self.category] == nil or table.IsEmpty(Elib.Config.Addons[self.addon][self.realm][self.category]) then return end
+
+    for k, v in pairs(Elib.Config.Addons[self.addon][self.realm][self.category]) do
+        
+        self.panels[k] = self.scroll:Add("Elib.Config.Panels." .. v.type)
+        local item = self.panels[k]
+
+        item:SetSize(self.scroll:GetWide(), Elib.Scale(30))
+        item:Dock(TOP)
+        item:DockMargin(0, 0, 0, 4)
+
+        if v.onComplete then
+            v.onComplete(item)
+        end
+
+        if v.resetMenu then
+            
+        end
+
+        if v.dontNetwork then
+            
+        end
+
+    end
 end
 
 function PANEL:PerformLayout(w, h)

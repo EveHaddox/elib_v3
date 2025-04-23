@@ -23,6 +23,9 @@ function Elib.Config:AddValue(addon, realm, category, id, title, values, default
     count = count + 1
     order = order or count
 
+    realm = string.lower(realm)
+    category = string.lower(category)
+
     Elib.Config.Addons[addon] = Elib.Config.Addons[addon] or {}
     if not Elib.Config.Addons[addon] then
         Elib.Config:AddAddon(name)
@@ -57,4 +60,4 @@ Elib.Config:AddAddon("Addon 1")
 Elib.Config:AddAddon("Addon 2")
 Elib.Config:AddAddon("Addon 3")
 
-Elib.Config:AddValue("Elib", "client", "Main", "test_num", "Test Number", 2, 2, "Number")
+Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, 2, "Number")
