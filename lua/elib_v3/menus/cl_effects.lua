@@ -397,3 +397,67 @@ end
 
 -- Finally, register the panel so we can create it via vgui.Create(...)
 vgui.Register("Elib.BgEffect", PANEL)
+
+--[[
+
+local gridSize = 30
+local particles = {}
+local repelDistance = 100
+local repelForce = 200
+local maxSpeed = 30
+local speed = 2
+
+-- Set up particles
+hook.Add("Initialize", "InitFloatingParticles", function()
+    for x = 1, ScrW(), gridSize do
+        particles[x] = {}
+        for y = 1, ScrH(), gridSize do
+            particles[x][y] = {
+                px = x,
+                py = y,
+                vx = math.Rand(-10, 10),
+                vy = math.Rand(-10, 10)
+            }
+        end
+    end
+end)
+
+-- Update & Draw
+hook.Add("HUDPaint", "DrawFloatingParticles", function()
+    surface.SetDrawColor(255, 255, 255, 60)
+
+    local mouseX, mouseY = gui.MouseX(), gui.MouseY()
+    local dt = FrameTime() * speed
+
+    for x, col in pairs(particles) do
+        for y, p in pairs(col) do
+            -- Mouse interaction (repel)
+            local dx = p.px - mouseX
+            local dy = p.py - mouseY
+            local dist = math.sqrt(dx * dx + dy * dy)
+            if dist < repelDistance then
+                local force = (repelDistance - dist) / repelDistance * repelForce
+                local angle = math.atan2(dy, dx)
+                p.vx = p.vx + math.cos(angle) * force * dt
+                p.vy = p.vy + math.sin(angle) * force * dt
+            end
+
+            -- Update position
+            p.px = p.px + p.vx * dt
+            p.py = p.py + p.vy * dt
+
+            -- Bounce off screen bounds
+            if p.px <= 0 or p.px >= ScrW() then p.vx = -p.vx end
+            if p.py <= 0 or p.py >= ScrH() then p.vy = -p.vy end
+
+            -- Clamp speed a bit
+            p.vx = math.Clamp(p.vx, -maxSpeed, maxSpeed)
+            p.vy = math.Clamp(p.vy, -maxSpeed, maxSpeed)
+
+            -- Draw cross lines
+            surface.DrawLine(p.px - 5, p.py, p.px + 5, p.py)
+            surface.DrawLine(p.px, p.py - 5, p.px, p.py + 5)
+        end
+    end
+end)
+]]
