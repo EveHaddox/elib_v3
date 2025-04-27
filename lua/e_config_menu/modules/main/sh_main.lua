@@ -19,7 +19,7 @@ function Elib.Config:AddAddon(name, order, author)
 end
 
 local count = 0
-function Elib.Config:AddValue(addon, realm, category, id, title, values, default, type, order, onComplete, resetMenu, dontNetwork)
+function Elib.Config:AddValue(addon, realm, category, id, name, value, default, type, order, onComplete, resetMenu)
     count = count + 1
     order = order or count
 
@@ -35,14 +35,13 @@ function Elib.Config:AddValue(addon, realm, category, id, title, values, default
     Elib.Config.Addons[addon][realm][category] = Elib.Config.Addons[addon][realm][category] or {}
 
     Elib.Config.Addons[addon][realm][category][id] = {
-        title = title,
-        values = values,
+        name = name,
+        value = value,
         default = default,
         type = type,
         onComplete = onComplete,
         order = order,
         resetMenu = resetMenu or false,
-        dontNetwork = dontNetwork or false,
     }
 end
 
