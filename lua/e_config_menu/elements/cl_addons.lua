@@ -122,16 +122,26 @@ local function CreateConfigMenu()
         leftPanel:SetPos(0, startY)
         leftPanel:SetSize(parentW, parentH)
 
-        leftPanel:MoveTo(-parentW, startY, 0.3, 0, nil, function()
-            leftPanel:Remove()
-        end)
+        leftPanel:MoveTo(-parentW, startY, 0.3, 0)
 
         local detailPanel = vgui.Create("Elib.Config.Menu", parent)
         detailPanel:SetPos(parentW, startY)
         detailPanel:SetSize(parentW - 8, parentH - Elib.Scale(45) - 8)
+        detailPanel:SetAddon(name)
 
         detailPanel:MoveTo(0, startY, 0.3, 0, nil, function()
             detailPanel:Dock(FILL)
+            -- Now set the reverse function on detailPanel
+            detailPanel:SetFunc(function()
+                detailPanel:Dock(NODOCK)
+                detailPanel:SetPos(0, startY)
+                detailPanel:SetSize(parentW - 8, parentH - Elib.Scale(45) - 8)
+                detailPanel:MoveTo(parentW, startY, 0.3, 0)
+
+                leftPanel:MoveTo(0, startY, 0.3, 0, nil, function()
+                    leftPanel:Dock(FILL)
+                end)
+            end)
         end)
     end)
 

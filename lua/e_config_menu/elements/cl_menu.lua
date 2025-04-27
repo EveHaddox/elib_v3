@@ -11,6 +11,8 @@ function PANEL:Init()
 
     self.panels = {}
 
+    self.func = function() end
+
     if LocalPlayer():IsSuperAdmin() then
         self.realmNav = self:Add("Elib.Navbar")
         self.realmNav:Dock(TOP)
@@ -107,6 +109,27 @@ function PANEL:Init()
         Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/2b2f5ea0-3cb3-4207-82db-bb8484da738a.png", self.Save.Color)
     end
 
+    self.Back = self.TaskBar:Add("DButton")
+    self.Back:SetText("")
+    self.Back.Color = Elib.Colors.PrimaryText
+
+    self.Back.DoClick = function(pnl)
+        self.func()
+    end
+
+    self.Back.Paint = function(pnl, w, h)
+
+        if pnl:IsDown() then
+            self.Back.Color = Elib.Colors.Primary
+        elseif pnl:IsHovered() then
+            self.Back.Color = Elib.OffsetColor(Elib.Colors.Primary, -20)
+        else
+            self.Back.Color = Elib.Colors.PrimaryText
+        end
+
+        Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/ab014fa0-a7fe-4ba2-b822-3254ce3108fc.png", self.Back.Color)
+    end
+
     self.TaskBar.PerformLayout = function(pnl, w, h)
         local spacing = 8
         local btnSize = h
@@ -114,12 +137,19 @@ function PANEL:Init()
         local startX = (w - totalWidth) / 2
 
         self.Reset:SetPos(startX, 0)
-        self.Reset:SetSize(btnSize, btnSize)
-
         self.Save:SetPos(startX + btnSize + spacing, 0)
+
+        self.Reset:SetSize(btnSize, btnSize)
         self.Save:SetSize(btnSize, btnSize)
+        self.Back:SetSize(btnSize, btnSize)
+        
     end
     
+end
+
+function PANEL:SetAddon(addon)
+    self.addon = addon
+    self:GenerateCategories()
 end
 
 function PANEL:GenerateCategories()
@@ -167,6 +197,10 @@ function PANEL:GeneratePage()
         item:SetValue(v.value)
 
     end
+end
+
+function PANEL:SetFunc(func)
+    self.func = func
 end
 
 function PANEL:PerformLayout(w, h)
