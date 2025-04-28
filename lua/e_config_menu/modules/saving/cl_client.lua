@@ -9,6 +9,8 @@ end
 
 local function SaveServer(addon, category, id, value, vType)
 
+    if not LocalPlayer():IsSuperAdmin() then return end
+
     net.Start("Elib.Config.Save")
         net.WriteString(addon)
         net.WriteString(category)
@@ -60,16 +62,10 @@ Elib.Config.LoadClientSettings()
 
 // networking
 net.Receive("Elib.Config.SendToAdmins", function(len)
+    print("Received config from server")
     local config = net.ReadTable()
-    print("Received config from server: " .. util.TableToJSON(config, true))
 
-    -- replace only the “server” realm in your existing table, leave “client” intact
-    for addon, realm in pairs(config) do
-        Elib.Config.Addons[addon] = Elib.Config.Addons[addon] or {}
-        Elib.Config.Addons[addon].server = realm.server
-    end
-
-    PrintTable(Elib.Config.Addons)
+    PrintTable(config)
 end)
 
 

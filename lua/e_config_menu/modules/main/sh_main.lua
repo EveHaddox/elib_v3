@@ -11,11 +11,18 @@ local AddonCount = 0
 function Elib.Config:AddAddon(name, order, author)
     AddonCount = AddonCount + 1
 
-    Elib.Config.Addons[name] = {
-        name = name,
-        order = order or AddonCount,
-        author = { name = author and author[1] or "Eve Haddox", steamid = author and author[2] or "76561198847312396" },
-    }
+    if CLIENT then
+        Elib.Config.Addons[name] = {
+            name = name,
+            order = order or AddonCount,
+            author = { name = author and author[1] or "Eve Haddox", steamid = author and author[2] or "76561198847312396" },
+        }
+    else
+        Elib.Config.Addons[name] = {
+            order = order or AddonCount,
+        }
+    end
+    
 end
 
 local count = 0

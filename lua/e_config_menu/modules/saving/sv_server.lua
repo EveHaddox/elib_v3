@@ -28,7 +28,8 @@ function Elib.Config.LoadSettings()
             Elib.Config.Addons[addon][realm][category][id].value = value
             print("Loaded setting: " .. addon .. ", " .. category .. ", " .. id .. ", " .. value .. ", " .. vType)
         else
-            print("Setting not found in config: " .. addon .. ", " .. category .. ", " .. id)
+            // not found
+            --print("Setting not found in config: " .. addon .. ", " .. category .. ", " .. id)
         end
     end
 
@@ -52,6 +53,9 @@ Elib.Config.LoadSettings()
 util.AddNetworkString("Elib.Config.Save")
 
 net.Receive("Elib.Config.Save", function(len, ply)
+
+    if not ply:IsSuperAdmin() then return end
+
     local addon    = net.ReadString()
     local category = net.ReadString()
     local id       = net.ReadString()
