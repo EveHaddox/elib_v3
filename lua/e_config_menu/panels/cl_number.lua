@@ -74,11 +74,11 @@ function PANEL:Init()
         if self.Saved then return end
 
         if pnl:IsDown() then
-            self.Reset.Color = Elib.Colors.Negative
+            pnl.Color = Elib.Colors.Negative
         elseif pnl:IsHovered() then
-            self.Reset.Color = Elib.OffsetColor(Elib.Colors.Negative, -20)
+            pnl.Color = Elib.OffsetColor(Elib.Colors.Negative, -20)
         else
-            self.Reset.Color = Elib.Colors.PrimaryText
+            pnl.Color = Elib.Colors.PrimaryText
         end
 
         Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/5fa7c9c8-d9d5-4c77-aed6-975b4fb039b5.png", self.Reset.Color)
@@ -99,28 +99,26 @@ function PANEL:GetSaved()
     return self.Saved
 end
 
+function PANEL:SetPath(addon, realm, category, k)
+    self.Path = { addon = addon, realm = realm, category = category, id = k }
+end
+
 function PANEL:RestoreDefault()
     if self.Saved then return end
 
     self.Saved = true
     self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     self.TextEntry:SetValue(self.OriginalValue)
-    
 end
 
 function PANEL:Save()
     if self.Saved then return end
-
-    local value = self.TextEntry:GetInt()
-    if value == "" or value == nil then return end
-
-    if type(value) ~= "number" then return end
+    local value = self:GetValue()
+    if type(value) != "number" then return end
 
     // save the value to the config
-    local config = Elib.Config.LoadUserConfig()
-    config[self.Text] = { value = value }
-    Elib.Config.SaveUserConfig(config)
 
+    Elib.Config.Addons[self.Path.addon][self.Path.realm][self.Path.category][self.Path.id].value = value
     self.Saved = true
     self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     self.OriginalValue = value

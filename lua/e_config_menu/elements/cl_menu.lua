@@ -195,6 +195,7 @@ function PANEL:GeneratePage()
         item:DockMargin(0, 0, 0, 4)
         item:SetText(v.name)
         item:SetValue(v.value)
+        item:SetPath(self.addon, self.realm, self.category, k)
 
     end
 end
