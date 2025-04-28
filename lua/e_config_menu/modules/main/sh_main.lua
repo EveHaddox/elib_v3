@@ -34,6 +34,8 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, default, 
     Elib.Config.Addons[addon][realm] = Elib.Config.Addons[addon][realm] or {}
     Elib.Config.Addons[addon][realm][category] = Elib.Config.Addons[addon][realm][category] or {}
 
+    if realm == "client" and SERVER then return end
+
     Elib.Config.Addons[addon][realm][category][id] = {
         name = name,
         value = value,
@@ -60,3 +62,5 @@ Elib.Config:AddAddon("Addon 2")
 Elib.Config:AddAddon("Addon 3")
 
 Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, 2, "Number")
+
+Elib.Config:AddValue("Elib", "server", "main", "test_num", "Test Number Server", 7, 7, "Number", nil, nil, true)

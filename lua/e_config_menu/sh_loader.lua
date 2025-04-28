@@ -13,7 +13,7 @@ Elib.IncludeShared(path .. "modules/main/sh_main")
 Elib.IncludeServer(path .. "modules/main/sv_main")
 
 Elib.IncludeClient(path .."modules/saving/cl_client")
-Elib.IncludeClient(path .."modules/saving/sv_server")
+Elib.IncludeServer(path .."modules/saving/sv_server")
 
 Elib.IncludeClient(path .."elements/cl_menu")
 Elib.IncludeClient(path .."elements/cl_addons")
