@@ -35,7 +35,7 @@ You’re free to **use, modify, and distribute** elib_v3 — **as long as**:
 - **Prevent Competition**: Keeps others from using the library to create addons that undercut my paid offerings.
 - **Attract Collaborators**: Free access helps me identify skilled developers willing to cooperate on paid addons.
 
-_For commercial use, contact the author for a separate license._  
+_For commercial use, contact the me for a separate license._  
 
 ---
 
