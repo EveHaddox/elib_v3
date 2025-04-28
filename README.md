@@ -32,7 +32,7 @@ You’re free to **use, modify, and distribute** elib_v3 — **as long as**:
 # 📞 Contact & Support
 
 If you need help or you are interested in using elib_v3 in a paid product or on a paid platform
-
+You can reach me on my discord server: https://discord.gg/dQxphN4rsr
 
 ---
 
