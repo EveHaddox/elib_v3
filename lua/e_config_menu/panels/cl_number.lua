@@ -116,7 +116,7 @@ function PANEL:Save()
     local value = self:GetValue()
     if type(value) != "number" then return end
 
-    // save the value to the config
+    Elib.Save(self.Path.addon, self.Path.realm, self.Path.category, self.Path.id, value)
 
     Elib.Config.Addons[self.Path.addon][self.Path.realm][self.Path.category][self.Path.id].value = value
     self.Saved = true
