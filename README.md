@@ -31,9 +31,9 @@ You’re free to **use, modify, and distribute** elib_v3 — **as long as**:
 
 ## ❓ Why Non-Commercial?
 
-- **Protect Reputation**: Ensures only quality, free addons use elib_v3 so a buggy paid addon doesn’t tarnish its name.  
-- **Block Clones**: Stops others from ripping off the library or your addons and selling them without permission.  
-- **Boost Collaboration**: Keeps the ecosystem open and free, so everyone shares improvements without paywalls.  
+- **Protect Reputation**: Ensures only quality, free addons use elib_v3 so a buggy paid addon doesn’t tarnish its name.
+- **Prevent Competition**: Keeps others from using the library to create addons that undercut my paid offerings.
+- **Attract Collaborators**: Free access helps me identify skilled developers willing to cooperate on paid addons.
 
 _For commercial use, contact the author for a separate license._  
 
