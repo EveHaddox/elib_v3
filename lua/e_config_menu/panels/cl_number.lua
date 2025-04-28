@@ -117,6 +117,9 @@ function PANEL:Save()
     if type(value) ~= "number" then return end
 
     // save the value to the config
+    local config = Elib.Config.LoadUserConfig()
+    config[self.Text] = { value = value }
+    Elib.Config.SaveUserConfig(config)
 
     self.Saved = true
     self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
