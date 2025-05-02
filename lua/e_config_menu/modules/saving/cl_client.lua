@@ -53,7 +53,6 @@ function Elib.Config.LoadClientSettings()
             Elib.Config.Addons[addon][realm][category][id].value = value
         else
             // not found
-            --print("Settings not found in config: " .. addon .. ", " .. category .. ", " .. id)
         end
     end
 end
@@ -61,11 +60,54 @@ end
 Elib.Config.LoadClientSettings()
 
 // networking
-net.Receive("Elib.Config.SendToAdmins", function(len)
-    print("Received config from server")
-    local config = net.ReadTable()
+net.Receive("Elib.Config.SendToAdmins", function()
+    local updated = net.ReadTable()
 
-    PrintTable(config)
+    -- loop each addon
+    for addonName, addonData in pairs(updated) do
+        local localAddon = Elib.Config.Addons[addonName]
+        if not localAddon then
+            -- unknown addon, skip
+            continue
+        end
+
+        -- only these two realms matter
+        for _, realm in ipairs({"server", "client"}) do
+            local realmData = addonData[realm]
+            if type(realmData) ~= "table" then
+                -- no data for this realm (or it wasn't a table)
+                continue
+            end
+
+            local localRealm = localAddon[realm]
+            if type(localRealm) ~= "table" then
+                -- you didn't define this realm locally
+                continue
+            end
+
+            -- now loop categories and entries
+            for category, entries in pairs(realmData) do
+                if type(entries) ~= "table" then
+                    continue
+                end
+
+                local localCat = localRealm[category]
+                if type(localCat) ~= "table" then
+                    continue
+                end
+
+                for id, entryData in pairs(entries) do
+                    if type(entryData) == "table" and localCat[id] then
+                        -- finally update only the .value field
+                        localCat[id].value = entryData.value
+                    end
+                end
+            end
+        end
+    end
+
+    -- optional hook so any menus/UI know to refresh
+    hook.Run("Elib.Config.OnReceived", updated)
 end)
 
 

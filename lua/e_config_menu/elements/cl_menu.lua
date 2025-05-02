@@ -197,8 +197,6 @@ function PANEL:GeneratePage()
         item:SetValue(v.value)
         item:SetPath(self.addon, self.realm, self.category, k)
 
-        PrintTable(v)
-
     end
 end
 

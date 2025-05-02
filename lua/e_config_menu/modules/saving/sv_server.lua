@@ -29,7 +29,6 @@ function Elib.Config.LoadSettings()
             print("Loaded setting: " .. addon .. ", " .. category .. ", " .. id .. ", " .. value .. ", " .. vType)
         else
             // not found
-            --print("Setting not found in config: " .. addon .. ", " .. category .. ", " .. id)
         end
     end
 
@@ -47,21 +46,58 @@ function Elib.Config.LoadSettings()
     
 end
 
-Elib.Config.LoadSettings()
-
 // networking
 util.AddNetworkString("Elib.Config.Save")
+util.AddNetworkString("Elib.Config.SendToAdmins")
 
 net.Receive("Elib.Config.Save", function(len, ply)
-
     if not ply:IsSuperAdmin() then return end
 
-    local addon    = net.ReadString()
-    local category = net.ReadString()
-    local id       = net.ReadString()
-    local value    = net.ReadString()
-    local vType    = net.ReadString()
+    local addon, category, id, value, vType =
+        net.ReadString(),
+        net.ReadString(),
+        net.ReadString(),
+        net.ReadString(),
+        net.ReadString()
 
+    -- 1) Persist to SQL
     Save(addon, "server", category, id, value, vType)
 
+    -- 2) Update in-memory table
+    if Elib.Config.Addons[addon]
+    and Elib.Config.Addons[addon].server
+    and Elib.Config.Addons[addon].server[category]
+    and Elib.Config.Addons[addon].server[category][id] then
+
+        local entry = Elib.Config.Addons[addon].server[category][id]
+        if vType == "table" then
+            entry.value = util.JSONToTable(value)
+        else
+            entry.value = value
+        end
+    end
+
+    -- 3) Broadcast the updated config to all superadmins
+    local targets = {}
+    for _, v in ipairs(player.GetAll()) do
+        if v:IsSuperAdmin() then
+            table.insert(targets, v)
+        end
+    end
+
+    net.Start("Elib.Config.SendToAdmins")
+        net.WriteTable(Elib.Config.Addons)
+    net.Send(targets)
+end)
+
+
+// loading
+Elib.Config.LoadSettings()
+
+hook.Add("PlayerInitialSpawn", "Elib.Config.SendOnJoin", function(ply)
+    if not ply:IsSuperAdmin() then return end
+
+    net.Start("Elib.Config.SendToAdmins")
+        net.WriteTable(Elib.Config.Addons)
+    net.Send(ply)
 end)
