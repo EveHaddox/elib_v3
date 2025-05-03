@@ -20,38 +20,38 @@ local PANEL = {}
 function PANEL:Init()
     self:SetIsToggle(true)
 
-    local boxSize = PIXEL.Scale(20)
+    local boxSize = Elib.Scale(20)
     self:SetSize(boxSize, boxSize)
 
     self:SetImageURL("https://pixel-cdn.lythium.dev/i/7u6uph3x6g")
 
-    self:SetNormalColor(PIXEL.Colors.Transparent)
-    self:SetHoverColor(PIXEL.Colors.PrimaryText)
-    self:SetClickColor(PIXEL.Colors.PrimaryText)
-    self:SetDisabledColor(PIXEL.Colors.Transparent)
+    self:SetNormalColor(Elib.Colors.Transparent)
+    self:SetHoverColor(Elib.Colors.PrimaryText)
+    self:SetClickColor(Elib.Colors.PrimaryText)
+    self:SetDisabledColor(Elib.Colors.Transparent)
 
     self:SetImageSize(.8)
 
-    self.BackgroundCol = PIXEL.CopyColor(PIXEL.Colors.Primary)
+    self.BackgroundCol = Elib.CopyColor(Elib.Colors.Primary)
 end
 
 function PANEL:PaintBackground(w, h)
     if not self:IsEnabled() then
-        PIXEL.DrawRoundedBox(PIXEL.Scale(4), 0, 0, w, h, PIXEL.Colors.Disabled)
+        Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, Elib.Colors.Disabled)
         self:PaintExtra(w, h)
         return
     end
 
-    local bgCol = PIXEL.Colors.Primary
+    local bgCol = Elib.Colors.Primary
 
     if self:IsDown() or self:GetToggle() then
-        bgCol = PIXEL.Colors.Positive
+        bgCol = Elib.Colors.Positive
     end
 
     local animTime = FrameTime() * 12
-    self.BackgroundCol = PIXEL.LerpColor(animTime, self.BackgroundCol, bgCol)
+    self.BackgroundCol = Elib.LerpColor(animTime, self.BackgroundCol, bgCol)
 
-    PIXEL.DrawRoundedBox(PIXEL.Scale(4), 0, 0, w, h, self.BackgroundCol)
+    Elib.DrawRoundedBox(Elib.Scale(4), 0, 0, w, h, self.BackgroundCol)
 end
 
-vgui.Register("PIXEL.Checkbox", PANEL, "PIXEL.ImageButton")
+vgui.Register("Elib.Checkbox", PANEL, "Elib.ImageButton")
