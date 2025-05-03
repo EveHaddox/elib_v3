@@ -44,6 +44,10 @@ function PANEL:PerformLayout(w, h)
     self.LabelHolder:Dock(LEFT)
 end
 
+function PANEL:SetToggle(toggle)
+    self.Checkbox:SetToggle(toggle)
+end
+
 function PANEL:OnToggled(enabled) end
 
 function PANEL:SetText(text) self.Label:SetText(text) end
