@@ -28,6 +28,24 @@ function PANEL:Init()
     self.label:SetAutoHeight(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    self.toggleBox = self:Add("DPanel")
+    self.toggleBox:Dock(TOP)
+    self.toggleBox:DockMargin(0, 0, 0, 4)
+    self.toggleBox:SetTall(Elib.Scale(20))
+
+    self.toggleBox.Paint = function(pnl, w, h)
+    end
+
+    self.toggle = self.toggleBox:Add("Elib.Toggle")
+    self.toggle:Dock(LEFT)
+    --self.toggle:SetWide(Elib.Scale(20))
+
+    self.labelledToggle = self:Add("Elib.LabelledToggle")
+    self.labelledToggle:Dock(TOP)
+    self.labelledToggle:DockMargin(0, 0, 0, 4)
+    self.labelledToggle:SetText("Labelled Toggle")
+
+
 end
 
 function PANEL:PerformLayout(w, h)
