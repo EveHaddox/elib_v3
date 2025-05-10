@@ -44,23 +44,75 @@ local function CreateTestMenu()
     page3:DockMargin(8, 8, 8, 8)
     pages[3] = page3
 
+    local page4 = vgui.Create("Elib.Test.Page4", Elib.TestFrame)
+    page4:Dock(FILL)
+    page4:DockMargin(8, 8, 8, 8)
+    pages[4] = page4
+
+    local page5 = vgui.Create("Elib.Test.Page5", Elib.TestFrame)
+    page5:Dock(FILL)
+    page5:DockMargin(8, 8, 8, 8)
+    pages[5] = page5
+
+    local page6 = vgui.Create("Elib.Test.Page6", Elib.TestFrame)
+    page6:Dock(FILL)
+    page6:DockMargin(8, 8, 8, 8)
+    pages[6] = page6
+
+    local page7 = vgui.Create("Elib.Test.Page7", Elib.TestFrame)
+    page7:Dock(FILL)
+    page7:DockMargin(8, 8, 8, 8)
+    pages[7] = page7
+
+    local page8 = vgui.Create("Elib.Test.Page8", Elib.TestFrame)
+    page8:Dock(FILL)
+    page8:DockMargin(8, 8, 8, 8)
+    pages[8] = page8
+
+    local page9 = vgui.Create("Elib.Test.Page9", Elib.TestFrame)
+    page9:Dock(FILL)
+    page9:DockMargin(8, 8, 8, 8)
+    pages[9] = page9
+
+    local page10 = vgui.Create("Elib.Test.Page10", Elib.TestFrame)
+    page10:Dock(FILL)
+    page10:DockMargin(8, 8, 8, 8)
+    pages[10] = page10
+
+    local page11 = vgui.Create("Elib.Test.Page11", Elib.TestFrame)
+    page11:Dock(FILL)
+    page11:DockMargin(8, 8, 8, 8)
+    pages[11] = page11
+
+    local page12 = vgui.Create("Elib.Test.Page12", Elib.TestFrame)
+    page12:Dock(FILL)
+    page12:DockMargin(8, 8, 8, 8)
+    pages[12] = page12
+
+    local pageData = {
+        {name = "Welcome", icon = "https://construct-cdn.physgun.com/images/1e154095-79b2-436e-80a3-cb6b924d14a2.png"},
+        {name = "Buttons", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Toggles", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Text Entries", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Binds", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Color Picker", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Avatar", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Menu", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Navbar", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Property Sheet", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Scroll Panel", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Categories", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+    }
+
     // Sidebar
     local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/9affef38-1103-4689-9215-dc1e6bd4c5bc.png", .8, -5, 15)
 
-    sidebar:AddItem(1, "Welcome", "https://construct-cdn.physgun.com/images/1e154095-79b2-436e-80a3-cb6b924d14a2.png", function(id) // (id, name, imageURL, doClick, order)
-        currentPage = 1
-        changeTab()
-    end, 1)
-
-    sidebar:AddItem(2, "Buttons", "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png", function(id)
-        currentPage = 2
-        changeTab()
-    end, 2)
-
-    sidebar:AddItem(3, "Tab 3", "https://i.imgur.com/WUtsRM9.png", function(id)
-        currentPage = 3
-        changeTab()
-    end, 3)
+    for i = 1, 12 do
+        sidebar:AddItem(i, pageData[i].name, pageData[i].icon, function(id)
+            currentPage = i
+            changeTab()
+        end, i)
+    end
 
     sidebar:SelectItem(1)
 

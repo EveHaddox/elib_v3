@@ -33,11 +33,19 @@ function PANEL:Init()
         print("Text Button clicked!")
     end
 
+    self.gradientButton = self:Add("Elib.Gradient.Button")
+    self.gradientButton:Dock(TOP)
+    self.gradientButton:DockMargin(0, 0, 0, 4)
+    self.gradientButton:SetText("Gradient Button")
+    self.gradientButton.DoClick = function()
+        print("Text Button clicked!")
+    end
+
     self.imageButton = self:Add("Elib.ImageButton")
     self.imageButton:Dock(TOP)
     self.imageButton:DockMargin(0, 0, 0, 4)
     self.imageButton:SetTall(40)
-    self.imageButton:SetImageURL("https://i.imgur.com/WUtsRM9.png")
+    self.imageButton:SetImageURL("https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png")
     self.imageButton.DoClick = function()
         print("Image Button clicked!")
     end
