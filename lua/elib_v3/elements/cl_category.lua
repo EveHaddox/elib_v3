@@ -56,7 +56,7 @@ AccessorFunc(PANEL, "m_pList", "List")
 function PANEL:Init()
     self.Header = vgui.Create("Elib.CategoryHeader", self)
 
-    self:SetTitle("PIXEL Category")
+    self:SetTitle("Elib Category")
 
     self:SetExpanded(true)
     self:SetMouseInputEnabled(true)

@@ -29,9 +29,12 @@ function PANEL:Init()
     self.label:SetFont("Elib.Test.Normal")
 
     // avatar
-    self.pnl = self:Add("Elib.Avatar")
+    self.pnl = self:Add("DPanel")
     self.pnl:Dock(TOP)
     self.pnl:SetHeight(Elib.Scale(30))
+
+    self.pnl.Paint = function(self, w, h)
+    end
 
     self.avatar = self.pnl:Add("Elib.Avatar")
     self.avatar:Dock(LEFT)

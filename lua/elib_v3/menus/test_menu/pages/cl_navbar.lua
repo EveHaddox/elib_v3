@@ -28,6 +28,28 @@ function PANEL:Init()
     self.label:SetAutoWidth(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    self.navbar = self:Add("Elib.Navbar")
+    self.navbar:Dock(TOP)
+    self.navbar:SetHeight(Elib.Scale(35))
+
+    local pnls = {
+        {pnl = "Elib.TextButton"},
+        {pnl = "DPanel"}
+    }
+
+    local function swichPage()
+        if IsValid(self.curpanel) then
+            self.curpanel:Remove()
+        end
+        local id = self.navbar.SelectedItem
+        self.curpanel = vgui.Create(pnls[id].pnl, self)
+        self.curpanel:Dock(FILL)
+    end
+
+    self.navbar:AddItem(1, "test", swichPage, 1, Elib.Colors.Primary)
+    self.navbar:AddItem(2, "test2", swichPage, 2, Elib.Colors.Primary)
+
+    self.navbar:SelectItem(1)
 
 end
 
