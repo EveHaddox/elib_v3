@@ -92,7 +92,7 @@ end)
 
 
 // loading
-Elib.Config.LoadSettings()
+timer.Simple(0.1, Elib.Config.LoadSettings) // config didn't load without this delay
 
 hook.Add("PlayerInitialSpawn", "Elib.Config.SendOnJoin", function(ply)
     if not ply:IsSuperAdmin() then return end

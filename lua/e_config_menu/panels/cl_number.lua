@@ -21,10 +21,6 @@ function PANEL:Init()
     self.TextEntry:SetUpdateOnType(true)
     self.TextEntry:SetPlaceholderText("Number")
 
-    local function SetEntryValue(value)
-        self.TextEntry:SetValue(value)
-    end
-
     function self.TextEntry:OnLoseFocus()
 
         local parent = self:GetParent()
@@ -36,24 +32,6 @@ function PANEL:Init()
             parent.Saved = true
             self.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
         end
-
-        local value = self.TextEntry:GetInt()
-    
-        if value == "" or value == nil then
-            SetEntryValue(parent.OriginalValue)
-            return
-        end
-    
-        if type(value) == "string" then
-            value = tonumber(value)
-        end
-    
-        if type(value) ~= "number" then
-            SetEntryValue(parent.OriginalValue)
-            return
-        end
-
-        SetEntryValue(math.Round(value))
         
     end
 
@@ -113,8 +91,7 @@ end
 
 function PANEL:Save()
     if self.Saved then return end
-    local value = self:GetValue()
-    if type(value) != "number" then return end
+    local value = self:GetInt()
 
     Elib.Config.Save(self.Path.addon, self.Path.realm, self.Path.category, self.Path.id, value)
 

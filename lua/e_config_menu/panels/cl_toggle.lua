@@ -13,26 +13,14 @@ function PANEL:Init()
     self.OriginalValue = nil
     self.Saved = true
 
-    self.TextEntry = self:Add("Elib.TextEntry")
-    self.TextEntry:Dock(RIGHT)
-    self.TextEntry:DockMargin(0, 4, 4, 4)
-    self.TextEntry:SetWide(Elib.Scale(200))
-    self.TextEntry:SetNumeric(true)
-    self.TextEntry:SetUpdateOnType(true)
-    self.TextEntry:SetPlaceholderText("Number")
+    self.toggle = self:Add("Elib.Toggle")
+    self.toggle:Dock(RIGHT)
+    self.toggle:DockMargin(0, 4, 4, 4)
+    self.toggle:SetWide(Elib.Scale(50))
 
-    function self.TextEntry:OnLoseFocus()
-
-        local parent = self:GetParent()
-        if parent.OriginalValue == nil then return end
-        if self:GetFloat() != parent.OriginalValue then 
-            parent.Saved = false
-            self.OutlineCol = Elib.Colors.Negative
-        else 
-            parent.Saved = true
-            self.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
-        end
-        
+    self.toggle.OnToggled = function(value)
+        if self.OriginalValue == nil then return end
+        self.Saved = value == self.OriginalValue
     end
 
     self.Reset = self:Add("DButton")
@@ -43,9 +31,8 @@ function PANEL:Init()
 
     self.Reset.DoClick = function(pnl)
         if self.Saved then return end
-        self.TextEntry:SetValue(self.OriginalValue)
+        self.toggle:SetToggle(self.OriginalValue)
         self.Saved = true
-        self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     end
 
     self.Reset.Paint = function(pnl, w, h)
@@ -66,11 +53,11 @@ end
 
 function PANEL:SetValue(value)
     self.OriginalValue = value
-    self.TextEntry:SetValue(value)
+    self.toggle:SetToggle(value)
 end
 
 function PANEL:GetValue()
-    return self.TextEntry:GetFloat()
+    return self.toggle:GetValue()
 end
 
 function PANEL:GetSaved()
@@ -85,19 +72,17 @@ function PANEL:RestoreDefault()
     if self.Saved then return end
 
     self.Saved = true
-    self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
-    self.TextEntry:SetValue(self.OriginalValue)
+    self.toggle:SetToggle(self.OriginalValue)
 end
 
 function PANEL:Save()
     if self.Saved then return end
-    local value = self:GetFloat()
+    local value = self:GetValue()
 
     Elib.Config.Save(self.Path.addon, self.Path.realm, self.Path.category, self.Path.id, value)
 
     Elib.Config.Addons[self.Path.addon][self.Path.realm][self.Path.category][self.Path.id].value = value
     self.Saved = true
-    self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     self.OriginalValue = value
 end
 
@@ -110,4 +95,4 @@ function PANEL:Paint(w, h)
     Elib.DrawSimpleText(self.Text, "Elib.Config.Title", 8, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
-vgui.Register("Elib.Config.Panels.Float", PANEL, "DPanel")
+vgui.Register("Elib.Config.Panels.Toggle", PANEL, "DPanel")

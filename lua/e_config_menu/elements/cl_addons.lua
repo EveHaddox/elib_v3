@@ -105,6 +105,7 @@ local function CreateConfigMenu()
     Elib.Config.Menu:SetSize(Elib.Scale(900), Elib.Scale(600))
     Elib.Config.Menu:Center()
     Elib.Config.Menu:SetRemoveOnClose(false)
+    Elib.Config.Menu:SetCanFullscreen(false)
 
     Elib.Config.Menu:SetPadding(0)
 

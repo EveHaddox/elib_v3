@@ -26,7 +26,7 @@ function Elib.Config:AddAddon(name, order, author)
 end
 
 local count = 0
-function Elib.Config:AddValue(addon, realm, category, id, name, value, default, type, order, onComplete, resetMenu)
+function Elib.Config:AddValue(addon, realm, category, id, name, value, type, order, onComplete, resetMenu)
     count = count + 1
     order = order or count
 
@@ -45,8 +45,8 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, default, 
 
     Elib.Config.Addons[addon][realm][category][id] = {
         name = name,
-        value = value,
-        default = default,
+        value = Elib.Config.Addons[addon][realm][category][id] and Elib.Config.Addons[addon][realm][category][id].value or value,
+        default = value,
         type = type,
         onComplete = onComplete,
         order = order,
@@ -62,12 +62,22 @@ function Elib.Config:GetValue(addon, id)
     return Elib.Config.Addons[addon].Options[id].default
 end
 
+// Panel list
+
+-- Number (int)
+-- Float
+-- String
+-- Toggle (bool)
+-- Key (keybind)
+
 // Example
 Elib.Config:AddAddon("Elib")
 Elib.Config:AddAddon("Addon 1")
 Elib.Config:AddAddon("Addon 2")
 Elib.Config:AddAddon("Addon 3")
 
-Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, 2, "Number")
+Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, "Number")
+Elib.Config:AddValue("Elib", "client", "main", "test_toggle", "Test Toggle", true, "Toggle")
+Elib.Config:AddValue("Elib", "client", "main", "test_key", "Test Key", KEY_1, "Key")
 
-Elib.Config:AddValue("Elib", "server", "main", "test_num", "Test Number Server", 7, 7, "Number", nil, nil, true)
+Elib.Config:AddValue("Elib", "server", "main", "test_num", "Test Number Server", 7, "Number", nil, nil, true)
