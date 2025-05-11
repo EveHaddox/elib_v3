@@ -28,6 +28,16 @@ function PANEL:Init()
     self.label:SetAutoWidth(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    // avatar
+    self.pnl = self:Add("Elib.Avatar")
+    self.pnl:Dock(TOP)
+    self.pnl:SetHeight(Elib.Scale(30))
+
+    self.avatar = self.pnl:Add("Elib.Avatar")
+    self.avatar:Dock(LEFT)
+    self.avatar:SetPlayer(LocalPlayer(), 64)
+    self.avatar:SetMaskSize((Elib.Scale(14)))
+    self.avatar:SetWide(Elib.Scale(30))
 
 end
 

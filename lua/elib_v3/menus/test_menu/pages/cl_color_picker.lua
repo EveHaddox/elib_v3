@@ -28,6 +28,16 @@ function PANEL:Init()
     self.label:SetAutoWidth(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    // Color Picker
+    self.colorPicker = self:Add("Elib.ColorPicker")
+    self.colorPicker:Dock(TOP)
+    self.colorPicker:DockMargin(0, 0, 0, 8)
+    self.colorPicker:SetSize(Elib.Scale(200), Elib.Scale(200))
+    self.colorPicker:SetColor(Elib.Colors.PrimaryText)
+
+    self.colorPicker.OnChange = function(pnl, color)
+        self.label:SetTextColor(color)
+    end
 
 end
 

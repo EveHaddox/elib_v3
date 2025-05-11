@@ -28,6 +28,11 @@ function PANEL:Init()
     self.label:SetAutoWidth(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    // Binds
+    self.bind = self:Add("Elib.Binder")
+    self.bind:Dock(TOP)
+    self.bind:DockMargin(0, 0, 0, 8)
+    self.bind:SetTall(Elib.Scale(30))
 
 end
 
