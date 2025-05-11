@@ -26,7 +26,6 @@ function Elib.Config.LoadSettings()
 
         if Elib.Config.Addons[addon] and Elib.Config.Addons[addon][realm] and Elib.Config.Addons[addon][realm][category] and Elib.Config.Addons[addon][realm][category][id] then
             Elib.Config.Addons[addon][realm][category][id].value = value
-            print("Loaded setting: " .. addon .. ", " .. category .. ", " .. id .. ", " .. value .. ", " .. vType)
         else
             // not found
         end

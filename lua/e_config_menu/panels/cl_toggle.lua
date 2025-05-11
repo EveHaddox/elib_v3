@@ -8,6 +8,7 @@ AccessorFunc(PANEL, "Text", "Text", FORCE_STRING)
 
 function PANEL:Init()
 
+    self:SetHeight(Elib.Scale(35))
     self:SetText("")
 
     self.OriginalValue = nil

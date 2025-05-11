@@ -8,45 +8,50 @@ AccessorFunc(PANEL, "Text", "Text", FORCE_STRING)
 
 function PANEL:Init()
 
-    self:SetHeight(Elib.Scale(35))
+    local height = Elib.Scale(80)
+    self:SetHeight(height)
     self:SetText("")
 
     self.OriginalValue = nil
     self.Saved = true
 
-    self.TextEntry = self:Add("Elib.TextEntry")
-    self.TextEntry:Dock(RIGHT)
-    self.TextEntry:DockMargin(0, 4, 4, 4)
-    self.TextEntry:SetWide(Elib.Scale(200))
-    self.TextEntry:SetNumeric(true)
-    self.TextEntry:SetUpdateOnType(true)
-    self.TextEntry:SetPlaceholderText("Number")
-
-    function self.TextEntry:OnLoseFocus()
-
-        local parent = self:GetParent()
-        if parent.OriginalValue == nil then return end
-        if self:GetValue() != parent.OriginalValue then 
-            parent.Saved = false
-            self.OutlineCol = Elib.Colors.Negative
-        else 
-            parent.Saved = true
-            self.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
-        end
-        
+    self.ColorPanel = self:Add("DPanel")
+    self.ColorPanel:Dock(RIGHT)
+    local spaceNum = Elib.Scale(16)
+    self.ColorPanel:DockMargin(spaceNum, spaceNum, spaceNum, spaceNum)
+    self.ColorPanel:SetWide(height - spaceNum * 2)
+    self.ColorPanel.Paint = function(pnl, w, h)
+        if self.OriginalValue == nil then return end
+        local color = self.colorPicker:GetHueColor()
+        Elib.DrawRoundedBox(6, 0, 0, w, h, color)
     end
 
-    self.Reset = self:Add("DButton")
-    self.Reset:Dock(RIGHT)
-    self.Reset:DockMargin(0, 4, 4, 4)
+    self.colorPicker = self:Add("Elib.ColorPicker")
+    self.colorPicker:Dock(RIGHT)
+    self.colorPicker:DockMargin(0, 4, 4, 4)
+    self.colorPicker:SetWide(height)
+
+    self.colorPicker.OnChange = function(pnl, value)
+        if self.OriginalValue == nil then return end
+        self.Saved = value == self.OriginalValue
+    end
+
+    self.resetPos = self:Add("DPanel")
+    self.resetPos:Dock(RIGHT)
+    self.resetPos:DockMargin(0, 4, 0, 4)
+    self.resetPos:SetWide(Elib.Scale(30))
+    self.resetPos.Paint = function(pnl, w, h)
+    end
+
+    self.Reset = self.resetPos:Add("DButton")
+    self.Reset:Dock(TOP)
     self.Reset:SetText("")
     self.Reset.Color = Elib.Colors.PrimaryText
 
     self.Reset.DoClick = function(pnl)
         if self.Saved then return end
-        self.TextEntry:SetValue(self.OriginalValue)
+        self.colorPicker:SetColor(self.OriginalValue)
         self.Saved = true
-        self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     end
 
     self.Reset.Paint = function(pnl, w, h)
@@ -67,11 +72,11 @@ end
 
 function PANEL:SetValue(value)
     self.OriginalValue = value
-    self.TextEntry:SetValue(value)
+    self.colorPicker:SetColor(value)
 end
 
 function PANEL:GetValue()
-    return self.TextEntry:GetValue()
+    return self.colorPicker:GetHueColor()
 end
 
 function PANEL:GetSaved()
@@ -86,8 +91,7 @@ function PANEL:RestoreDefault()
     if self.Saved then return end
 
     self.Saved = true
-    self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
-    self.TextEntry:SetValue(self.OriginalValue)
+    self.colorPicker:SetColor(self.OriginalValue)
 end
 
 function PANEL:Save()
@@ -98,12 +102,12 @@ function PANEL:Save()
 
     Elib.Config.Addons[self.Path.addon][self.Path.realm][self.Path.category][self.Path.id].value = value
     self.Saved = true
-    self.TextEntry.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     self.OriginalValue = value
 end
 
 function PANEL:PerformLayout(w, h)
-    self.Reset:SetWide(h - 8)
+    self.Reset:DockMargin(0, (h - Elib.Scale(30)) / 2, 4, 0)
+    self.Reset:SetHeight(Elib.Scale(30))
 end
 
 function PANEL:Paint(w, h)
@@ -111,4 +115,4 @@ function PANEL:Paint(w, h)
     Elib.DrawSimpleText(self.Text, "Elib.Config.Title", 8, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
-vgui.Register("Elib.Config.Panels.String", PANEL, "DPanel")
+vgui.Register("Elib.Config.Panels.Color", PANEL, "DPanel")

@@ -26,7 +26,7 @@ function Elib.Config:AddAddon(name, order, author)
 end
 
 local count = 0
-function Elib.Config:AddValue(addon, realm, category, id, name, value, type, order, onComplete, resetMenu)
+function Elib.Config:AddValue(addon, realm, category, id, name, value, type, order, onComplete, resetMenu, table)
     count = count + 1
     order = order or count
 
@@ -51,6 +51,7 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, type, ord
         onComplete = onComplete,
         order = order,
         resetMenu = resetMenu or false,
+        table = table or nil,
     }
 end
 
@@ -69,6 +70,11 @@ end
 -- String
 -- Toggle (bool)
 -- Key (keybind)
+-- Color (color)
+
+---- XX not done yet XX ----
+-- Dropdown (string)
+-- list (table) 
 
 // Example
 Elib.Config:AddAddon("Elib")
@@ -79,5 +85,6 @@ Elib.Config:AddAddon("Addon 3")
 Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, "Number")
 Elib.Config:AddValue("Elib", "client", "main", "test_toggle", "Test Toggle", true, "Toggle")
 Elib.Config:AddValue("Elib", "client", "main", "test_key", "Test Key", KEY_1, "Key")
+Elib.Config:AddValue("Elib", "client", "main", "test_color", "Test Color", Color(153, 57, 57), "Color")
 
 Elib.Config:AddValue("Elib", "server", "main", "test_num", "Test Number Server", 7, "Number", nil, nil, true)

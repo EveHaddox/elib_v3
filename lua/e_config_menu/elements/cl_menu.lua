@@ -190,7 +190,7 @@ function PANEL:GeneratePage()
         self.panels[k] = self.scroll:Add("Elib.Config.Panels." .. v.type)
         local item = self.panels[k]
 
-        item:SetSize(self.scroll:GetWide(), Elib.Scale(35))
+        item:SetWide(self.scroll:GetWide())
         item:Dock(TOP)
         item:DockMargin(0, 0, 0, 4)
         item:SetText(v.name)
