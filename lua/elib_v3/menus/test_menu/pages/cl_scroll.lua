@@ -28,6 +28,24 @@ function PANEL:Init()
     self.label:SetAutoWidth(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    // Scroll
+    self.scroll = self:Add("Elib.ScrollPanel")
+    self.scroll:Dock(FILL)
+    self.scroll:DockPadding(0, 0, 0, 4)
+    
+    local bgCl = Elib.OffsetColor(Elib.Colors.Background, 5)
+
+    for var = 1, 28 do
+        local pnl = self.scroll:Add("DPanel")
+        pnl:Dock(TOP)
+        pnl:DockMargin(4, 4, 4, 0)
+        pnl:SetTall(Elib.Scale(30))
+
+        pnl.Paint = function(self, w, h)
+            Elib.DrawRoundedBox(6, 0, 0, w, h, bgCl)
+            Elib.DrawSimpleText("Test Panel " .. var, "Elib.Test.Normal", w / 2, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        end
+    end
 
 end
 

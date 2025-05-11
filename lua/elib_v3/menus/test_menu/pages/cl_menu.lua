@@ -28,6 +28,22 @@ function PANEL:Init()
     self.label:SetAutoWidth(true)
     self.label:SetFont("Elib.Test.Normal")
 
+    // menu
+    local btn = self:Add("Elib.TextButton")
+    btn:Dock(TOP)
+    btn:DockMargin(0, 0, 0, 8)
+    btn:SetTall(Elib.Scale(30))
+    btn:SetText("Open Elib Menu")
+    btn.DoClick = function()
+        local menu = vgui.Create("Elib.Menu")
+        menu:AddOption("Say Hello", function() print("Hello!") end)
+        menu:AddOption("Print Time", function() print(os.date("%X")) end)
+        menu:AddSpacer()
+        local subMenu, parent = menu:AddSubMenu("More Options")
+        subMenu:AddOption("Option A", function() print("A selected") end)
+        subMenu:AddOption("Option B", function() print("B selected") end)
+        menu:Open()
+    end
 
 end
 

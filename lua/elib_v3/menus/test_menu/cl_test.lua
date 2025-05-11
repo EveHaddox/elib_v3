@@ -105,7 +105,7 @@ local function CreateTestMenu()
     }
 
     // Sidebar
-    local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/9affef38-1103-4689-9215-dc1e6bd4c5bc.png", .8, -5, 15)
+    local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/5cfb8931-ed9d-4efe-a16b-7e9cc7c0952a.png", .8, -5, 15)
 
     for i = 1, 12 do
         sidebar:AddItem(i, pageData[i].name, pageData[i].icon, function(id)
