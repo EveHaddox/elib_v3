@@ -45,7 +45,7 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, type, ord
 
     Elib.Config.Addons[addon][realm][category][id] = {
         name = name,
-        value = Elib.Config.Addons[addon][realm][category][id] and Elib.Config.Addons[addon][realm][category][id].value or value,
+        value = value,
         default = value,
         type = type,
         onComplete = onComplete,
@@ -70,11 +70,12 @@ end
 -- String
 -- Toggle (bool)
 -- Key (keybind)
--- Color (color)
+-- Color (color) X BROKEN X
+-- Dropdown (string)
 
 ---- XX not done yet XX ----
--- Dropdown (string)
--- list (table) 
+-- list (numeric table)
+-- table (table)
 
 // Example
 Elib.Config:AddAddon("Elib")
@@ -85,6 +86,7 @@ Elib.Config:AddAddon("Addon 3")
 Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, "Number")
 Elib.Config:AddValue("Elib", "client", "main", "test_toggle", "Test Toggle", true, "Toggle")
 Elib.Config:AddValue("Elib", "client", "main", "test_key", "Test Key", KEY_1, "Key")
-Elib.Config:AddValue("Elib", "client", "main", "test_color", "Test Color", Color(153, 57, 57), "Color")
+--Elib.Config:AddValue("Elib", "client", "main", "test_color", "Test Color", Color(153, 57, 57), "Color")
+Elib.Config:AddValue("Elib", "client", "main", "test_deopdown", "Test Dropdown", "test", "Dropdown", nil, nil, nil, {"test", "smth?", "idk", "idk 2", "long one, like really long one"})
 
 Elib.Config:AddValue("Elib", "server", "main", "test_num", "Test Number Server", 7, "Number", nil, nil, true)

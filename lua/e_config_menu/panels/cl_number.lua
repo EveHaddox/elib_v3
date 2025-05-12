@@ -92,7 +92,7 @@ end
 
 function PANEL:Save()
     if self.Saved then return end
-    local value = self:GetInt()
+    local value = self:GetValue()
 
     Elib.Config.Save(self.Path.addon, self.Path.realm, self.Path.category, self.Path.id, value)
 

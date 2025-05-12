@@ -25,13 +25,18 @@ function Elib.Config.Save(addon, realm, category, id, value)
 
     local vType = type(value)
     if vType == "table" then
-        value = util.TableToJSON(value, false)
+        value = sql.SQLStr(util.TableToJSON(value), true)
     else
         value = tostring(value)
     end
 
     if realm == "client" then
         sql.Query(string.format("INSERT OR REPLACE INTO Elib_client_settings (addon, category, id, value, vType) VALUES (%q, %q, %q, %q, %q)", addon, category, id, value, vType))
+
+        local err = sql.LastError()
+        if err and err ~= "" then
+            ErrorNoHalt("[Elib.Config.Save] SQL error: " .. err .. "\n")
+        end
     else
         SaveServer(addon, category, id, value, vType)
     end

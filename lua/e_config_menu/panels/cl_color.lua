@@ -22,7 +22,7 @@ function PANEL:Init()
     self.ColorPanel:SetWide(height - spaceNum * 2)
     self.ColorPanel.Paint = function(pnl, w, h)
         if self.OriginalValue == nil then return end
-        local color = self.colorPicker:GetHueColor()
+        local color = self.colorPicker.Color or color_white
         Elib.DrawRoundedBox(6, 0, 0, w, h, color)
     end
 
@@ -71,12 +71,17 @@ function PANEL:Init()
 end
 
 function PANEL:SetValue(value)
-    self.OriginalValue = value
+    if isstring(value) then
+        local tbl = util.JSONToTable(value)
+        value = tbl or {}
+    end
+
+    self.OriginalValue = table.Copy(value)
     self.colorPicker:SetColor(value)
 end
 
 function PANEL:GetValue()
-    return self.colorPicker:GetHueColor()
+    return self.colorPicker.Color
 end
 
 function PANEL:GetSaved()

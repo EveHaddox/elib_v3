@@ -19,7 +19,7 @@ function PANEL:Init()
     self.toggle:DockMargin(0, 4, 4, 4)
     self.toggle:SetWide(Elib.Scale(50))
 
-    self.toggle.OnToggled = function(value)
+    self.toggle.OnToggled = function(pnl, value)
         if self.OriginalValue == nil then return end
         self.Saved = value == self.OriginalValue
     end
@@ -58,7 +58,7 @@ function PANEL:SetValue(value)
 end
 
 function PANEL:GetValue()
-    return self.toggle:GetValue()
+    return self.toggle:GetToggle()
 end
 
 function PANEL:GetSaved()

@@ -19,9 +19,9 @@ function PANEL:Init()
     self.bind:DockMargin(0, 4, 4, 4)
     self.bind:SetWide(Elib.Scale(130))
 
-    self.bind.OnChange = function(value)
+    self.bind.OnChange = function(pnl, value)
         if self.OriginalValue == nil then return end
-        self.Saved = value == self.OriginalValue
+        self.Saved = tonumber(value) == tonumber(self.OriginalValue)
     end
 
     self.Reset = self:Add("DButton")
@@ -78,7 +78,7 @@ end
 
 function PANEL:Save()
     if self.Saved then return end
-    local value = self:GetValue()
+    local value = tonumber(self:GetValue())
 
     Elib.Config.Save(self.Path.addon, self.Path.realm, self.Path.category, self.Path.id, value)
 

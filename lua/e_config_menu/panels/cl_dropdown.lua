@@ -12,6 +12,7 @@ function PANEL:Init()
     self:SetText("")
 
     self.OriginalValue = nil
+    self.table = nil
     self.Saved = true
 
     self.ComboBox = self:Add("Elib.ComboBox")
@@ -19,14 +20,9 @@ function PANEL:Init()
     self.ComboBox:DockMargin(0, 4, 4, 4)
     self.ComboBox:SetWide(Elib.Scale(130))
 
-    self.toggle = self:Add("Elib.Toggle")
-    self.toggle:Dock(RIGHT)
-    self.toggle:DockMargin(0, 4, 4, 4)
-    self.toggle:SetWide(Elib.Scale(50))
-
-    self.toggle.OnToggled = function(value)
+    self.ComboBox.OnSelect = function(i, value, data)
         if self.OriginalValue == nil then return end
-        self.Saved = value == self.OriginalValue
+        self.Saved = data == self.OriginalValue
     end
 
     self.Reset = self:Add("DButton")
@@ -37,7 +33,7 @@ function PANEL:Init()
 
     self.Reset.DoClick = function(pnl)
         if self.Saved then return end
-        self.toggle:SetToggle(self.OriginalValue)
+        self:RestoreDefault()
         self.Saved = true
     end
 
@@ -57,14 +53,19 @@ function PANEL:Init()
     
 end
 
-function PANEL:SetValue(value)
+function PANEL:SetValue(value, table)
     self.ComboBox:Clear()
+    for k, v in ipairs(table) do
+        local value1, icon = istable(v) and v.value or v, istable(v) and v.icon or nil // icons aren't actually there, as the menu doesn't support it, but I'll add them later so this stays
+        self.ComboBox:AddChoice(value1, k, value1 == value, icon)
+    end
+    
+    self.table = table
     self.OriginalValue = value
-    self.toggle:SetToggle(value)
 end
 
 function PANEL:GetValue()
-    return self.toggle:GetValue()
+    return self.ComboBox:GetSelected()
 end
 
 function PANEL:GetSaved()
@@ -79,7 +80,7 @@ function PANEL:RestoreDefault()
     if self.Saved then return end
 
     self.Saved = true
-    self.toggle:SetToggle(self.OriginalValue)
+    self:SetValue(self.OriginalValue, self.table)
 end
 
 function PANEL:Save()
