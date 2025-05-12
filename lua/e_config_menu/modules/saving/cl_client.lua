@@ -25,7 +25,7 @@ function Elib.Config.Save(addon, realm, category, id, value)
 
     local vType = type(value)
     if vType == "table" then
-        value = sql.SQLStr(util.TableToJSON(value), true)
+        value = sql.SQLStr(util.TableToJSON(value))
     else
         value = tostring(value)
     end
