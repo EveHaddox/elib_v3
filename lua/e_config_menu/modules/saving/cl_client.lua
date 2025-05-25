@@ -34,7 +34,7 @@ function Elib.Config.Save(addon, realm, category, id, value)
         sql.Query(string.format("INSERT OR REPLACE INTO Elib_client_settings (addon, category, id, value, vType) VALUES (%q, %q, %q, %q, %q)", addon, category, id, value, vType))
 
         local err = sql.LastError()
-        if err and err ~= "" then
+        if err ~= "" then
             ErrorNoHalt("[Elib.Config.Save] SQL error: " .. err .. "\n")
         end
     else
