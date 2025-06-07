@@ -86,7 +86,7 @@ Elib.Config:AddAddon("Addon 3")
 Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, "Number")
 Elib.Config:AddValue("Elib", "client", "main", "test_toggle", "Test Toggle", true, "Toggle")
 Elib.Config:AddValue("Elib", "client", "main", "test_key", "Test Key", KEY_1, "Key")
---Elib.Config:AddValue("Elib", "client", "main", "test_color", "Test Color", Color(153, 57, 57), "Color")
+Elib.Config:AddValue("Elib", "client", "main", "test_color", "Test Color", Color(153, 57, 57), "Color")
 Elib.Config:AddValue("Elib", "client", "main", "test_deopdown", "Test Dropdown", "test", "Dropdown", nil, nil, nil, {"test", "smth?", "idk", "idk 2", "long one, like really long one"})
 
 Elib.Config:AddValue("Elib", "server", "main", "test_num", "Test Number Server", 7, "Number", nil, nil, true)

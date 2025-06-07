@@ -3,8 +3,9 @@
 
 
 // Client saving
+--sql.Query("DROP TABLE IF EXISTS Elib_client_settings")
 if not sql.TableExists("Elib_client_settings") then
-    sql.Query("CREATE TABLE IF NOT EXISTS Elib_client_settings (addon TEXT PRIMARY KEY, category TEXT, id TEXT, value TEXT, vType TEXT)")
+    sql.Query("CREATE TABLE IF NOT EXISTS Elib_client_settings (addon TEXT, category TEXT, id TEXT, value TEXT, vType TEXT, PRIMARY KEY(addon, category, id))")
 end
 
 local function SaveServer(addon, category, id, value, vType)
@@ -25,18 +26,27 @@ function Elib.Config.Save(addon, realm, category, id, value)
 
     local vType = type(value)
     if vType == "table" then
-        value = sql.SQLStr(util.TableToJSON(value))
+        value = util.TableToJSON(value)
     else
         value = tostring(value)
     end
 
     if realm == "client" then
-        sql.Query(string.format("INSERT OR REPLACE INTO Elib_client_settings (addon, category, id, value, vType) VALUES (%q, %q, %q, %q, %q)", addon, category, id, value, vType))
 
-        local err = sql.LastError()
-        if err ~= "" then
-            ErrorNoHalt("[Elib.Config.Save] SQL error: " .. err .. "\n")
-        end
+        // to prevent names with _ from breaking the SQL query $^$ is the separator
+        local sqlID = string.format("%s$^$%s$^$%s", addon, category, id)
+
+        local qAddon    = sql.SQLStr(addon)
+        local qCategory = sql.SQLStr(category)
+        local qID       = sql.SQLStr(id)
+        local qValue    = sql.SQLStr(value)
+        local qVType    = sql.SQLStr(vType)
+
+        print("////////////////////////////////////////////////////")
+        print(string.format("Saving client setting: %s, %s, %s, %s, %s", qAddon, qCategory, qID, value, vType))
+        print("////////////////////////////////////////////////////")
+
+        sql.Query(string.format("INSERT OR REPLACE INTO Elib_client_settings (addon, category, id, value, vType) VALUES(%s, %s, %s, %s, %s)", qAddon, qCategory, qID, qValue, qVType))
     else
         SaveServer(addon, category, id, value, vType)
     end
@@ -47,12 +57,16 @@ function Elib.Config.LoadClientSettings()
     if not results then return end // No results found
 
     for _, row in ipairs(results) do
-        local addon = row.addon
         local realm = "client"
-        local category = row.category
-        local id = row.id
         local value = row.value
         local vType = row.vType
+        local addon = row.addon
+        local category = row.category
+        local id = row.id
+
+        print("////////////////////////////////////////////////////")
+        print(string.format("Loading client setting: %s, %s, %s, %s, %s", addon, realm, category, id, value))
+        print("////////////////////////////////////////////////////")
 
         if Elib.Config.Addons[addon] and Elib.Config.Addons[addon][realm] and Elib.Config.Addons[addon][realm][category] and Elib.Config.Addons[addon][realm][category][id] then
             Elib.Config.Addons[addon][realm][category][id].value = value
@@ -129,3 +143,30 @@ end
 
 PrintAllSettings()
 ]]
+
+
+local _Q  = sql.Query
+local _QV = sql.QueryValue
+local _QR = sql.QueryRow
+
+local function wrap(fn, name)
+  return function(q)
+    local before = sql.LastError() or ""
+    local res    = fn(q)
+    local after  = sql.LastError() or ""
+
+    -- if it failed *and* the error is new, report it
+    if not res and after ~= "" and after ~= before then
+      MsgN("[SQL DEBUG] failed "..name.."():")
+      MsgN("  SQL: ", q)
+      MsgN("  ERR: ", after)
+      MsgN(debug.traceback())
+    end
+
+    return res
+  end
+end
+
+sql.Query      = wrap(_Q,  "Query")
+sql.QueryValue = wrap(_QV, "QueryValue")
+sql.QueryRow   = wrap(_QR, "QueryRow")

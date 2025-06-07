@@ -3,12 +3,29 @@
 
 
 // Saving server side
+--sql.Query("DROP TABLE IF EXISTS Elib_settings")
 if not sql.TableExists("Elib_settings") then
-    sql.Query("CREATE TABLE IF NOT EXISTS Elib_settings (addon TEXT PRIMARY KEY, category TEXT, id TEXT, value TEXT, vType TEXT)")
+    sql.Query("CREATE TABLE IF NOT EXISTS Elib_settings (addon TEXT, category TEXT, id TEXT, value TEXT, vType TEXT, PRIMARY KEY(addon, category, id))")
 end
 
 local function Save(addon, realm, category, id, value, vType)
-    sql.Query(string.format("INSERT OR REPLACE INTO Elib_settings (addon, category, id, value, vType) VALUES (%q, %q, %q, %q, %q)", addon, category, id, value, vType))
+    -- serialize tables, stringify everything else
+    if vType == "table" then
+        value = util.TableToJSON(value)
+    else
+        value = tostring(value)
+    end
+
+    local qAddon    = sql.SQLStr(addon)
+    local qCategory = sql.SQLStr(category)
+    local qID       = sql.SQLStr(id)
+    local qValue    = sql.SQLStr(value)
+    local qVType    = sql.SQLStr(vType)
+
+    sql.Query(string.format(
+        "INSERT OR REPLACE INTO Elib_settings (addon, category, id, value, vType) VALUES(%s, %s, %s, %s, %s)",
+        qAddon, qCategory, qID, qValue, qVType
+    ))
 end
 
 util.AddNetworkString("Elib.Config.SendToAdmins")
@@ -24,7 +41,16 @@ function Elib.Config.LoadSettings()
         local value = row.value
         local vType = row.vType
 
-        if Elib.Config.Addons[addon] and Elib.Config.Addons[addon][realm] and Elib.Config.Addons[addon][realm][category] and Elib.Config.Addons[addon][realm][category][id] then
+        -- deserialize tables
+        if vType == "table" then
+            value = util.JSONToTable(value)
+        end
+
+        if Elib.Config.Addons[addon]
+        and Elib.Config.Addons[addon][realm]
+        and Elib.Config.Addons[addon][realm][category]
+        and Elib.Config.Addons[addon][realm][category][id] then
+
             Elib.Config.Addons[addon][realm][category][id].value = value
         else
             // not found
