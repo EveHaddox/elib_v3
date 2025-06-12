@@ -88,3 +88,12 @@ do
         return registeredFonts[font]
     end
 end
+
+function Elib.Capitalize(str)
+    if type(str) ~= "string" then return str end
+
+    local first = str:sub(1, 1)
+    local rest  = str:sub(2)
+
+    return first:upper() .. rest
+end
