@@ -82,12 +82,6 @@ end
 Elib.LoadDirectoryRecursive("elib_v3")
 Elib.IncludeShared("e_config_menu/sh_loader")
 
-hook.Add("Elib:ConfigLoaded", "Elib:FullyLoaded", function()
-	hook.Run("Elib.FullyLoaded")
-end)
-
-Elib.FullyLoaded = true // If the library finishes loading before addons hook this will make them load
-
 if CLIENT then return end
 
 --resource.AddWorkshop("2468112758")

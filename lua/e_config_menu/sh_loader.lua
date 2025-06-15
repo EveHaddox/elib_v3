@@ -29,4 +29,5 @@ Elib.Config.Addons = Elib.Config.Addons or {}
 //////////////////////
 -- add functions to actualy use this
 
-hook.Run("Elib:ConfigLoaded")
+hook.Run("Elib.FullyLoaded")
+Elib.FullyLoaded = true // If the library finishes loading before addons hook this will make them load
