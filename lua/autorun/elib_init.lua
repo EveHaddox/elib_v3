@@ -84,7 +84,7 @@ Elib.IncludeShared("e_config_menu/sh_loader")
 
 if CLIENT then return end
 
---resource.AddWorkshop("2468112758")
+resource.AddWorkshop("2468112758")
 
 MsgC(Color(207, 144, 49), "\n[Elib] ", Color(230, 230, 230), "version " .. Elib.Version .. " loaded\n")
 // server - Color(49, 149, 207)
