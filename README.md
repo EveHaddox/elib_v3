@@ -1,6 +1,6 @@
 # elib_v3
 
-> A lightweight library for Garry’s Mod addons, free to use under a non-commercial license.
+> A lightweight library for Garry’s Mod addons, with modern ui and a in-game config menu.
 
 ## 🚀 Features
 
