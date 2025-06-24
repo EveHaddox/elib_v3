@@ -30,6 +30,9 @@ local drawRect = surface.DrawRect
 local drawTexturedRectUV = surface.DrawTexturedRectUV
 local setTexture = surface.SetTexture
 
+local RNDX = include("rndx.lua")
+
+--[[
 function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, bottomLeft, bottomRight)
 	setDrawColor(col.r, col.g, col.b, col.a)
 
@@ -79,6 +82,11 @@ function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, b
 	else
 		drawRect(x + w - borderSize, y + h - borderSize, borderSize, borderSize)
 	end
+end
+]]
+
+function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, bottomLeft, bottomRight)
+	RNDX.DrawEx(borderSize, x, y, w, h, col, nil, topLeft, topRight, bottomLeft, bottomRight)
 end
 
 local drawRoundedBoxEx = Elib.DrawRoundedBoxEx
