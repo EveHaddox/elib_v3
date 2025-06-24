@@ -119,7 +119,7 @@ function PANEL:Paint(w, h)
     surface.DrawRect(0, 0, w, h)
 
     if self:GetDrawShadow() then
-		surface.SetDrawColor(Elib.OffsetColor(self.BackgroundCol, -5))
+		surface.SetDrawColor(self.BackgroundCol)
 		surface.SetMaterial(Material("gui/gradient_down"))
 		surface.DrawTexturedRect(0, 0, w, Elib.Scale(10))
 	end

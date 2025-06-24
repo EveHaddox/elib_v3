@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 --]]
 
+--[[
 local cornerTex8 = surface.GetTextureID("gui/corner8")
 local cornerTex16 = surface.GetTextureID("gui/corner16")
 local cornerTex32 = surface.GetTextureID("gui/corner32")
@@ -30,9 +31,6 @@ local drawRect = surface.DrawRect
 local drawTexturedRectUV = surface.DrawTexturedRectUV
 local setTexture = surface.SetTexture
 
-local RNDX = include("rndx.lua")
-
---[[
 function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, bottomLeft, bottomRight)
 	setDrawColor(col.r, col.g, col.b, col.a)
 
@@ -85,6 +83,8 @@ function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, b
 end
 ]]
 
+local RNDX = include("rndx.lua")
+
 function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, bottomLeft, bottomRight)
 	RNDX.DrawEx(borderSize, x, y, w, h, col, nil, topLeft, topRight, bottomLeft, bottomRight)
 end
@@ -94,6 +94,7 @@ function Elib.DrawRoundedBox(borderSize, x, y, w, h, col)
 	return drawRoundedBoxEx(borderSize, x, y, w, h, col, true, true, true, true)
 end
 
+--[[
 local roundedBoxCache = {}
 local whiteTexture = surface.GetTextureID("vgui/white")
 
@@ -151,3 +152,4 @@ end
 function Elib.DrawFullRoundedBox(borderSize, x, y, w, h, col)
 	return Elib.DrawFullRoundedBoxEx(borderSize, x, y, w, h, col, true, true, true, true)
 end
+]]

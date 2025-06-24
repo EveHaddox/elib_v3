@@ -331,7 +331,7 @@ function PANEL:PaintHeader(x, y, w, h)
     render.SetStencilZFailOperation(STENCIL_KEEP)
 
     -- 4) Draw the rectangle that will define our "allowed" area
-    Elib.DrawFullRoundedBoxEx(CornerRadius, 0, 0, w, h, Elib.Colors.Header, true, true)
+    Elib.DrawRoundedBoxEx(CornerRadius, 0, 0, w, h, Elib.Colors.Header, true, true)
 
     -- 5) Now switch to only drawing where the stencil == 1
     render.SetStencilCompareFunction(STENCIL_EQUAL)
@@ -348,7 +348,7 @@ function PANEL:PaintHeader(x, y, w, h)
 	surface.SetDrawColor(Color(45, 45, 45))
 	surface.DrawRect(0, h - 1, w, 1)
 
-	surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, -5))
+	surface.SetDrawColor(Elib.Colors.Background)
 	surface.SetMaterial(Material("gui/gradient_down"))
 	surface.DrawTexturedRect(0, h + 1, w, Elib.Scale(10))
 
@@ -389,7 +389,7 @@ function PANEL:Paint(w, h)
     render.SetStencilZFailOperation(STENCIL_KEEP)
 
     -- 4) Draw the rectangle that will define our "allowed" area
-    Elib.DrawFullRoundedBox(CornerRadius, 0, 0, w, h, Elib.Colors.Background)
+    Elib.DrawRoundedBox(CornerRadius, 0, 0, w, h, Elib.Colors.Background)
 
     -- 5) Now switch to only drawing where the stencil == 1
     render.SetStencilCompareFunction(STENCIL_EQUAL)
