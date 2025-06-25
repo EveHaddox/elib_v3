@@ -38,4 +38,4 @@ You can reach me on my discord server: https://discord.gg/dQxphN4rsr
 
 1. Download or clone this repository into your `addons/` folder:
    ```bash
-   git clone https://github.com/YourUsername/elib_v3.git elib_v3
+   git clone https://github.com/EveHaddox/elib_v3.git elib_v3
