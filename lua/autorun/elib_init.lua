@@ -79,6 +79,7 @@ function Elib.IncludeShared(path)
 end
 
 // loading the library
+Elib.RNDX = include("rndx.lua")
 Elib.LoadDirectoryRecursive("elib_v3")
 Elib.IncludeShared("e_config_menu/sh_loader")
 

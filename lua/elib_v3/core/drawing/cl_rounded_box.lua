@@ -83,10 +83,8 @@ function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, b
 end
 ]]
 
-local RNDX = include("rndx.lua")
-
 function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, bottomLeft, bottomRight)
-	RNDX.DrawEx(borderSize, x, y, w, h, col, nil, topLeft, topRight, bottomLeft, bottomRight)
+	Elib.RNDX.DrawEx(borderSize, x, y, w, h, col, nil, topLeft, topRight, bottomLeft, bottomRight)
 end
 
 local drawRoundedBoxEx = Elib.DrawRoundedBoxEx
