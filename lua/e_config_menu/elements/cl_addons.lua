@@ -84,7 +84,7 @@ function PANEL:SetFunc(func)
 end
 
 function PANEL:PerformLayout(w, h)
-    local barSpacing = self.Scroll:GetVBar().Enabled and PIXEL.Scale(6) or 0
+    local barSpacing = self.Scroll:GetVBar().Enabled and Elib.Scale(6) or 0
     for k, v in pairs(self.addons) do
         v:DockMargin(0, 0, barSpacing, 4)
     end
