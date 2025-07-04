@@ -55,12 +55,10 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, type, ord
     }
 end
 
-function Elib.Config:GetValue(addon, id)
-    if SERVER then
-        return Elib:GetValue(addon, id)
-    end
-
-    return Elib.Config.Addons[addon].Options[id].default
+function Elib.Config:GetValue(addon, realm, category, id)
+    if SERVER and string.lower(realm) == "client" then return false end
+    
+    return Elib.Config.Addons[addon][realm][category][id].value
 end
 
 // Panel list

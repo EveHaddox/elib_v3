@@ -42,10 +42,6 @@ function Elib.Config.Save(addon, realm, category, id, value)
         local qValue    = sql.SQLStr(value)
         local qVType    = sql.SQLStr(vType)
 
-        print("////////////////////////////////////////////////////")
-        print(string.format("Saving client setting: %s, %s, %s, %s, %s", qAddon, qCategory, qID, value, vType))
-        print("////////////////////////////////////////////////////")
-
         sql.Query(string.format("INSERT OR REPLACE INTO Elib_client_settings (addon, category, id, value, vType) VALUES(%s, %s, %s, %s, %s)", qAddon, qCategory, qID, qValue, qVType))
     else
         SaveServer(addon, category, id, value, vType)
@@ -63,10 +59,6 @@ function Elib.Config.LoadClientSettings()
         local addon = row.addon
         local category = row.category
         local id = row.id
-
-        print("////////////////////////////////////////////////////")
-        print(string.format("Loading client setting: %s, %s, %s, %s, %s", addon, realm, category, id, value))
-        print("////////////////////////////////////////////////////")
 
         if Elib.Config.Addons[addon] and Elib.Config.Addons[addon][realm] and Elib.Config.Addons[addon][realm][category] and Elib.Config.Addons[addon][realm][category][id] then
             Elib.Config.Addons[addon][realm][category][id].value = value

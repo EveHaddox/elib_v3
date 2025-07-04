@@ -122,7 +122,11 @@ timer.Simple(0.1, Elib.Config.LoadSettings) // config didn't load without this d
 hook.Add("PlayerInitialSpawn", "Elib.Config.SendOnJoin", function(ply)
     if not ply:IsSuperAdmin() then return end
 
-    net.Start("Elib.Config.SendToAdmins")
-        net.WriteTable(Elib.Config.Addons)
-    net.Send(ply)
+    timer.Simple(0.5, function()
+        if not IsValid(ply) then return end // safety check
+
+        net.Start("Elib.Config.SendToAdmins")
+            net.WriteTable(Elib.Config.Addons)
+        net.Send(ply)
+    end)
 end)
