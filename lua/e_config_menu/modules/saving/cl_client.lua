@@ -70,6 +70,10 @@ end
 
 Elib.Config.LoadClientSettings()
 
+hook.Add("InitPostEntity", "Elib.Config.LoadClientSettings", function()
+    Elib.Config.LoadClientSettings()
+end)
+
 // networking
 net.Receive("Elib.Config.SendToAdmins", function()
     local updated = net.ReadTable()
@@ -135,30 +139,3 @@ end
 
 PrintAllSettings()
 ]]
-
-
-local _Q  = sql.Query
-local _QV = sql.QueryValue
-local _QR = sql.QueryRow
-
-local function wrap(fn, name)
-  return function(q)
-    local before = sql.LastError() or ""
-    local res    = fn(q)
-    local after  = sql.LastError() or ""
-
-    -- if it failed *and* the error is new, report it
-    if not res and after ~= "" and after ~= before then
-      MsgN("[SQL DEBUG] failed "..name.."():")
-      MsgN("  SQL: ", q)
-      MsgN("  ERR: ", after)
-      MsgN(debug.traceback())
-    end
-
-    return res
-  end
-end
-
-sql.Query      = wrap(_Q,  "Query")
-sql.QueryValue = wrap(_QV, "QueryValue")
-sql.QueryRow   = wrap(_QR, "QueryRow")
