@@ -56,8 +56,11 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, type, ord
 end
 
 function Elib.Config:GetValue(addon, realm, category, id)
-    if SERVER and string.lower(realm) == "client" then return false end
+    realm = string.lower(realm)
+    category = string.lower(category)
     
+    if SERVER and realm == "client" then return nil end
+
     return Elib.Config.Addons[addon][realm][category][id].value
 end
 

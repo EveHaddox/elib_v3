@@ -5,9 +5,9 @@ local PANEL = {}
 
 function PANEL:Init()
 
-    self.addon = "Elib"
+    self.addon = "None"
     self.realm = "client"
-    self.category = 1
+    self.category = nil
 
     self.panels = {}
 
@@ -84,7 +84,7 @@ function PANEL:Init()
         for k, v in pairs(self.panels) do
             if v.Save then
                 if v.onComplete then
-                    v.onComplete(item)
+                    v.onComplete(v:GetValue())
                 end
 
                 if v.resetMenu then
@@ -164,7 +164,7 @@ function PANEL:GenerateCategories()
         self:GeneratePage()
     end
 
-    if Elib.Config.Addons[self.addon][self.realm] == nil then 
+    if Elib.Config.Addons[self.addon] == nil or Elib.Config.Addons[self.addon][self.realm] == nil then 
         self.categoryNav:AddItem(1, "No Data", function() end, 1)
         self.scroll:Clear()
         return
@@ -176,6 +176,7 @@ function PANEL:GenerateCategories()
         self.categoryNav:AddItem(i, k, SwichCat, i)
     end
 
+    self.category = string.lower(self.categoryNav.Items[self.categoryNav.SelectedItem]:GetName())
     self:GeneratePage()
 end
 
@@ -196,6 +197,9 @@ function PANEL:GeneratePage()
         item:SetText(v.name)
         item:SetValue(v.value, v.table)
         item:SetPath(self.addon, self.realm, self.category, k)
+
+        item.onComplete = v.onComplete
+        item.resetMenu = v.resetMenu or false
 
     end
 end
