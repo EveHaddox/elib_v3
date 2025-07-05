@@ -89,6 +89,11 @@ local function CreateTestMenu()
     page12:DockMargin(8, 8, 8, 8)
     pages[12] = page12
 
+    local page13 = vgui.Create("Elib.Test.Page13", Elib.TestFrame)
+    page13:Dock(FILL)
+    page13:DockMargin(8, 8, 8, 8)
+    pages[13] = page13
+
     local pageData = {
         {name = "Welcome", icon = "https://construct-cdn.physgun.com/images/1e154095-79b2-436e-80a3-cb6b924d14a2.png"},
         {name = "Buttons", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
@@ -102,12 +107,13 @@ local function CreateTestMenu()
         {name = "Property Sheet", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Scroll Panel", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Categories", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Graphs", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
     }
 
     // Sidebar
     local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/5cfb8931-ed9d-4efe-a16b-7e9cc7c0952a.png", .8, -5, 15)
 
-    for i = 1, 12 do
+    for i = 1, #pageData do
         sidebar:AddItem(i, pageData[i].name, pageData[i].icon, function(id)
             currentPage = i
             changeTab()
