@@ -59,6 +59,14 @@ function Elib.Config.LoadClientSettings()
         local addon = row.addon
         local category = row.category
         local id = row.id
+        
+        if vType == "boolean" then
+            value = tobool(value)
+        elseif vType == "number" then
+            value = tonumber(value)
+        elseif vType == "table" then
+            value = util.JSONToTable(value)
+        end
 
         if Elib.Config.Addons[addon] and Elib.Config.Addons[addon][realm] and Elib.Config.Addons[addon][realm][category] and Elib.Config.Addons[addon][realm][category][id] then
             Elib.Config.Addons[addon][realm][category][id].value = value

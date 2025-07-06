@@ -41,8 +41,11 @@ function Elib.Config.LoadSettings()
         local value = row.value
         local vType = row.vType
 
-        -- deserialize tables
-        if vType == "table" then
+        if vType == "boolean" then
+            value = tobool(value)
+        elseif vType == "number" then
+            value = tonumber(value)
+        elseif vType == "table" then
             value = util.JSONToTable(value)
         end
 
