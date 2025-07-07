@@ -55,5 +55,6 @@ Elib.Colors = {
     Silver = Color(192, 192, 192),
     Bronze = Color(145, 94, 49),
 
-    Transparent = Color(0, 0, 0, 0)
+    Transparent = Color(0, 0, 0, 0),
+    Stencil = Color(0, 0, 0, 1)
 }
