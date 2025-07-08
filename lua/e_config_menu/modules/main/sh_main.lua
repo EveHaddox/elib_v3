@@ -81,9 +81,6 @@ end
 
 // Example
 Elib.Config:AddAddon("Elib")
-Elib.Config:AddAddon("Addon 1")
-Elib.Config:AddAddon("Addon 2")
-Elib.Config:AddAddon("Addon 3")
 
 Elib.Config:AddValue("Elib", "client", "main", "test_num", "Test Number", 2, "Number")
 Elib.Config:AddValue("Elib", "client", "main", "test_toggle", "Test Toggle", true, "Toggle")
