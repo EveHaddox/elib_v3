@@ -77,6 +77,7 @@ end
 // networking
 util.AddNetworkString("Elib.Config.Save")
 util.AddNetworkString("Elib.Config.SendToAdmins")
+util.AddNetworkString("Elib.Config.SendToClient")
 
 net.Receive("Elib.Config.Save", function(len, ply)
     if not ply:IsSuperAdmin() then return end
@@ -123,13 +124,34 @@ end)
 timer.Simple(0.1, Elib.Config.LoadSettings) // config didn't load without this delay
 
 hook.Add("PlayerInitialSpawn", "Elib.Config.SendOnJoin", function(ply)
-    if not ply:IsSuperAdmin() then return end
-
     timer.Simple(0.5, function()
         if not IsValid(ply) then return end // safety check
 
-        net.Start("Elib.Config.SendToAdmins")
-            net.WriteTable(Elib.Config.Addons)
-        net.Send(ply)
+        if ply:IsSuperAdmin() then
+            net.Start("Elib.Config.SendToAdmins")
+                net.WriteTable(Elib.Config.Addons)
+            net.Send(ply)
+        else
+            local networkedSettings = {}
+            for addon, realms in pairs(Elib.Config.Addons) do
+                if realms.server then
+                    for category, settings in pairs(realms.server) do
+                        for id, data in pairs(settings) do
+                            if data.network then
+                                if not networkedSettings[addon] then networkedSettings[addon] = { server = {} } end
+                                if not networkedSettings[addon].server[category] then networkedSettings[addon].server[category] = {} end
+                                networkedSettings[addon].server[category][id] = { value = data.value }
+                            end
+                        end
+                    end
+                end
+            end
+
+            if next(networkedSettings) then
+                net.Start("Elib.Config.SendToClient")
+                    net.WriteTable(networkedSettings)
+                net.Send(ply)
+            end
+        end
     end)
 end)

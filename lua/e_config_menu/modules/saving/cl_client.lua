@@ -133,6 +133,41 @@ net.Receive("Elib.Config.SendToAdmins", function()
     hook.Run("Elib.Config.OnReceived", updated)
 end)
 
+net.Receive("Elib.Config.SendToClient", function()
+    local updated = net.ReadTable()
+
+    -- loop each addon
+    for addonName, addonData in pairs(updated) do
+        local localAddon = Elib.Config.Addons[addonName]
+        if not localAddon then continue end
+
+        -- only server realm matters for this
+        local realmData = addonData.server
+        if type(realmData) ~= "table" then continue end
+
+        local localRealm = localAddon.server
+        if type(localRealm) ~= "table" then continue end
+
+        -- now loop categories and entries
+        for category, entries in pairs(realmData) do
+            if type(entries) ~= "table" then continue end
+
+            local localCat = localRealm[category]
+            if type(localCat) ~= "table" then continue end
+
+            for id, entryData in pairs(entries) do
+                if type(entryData) == "table" and localCat[id] then
+                    -- finally update only the .value field
+                    localCat[id].value = entryData.value
+                end
+            end
+        end
+    end
+
+    -- optional hook so any menus/UI know to refresh
+    hook.Run("Elib.Config.OnReceived", updated)
+end)
+
 
 --[[ // for debugging purposes
 local function PrintAllSettings()
