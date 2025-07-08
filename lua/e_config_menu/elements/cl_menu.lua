@@ -229,6 +229,11 @@ function PANEL:GeneratePage()
     end
 
     self.scroll:InvalidateLayout(true)
+
+    timer.Simple(0, function()
+        if not IsValid(self) then return end
+        self.scroll:InvalidateLayout(true)
+    end)
 end
 
 function PANEL:SetFunc(func)
