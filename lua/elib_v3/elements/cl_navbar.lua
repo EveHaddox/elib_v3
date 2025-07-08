@@ -108,7 +108,9 @@ function PANEL:SelectItem(id)
 end
 
 function PANEL:PerformLayout(w, h)
-    for k,v in pairs(self.Items) do
+    if table.IsEmpty(self.Items) then return end
+    for k, v in pairs(self.Items) do
+        if not IsValid(v) or v == nil then continue end
         v:Dock(LEFT)
         v:SetWide(v:GetItemSize() + Elib.Scale(30))
     end
