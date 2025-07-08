@@ -83,7 +83,7 @@ end
 -- String
 -- Toggle (bool)
 -- Key (keybind)
--- Color (color) X BROKEN X
+-- Color (color)
 -- Dropdown (string)
 
 ---- XX not done yet XX ----
