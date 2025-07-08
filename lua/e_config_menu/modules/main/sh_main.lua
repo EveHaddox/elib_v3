@@ -106,52 +106,52 @@ Elib.Config:AddValue("Elib", "server", "Test", "test_num", "Test Number Server",
 Elib.Config:AddValue("Elib", "client", "colors", "background_color", "Background Color", Color(20, 20, 20), "Color", 1, function(value)
     if not value then return end
     Elib.Colors.Background = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "header_color", "Header Color", Color(30, 30, 30), "Color", 2, function(value)
     if not value then return end
     Elib.Colors.Header = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "scroller_color", "Scroller Color", Color(48, 48, 48), "Color", 3, function(value)
     if not value then return end
     Elib.Colors.Scroller = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "primary_text_color", "Primary Text Color", Color(240, 240, 240), "Color", 4, function(value)
     if not value then return end
     Elib.Colors.PrimaryText = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "secondary_text_color", "Secondary Text Color", Color(200, 200, 200), "Color", 5, function(value)
     if not value then return end
     Elib.Colors.SecondaryText = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "disabled_text_color", "Disabled Text Color", Color(100, 100, 100), "Color", 6, function(value)
     if not value then return end
     Elib.Colors.DisabledText = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "primary_color", "Primary Color", Color(180, 58, 58), "Color", 7, function(value)
     if not value then return end
     Elib.Colors.Primary = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "disabled_color", "Disabled Color", Color(120, 120, 120), "Color", 8, function(value)
     if not value then return end
     Elib.Colors.Disabled = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "positive_color", "Positive Color", Color(70, 175, 70), "Color", 9, function(value)
     if not value then return end
     Elib.Colors.Positive = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "negative_color", "Negative Color", Color(190, 65, 65), "Color", 10, function(value)
     if not value then return end
     Elib.Colors.Negative = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "gold_color", "Gold Color", Color(214, 174, 34), "Color", 11, function(value)
     if not value then return end
     Elib.Colors.Gold = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "silver_color", "Silver Color", Color(192, 192, 192), "Color", 12, function(value)
     if not value then return end
     Elib.Colors.Silver = value
-end, true)
+end)
 Elib.Config:AddValue("Elib", "client", "colors", "bronze_color", "Bronze Color", Color(145, 94, 49), "Color", 13, function(value)
     if not value then return end
     Elib.Colors.Bronze = value
-end, true)
+end)

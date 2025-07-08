@@ -81,6 +81,7 @@ function PANEL:Init()
     self.Save.Color = Elib.Colors.PrimaryText
 
     self.Save.DoClick = function(pnl)
+        local reset = false
         for k, v in pairs(self.panels) do
             if v.Save then
                 if v.onComplete then
@@ -88,11 +89,14 @@ function PANEL:Init()
                 end
 
                 if v.resetMenu then
-                    self:GeneratePage()
+                    reset = true
                 end
 
                 v:Save()
             end
+        end
+        if reset then
+            self:GeneratePage()
         end
     end
 
@@ -153,10 +157,9 @@ function PANEL:SetAddon(addon)
 end
 
 function PANEL:GenerateCategories()
+    local toDelete
     if self.categoryNav and self.categoryNav.Items then
-        for k, v in ipairs(self.categoryNav.Items) do
-            v:Remove()
-        end
+        toDelete = table.Copy(self.categoryNav.Items)
     end
 
     local function SwichCat(item)
@@ -184,6 +187,11 @@ function PANEL:GenerateCategories()
     if #self.categoryNav.Items > 0 then
         self.category = string.lower(self.categoryNav.Items[self.categoryNav.SelectedItem]:GetName())
         self:GeneratePage()
+    end
+
+    self.categoryNav:SelectItem(1)
+    for k, v in ipairs(toDelete) do
+        v:Remove()
     end
 end
 
