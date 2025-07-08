@@ -170,14 +170,21 @@ function PANEL:GenerateCategories()
         return
     end
 
-    local i = 0
+    local sortedCategories = {}
     for k, v in pairs(Elib.Config.Addons[self.addon][self.realm]) do
-        i = i + 1
-        self.categoryNav:AddItem(i, k, SwichCat, i)
+        table.insert(sortedCategories, { name = k, order = v.order or 999 })
     end
 
-    self.category = string.lower(self.categoryNav.Items[self.categoryNav.SelectedItem]:GetName())
-    self:GeneratePage()
+    table.sort(sortedCategories, function(a, b) return a.order < b.order end)
+
+    for i, cat in ipairs(sortedCategories) do
+        self.categoryNav:AddItem(i, cat.name, SwichCat, i)
+    end
+
+    if #self.categoryNav.Items > 0 then
+        self.category = string.lower(self.categoryNav.Items[self.categoryNav.SelectedItem]:GetName())
+        self:GeneratePage()
+    end
 end
 
 function PANEL:GeneratePage()
@@ -186,7 +193,18 @@ function PANEL:GeneratePage()
 
     if Elib.Config.Addons[self.addon][self.realm][self.category] == nil or table.IsEmpty(Elib.Config.Addons[self.addon][self.realm][self.category]) then return end
 
+    local sortedPanels = {}
     for k, v in pairs(Elib.Config.Addons[self.addon][self.realm][self.category]) do
+        if type(v) == "table" then
+            v.key = k
+            table.insert(sortedPanels, v)
+        end
+    end
+
+    table.sort(sortedPanels, function(a, b) return (a.order or 999) < (b.order or 999) end)
+
+    for _, v in ipairs(sortedPanels) do
+        local k = v.key
         
         self.panels[k] = self.scroll:Add("Elib.Config.Panels." .. v.type)
         local item = self.panels[k]
