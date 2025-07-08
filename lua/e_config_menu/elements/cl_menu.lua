@@ -209,7 +209,6 @@ function PANEL:GeneratePage()
         self.panels[k] = self.scroll:Add("Elib.Config.Panels." .. v.type)
         local item = self.panels[k]
 
-        item:SetWide(self.scroll:GetWide())
         item:Dock(TOP)
         item:DockMargin(0, 0, 0, 4)
         item:SetText(v.name)
@@ -220,6 +219,8 @@ function PANEL:GeneratePage()
         item.resetMenu = v.resetMenu or false
 
     end
+
+    self.scroll:InvalidateLayout(true)
 end
 
 function PANEL:SetFunc(func)

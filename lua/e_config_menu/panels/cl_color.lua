@@ -8,7 +8,7 @@ AccessorFunc(PANEL, "Text", "Text", FORCE_STRING)
 
 function PANEL:Init()
 
-    local height = Elib.Scale(80)
+    local height = Elib.Scale(100)
     self:SetHeight(height)
     self:SetText("")
 
@@ -31,9 +31,50 @@ function PANEL:Init()
     self.colorPicker:DockMargin(0, 4, 4, 4)
     self.colorPicker:SetWide(height)
 
+    self.RGBPanel = self:Add("DPanel")
+    self.RGBPanel:Dock(RIGHT)
+    self.RGBPanel:SetWide(Elib.Scale(55))
+    self.RGBPanel:DockMargin(8, 4, 8, 4)
+    self.RGBPanel.Paint = function() end
+
+    local function createEntry(placeholder, y, h)
+        local entry = self.RGBPanel:Add("Elib.TextEntry")
+        entry:SetPos(0, y)
+        entry:SetSize(self.RGBPanel:GetWide(), h)
+        entry:SetPlaceholderText(placeholder)
+        entry:SetNumeric(true)
+
+        function entry.updateColor()
+            local r_val = tonumber(self.REntry:GetValue())
+            local g_val = tonumber(self.GEntry:GetValue())
+            local b_val = tonumber(self.BEntry:GetValue())
+
+            local r = math.Clamp(r_val or 0, 0, 255)
+            local g = math.Clamp(g_val or 0, 0, 255)
+            local b = math.Clamp(b_val or 0, 0, 255)
+            local a = self.colorPicker.Color.a
+
+            local newColor = Color(r, g, b, a)
+            self.colorPicker:SetColor(newColor)
+        end
+
+        entry.OnValueChange = entry.updateColor
+        entry.OnLoseFocus = entry.updateColor
+        return entry
+    end
+
+    local entryHeight = (self.RGBPanel:GetTall() - Elib.Scale(4)) / 3
+    self.REntry = createEntry("R", 0, entryHeight)
+    self.GEntry = createEntry("G", entryHeight + Elib.Scale(2), entryHeight)
+    self.BEntry = createEntry("B", (entryHeight + Elib.Scale(2)) * 2, entryHeight)
+
     self.colorPicker.OnChange = function(pnl, value)
         if self.OriginalValue == nil then return end
         self.Saved = value == self.OriginalValue
+
+        self.REntry:SetText(value.r)
+        self.GEntry:SetText(value.g)
+        self.BEntry:SetText(value.b)
     end
 
     self.resetPos = self:Add("DPanel")
@@ -49,9 +90,7 @@ function PANEL:Init()
     self.Reset.Color = Elib.Colors.PrimaryText
 
     self.Reset.DoClick = function(pnl)
-        if self.Saved then return end
-        self.colorPicker:SetColor(self.OriginalValue)
-        self.Saved = true
+        self:RestoreDefault()
     end
 
     self.Reset.Paint = function(pnl, w, h)
@@ -78,6 +117,10 @@ function PANEL:SetValue(value)
 
     self.OriginalValue = table.Copy(value)
     self.colorPicker:SetColor(value)
+    
+    self.REntry:SetValue(math.floor(value.r))
+    self.GEntry:SetValue(math.floor(value.g))
+    self.BEntry:SetValue(math.floor(value.b))
 end
 
 function PANEL:GetValue()
@@ -97,6 +140,10 @@ function PANEL:RestoreDefault()
 
     self.Saved = true
     self.colorPicker:SetColor(self.OriginalValue)
+
+    self.REntry:SetValue(math.floor(self.OriginalValue.r))
+    self.GEntry:SetValue(math.floor(self.OriginalValue.g))
+    self.BEntry:SetValue(math.floor(self.OriginalValue.b))
 end
 
 function PANEL:Save()
@@ -113,6 +160,14 @@ end
 function PANEL:PerformLayout(w, h)
     self.Reset:DockMargin(0, (h - Elib.Scale(30)) / 2, 4, 0)
     self.Reset:SetHeight(Elib.Scale(30))
+
+    local entryHeight = (self.RGBPanel:GetTall() - Elib.Scale(4)) / 3
+    self.REntry:SetPos(0, 0)
+    self.REntry:SetSize(self.RGBPanel:GetWide(), entryHeight)
+    self.GEntry:SetPos(0, entryHeight + Elib.Scale(2))
+    self.GEntry:SetSize(self.RGBPanel:GetWide(), entryHeight)
+    self.BEntry:SetPos(0, (entryHeight + Elib.Scale(2)) * 2)
+    self.BEntry:SetSize(self.RGBPanel:GetWide(), entryHeight)
 end
 
 function PANEL:Paint(w, h)
