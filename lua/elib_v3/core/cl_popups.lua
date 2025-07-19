@@ -32,7 +32,7 @@ function Elib.CreateStringPopup(message, OnComplete, title, placeholder)
     return popup
 end
 
-if IsValid(Elib.PopupTest) then
-    Elib.PopupTest:Remove()
-end
-Elib.PopupTest = Elib.CreateStringPopup(nil, function(bool) print(bool) end)
+--if IsValid(Elib.PopupTest) then
+--    Elib.PopupTest:Remove()
+--end
+--Elib.PopupTest = Elib.CreateStringPopup(nil, function(bool) print(bool) end)
