@@ -151,6 +151,10 @@ end)
 
 local drawTexturedRect = surface.DrawTexturedRect
 function Elib.DrawImage(x, y, w, h, url, col)
+    if not url then
+        drawProgressWheel(x, y, w, h, col)
+        return 
+    end
     if not materials[url] then
         drawProgressWheel(x, y, w, h, col)
 
