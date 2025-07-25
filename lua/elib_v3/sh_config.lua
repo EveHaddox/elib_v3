@@ -27,7 +27,7 @@ Elib.OverrideDermaMenus = 0
 --[[
     The Image URL of the progress image you want to appear when image content is loading.
 ]]
-Elib.ProgressImageURL = "https://pixel-cdn.lythium.dev/i/47qh6kjjh"
+Elib.ProgressImageURL = "https://construct-cdn.physgun.com/images/5fa7c9c8-d9d5-4c77-aed6-975b4fb039b5.png"
 
 --[[
     The location at which downloaded assets should be stored (relative to the data folder).
