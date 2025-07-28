@@ -85,9 +85,9 @@ end
 -- Key (keybind)
 -- Color (color)
 -- Dropdown (string)
+-- list (numeric table)
 
 ---- XX not done yet XX ----
--- list (numeric table)
 -- table (table)
 
 // Example
@@ -99,6 +99,7 @@ Elib.Config:AddValue("Elib", "client", "Test", "test_toggle", "Test Toggle", tru
 Elib.Config:AddValue("Elib", "client", "Test", "test_key", "Test Key", KEY_1, "Key")
 Elib.Config:AddValue("Elib", "client", "Test", "test_color", "Test Color", Color(153, 57, 57), "Color")
 Elib.Config:AddValue("Elib", "client", "Test", "test_deopdown", "Test Dropdown", "test", "Dropdown", nil, nil, nil, {"test", "smth?", "idk", "idk 2", "long one, like really long one"})
+Elib.Config:AddValue("Elib", "client", "Test", "test_list", "Test List", {"/open", "!open"}, "List")
 
 Elib.Config:AddValue("Elib", "server", "Test", "test_num", "Test Number Server", 7, "Number", nil, nil, true)
 

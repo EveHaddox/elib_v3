@@ -8,32 +8,57 @@ AccessorFunc(PANEL, "Text", "Text", FORCE_STRING)
 
 function PANEL:Init()
 
-    self:SetHeight(Elib.Scale(35))
+    self:SetHeight(Elib.Scale(170))
     self:SetText("")
 
     self.OriginalValue = nil
+    self.Value = {}
     self.Saved = true
 
-    self.bind = self:Add("Elib.Binder")
-    self.bind:Dock(RIGHT)
-    self.bind:DockMargin(0, 4, 4, 4)
-    self.bind:SetWide(Elib.Scale(130))
+    self.Header = self:Add("DPanel")
+    self.Header:Dock(TOP)
+    self.Header:DockMargin(0, 0, 0, 4)
+    self.Header:SetHeight(Elib.Scale(35))
 
-    self.bind.OnChange = function(value)
-        if self.OriginalValue == nil then return end
-        self.Saved = value == self.OriginalValue
+    self.Header.Paint = function(pnl, w, h)
+        Elib.DrawRoundedBoxEx(6, 0, 0, w, h, Elib.Colors.Header, true, true, false, false)
+        Elib.DrawSimpleText(self:GetText(), "Elib.Config.Title", 8, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 
-    self.Reset = self:Add("DButton")
+    self.Header.PerformLayout = function(pnl, w, h)
+        self.Reset:SetWide(h - 8)
+    end
+
+    // Adding Values
+    self.AddButton = self.Header:Add("Elib.TextButton")
+    self.AddButton:Dock(RIGHT)
+    self.AddButton:DockMargin(0, 4, 4, 4)
+    self.AddButton:SetText("Add")
+    self.AddButton:SetWide(Elib.Scale(60))
+
+    self.AddButton.DoClick = function()
+        local val = self.valueEntry:GetValue()
+        if val and val ~= "" then
+            table.insert(self.Value, val)
+            self.valueEntry:SetValue("")
+            self.Saved = false
+            self:Populate()
+        end
+    end
+
+    self.valueEntry = self.Header:Add("Elib.TextEntry")
+    self.valueEntry:Dock(RIGHT)
+    self.valueEntry:DockMargin(0, 4, 4, 4)
+    self.valueEntry:SetWide(Elib.Scale(220))
+
+    self.Reset = self.Header:Add("DButton")
     self.Reset:Dock(RIGHT)
     self.Reset:DockMargin(0, 4, 4, 4)
     self.Reset:SetText("")
     self.Reset.Color = Elib.Colors.PrimaryText
 
     self.Reset.DoClick = function(pnl)
-        if self.Saved then return end
-        self.bind:SetValue(self.OriginalValue)
-        self.Saved = true
+        self:RestoreDefault()
     end
 
     self.Reset.Paint = function(pnl, w, h)
@@ -49,16 +74,67 @@ function PANEL:Init()
 
         Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/5fa7c9c8-d9d5-4c77-aed6-975b4fb039b5.png", self.Reset.Color)
     end
+
+    // Content
+    self.Content = self:Add("Elib.ScrollPanel")
+    self.Content:Dock(FILL)
+    self.Content:DockMargin(4, 0, 4, 4)
+
+    self.contentPanels = {}
+
+    function self:Populate()
+        if !table.IsEmpty(self.contentPanels) then
+            for _, pnl in ipairs(self.contentPanels) do
+                pnl:Remove()
+            end
+        end
+
+        self.contentPanels = {}
+        if not self.Value or table.IsEmpty(self.Value) then return end
+
+        for k, v in ipairs(self.Value) do
+            self.contentPanels[k] = self.Content:Add("DPanel")
+            local pnl = self.contentPanels[k]
+
+            pnl:Dock(TOP)
+            pnl:DockMargin(0, 0, 4, 4)
+            pnl:SetHeight(Elib.Scale(30))
+
+            pnl.Paint = function(pnl, w, h)
+                Elib.DrawRoundedBox(6, 0, 0, w, h, Elib.OffsetColor(Elib.Colors.Header, -4))
+                Elib.DrawSimpleText(v, "Elib.Config.Title", 8, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+            end
+
+            pnl.RemoveButton = pnl:Add("Elib.TextButton")
+            pnl.RemoveButton:Dock(RIGHT)
+            pnl.RemoveButton:DockMargin(0, 4, 4, 4)
+            pnl.RemoveButton:SetText("X")
+            pnl.RemoveButton:SetWide(Elib.Scale(30))
+
+            pnl.RemoveButton.DoClick = function()
+                table.remove(self.Value, k)
+                self.Saved = false
+                self:Populate()
+            end
+        end
+
+        timer.Simple(0, function()
+            self.Content:InvalidateLayout(true)
+        end)
+    end
     
 end
 
 function PANEL:SetValue(value)
-    self.OriginalValue = value
-    self.bind:SetValue(value)
+    if not value or type(value) ~= "table" or table.IsEmpty(value) then return end
+    self.OriginalValue = table.Copy(value)
+    self.Value = table.Copy(value)
+
+    self:Populate()
 end
 
 function PANEL:GetValue()
-    return self.bind:GetValue()
+    return self.Value
 end
 
 function PANEL:GetSaved()
@@ -73,7 +149,8 @@ function PANEL:RestoreDefault()
     if self.Saved then return end
 
     self.Saved = true
-    self.bind:SetValue(self.OriginalValue)
+    self.Value = table.Copy(self.OriginalValue)
+    self:Populate()
 end
 
 function PANEL:Save()
@@ -84,16 +161,13 @@ function PANEL:Save()
 
     Elib.Config.Addons[self.Path.addon][self.Path.realm][self.Path.category][self.Path.id].value = value
     self.Saved = true
-    self.OriginalValue = value
 end
 
 function PANEL:PerformLayout(w, h)
-    self.Reset:SetWide(h - 8)
 end
 
 function PANEL:Paint(w, h)
-    Elib.DrawRoundedBox(6, 0, 0, w, h, Elib.OffsetColor(Elib.Colors.Background, 6))
-    Elib.DrawSimpleText(self.Text, "Elib.Config.Title", 8, h / 2, Elib.Colors.PrimaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+    Elib.DrawRoundedBox(6, 0, 0, w, h, Elib.Colors.Background)
 end
 
 vgui.Register("Elib.Config.Panels.List", PANEL, "DPanel")
