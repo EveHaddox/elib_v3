@@ -30,6 +30,7 @@ AccessorFunc(PANEL, "ImgurID", "ImgurID", FORCE_STRING) -- Deprecated
 AccessorFunc(PANEL, "ImageURL", "ImageURL", FORCE_STRING)
 
 AccessorFunc(PANEL, "Padding", "Padding", FORCE_NUMBER)
+AccessorFunc(PANEL, "SidebarWidh", "SidebarWidh", FORCE_NUMBER)
 
 function PANEL:SetImgurID(id)
 	self:SetImageURL("https://i.imgur.com/" .. id .. ".png")
@@ -77,6 +78,7 @@ function PANEL:Init()
 	self:SetRemoveOnClose(true)
 
 	self:SetPadding(6)
+	self:SetSidebarWidh(200)
 
 	local size = Elib.Scale(200)
 	self:SetMinWidth(size)
@@ -238,11 +240,11 @@ function PANEL:PerformLayout(w, h)
 
 	if IsValid(self.SideBar) then
 		self.SideBar:SetPos(0, headerH)
-		self.SideBar:SetSize(Elib.Scale(200), h - headerH)
+		self.SideBar:SetSize(Elib.Scale(self:GetSidebarWidh()), h - headerH)
 	end
 
 	local padding = Elib.Scale(self:GetPadding())
-	self:DockPadding(self.SideBar and Elib.Scale(200) + padding or padding, headerH + padding, padding, padding)
+	self:DockPadding(self.SideBar and Elib.Scale(self:GetSidebarWidh()) + padding or padding, headerH + padding, padding, padding)
 
 	self:LayoutContent(w, h)
 end
