@@ -101,6 +101,15 @@ function PANEL:OnMouseReleased(mouseCode)
     self.Depressed = nil
 end
 
+function PANEL:SetColor(main, disabled)
+    self.NormalCol = Elib.CopyColor(main and main or Elib.Colors.Primary)
+    self.HoverCol = Elib.OffsetColor(self.NormalCol, -15)
+    self.ClickedCol = Elib.OffsetColor(self.NormalCol, 15)
+    self.DisabledCol = Elib.CopyColor(disabled and disabled or Elib.Colors.Disabled)
+
+    self.BackgroundCol = self.NormalCol
+end
+
 function PANEL:PaintExtra(w, h) end
 
 function PANEL:Paint(w, h)
