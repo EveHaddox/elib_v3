@@ -2,16 +2,15 @@
 // discord evehaddox
 
 
+///////////////////
+// Line Graph
+///////////////////
 local PANEL = {}
 
-------------------------------------------------------------------
---  INITIALISE
-------------------------------------------------------------------
 function PANEL:Init()
     self.Data        = {}
-    self.LineColor   = Color(  0, 150, 255 )
-    self.AxisColor   = Color(200, 200, 200, 40) -- low-α grid
-    self.BgColor     = Color( 30,  30,  30, 200 )
+    self.LineColor   = Elib.Colors.Primary
+    self.AxisColor   = Color(56, 56, 56, 200) -- low-α grid
     self.BasePad     = 10
     self.Font        = "DermaDefaultBold"
 
@@ -19,25 +18,16 @@ function PANEL:Init()
     self.TickX, self.TickY = 5, 5
 
     self.SamplesPerSeg = 10   -- spline smoothness
-    self.FillAlphaTop  = 80   -- gradient opacity at curve
+    self.FillAlphaTop  = 120   -- gradient opacity at curve
 end
 
-------------------------------------------------------------------
---  PUBLIC API
-------------------------------------------------------------------
 function PANEL:SetData(tbl)             self.Data = tbl or {} end
 function PANEL:AddPoint(x, y)           table.insert(self.Data, {x = x, y = y}) end
 function PANEL:SetLineColor(col)        self.LineColor = col end
 function PANEL:SetAxisColor(col)        self.AxisColor = col end
-function PANEL:SetBackgroundColor(col)  self.BgColor   = col end
-function PANEL:SetTicks(nx, ny)         self.TickX, self.TickY = nx or self.TickX,
-                                                                  ny or self.TickY end
-function PANEL:SetUnits(xUnit, yUnit)   self.UnitX, self.UnitY = xUnit or "",
-                                                                  yUnit or "" end
+function PANEL:SetTicks(nx, ny)         self.TickX, self.TickY = nx or self.TickX, ny or self.TickY end
+function PANEL:SetUnits(xUnit, yUnit)   self.UnitX, self.UnitY = xUnit or "", yUnit or "" end
 
-------------------------------------------------------------------
---  INTERNAL HELPERS
-------------------------------------------------------------------
 local function range(tbl, key)
     local lo, hi = math.huge, -math.huge
     for _, pt in ipairs(tbl) do
@@ -48,12 +38,11 @@ local function range(tbl, key)
     return lo, hi
 end
 
-local function fmt(val) -- simple thousands separator
+local function fmt(val)
     local s = tostring(math.floor(val))
     return s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
 end
 
--- Catmull-Rom spline sampler for one dimension
 local function catmull(p0, p1, p2, p3, t)
     local t2, t3 = t*t, t*t*t
     return 0.5*((2*p1)
@@ -62,7 +51,6 @@ local function catmull(p0, p1, p2, p3, t)
               + (-p0 + 3*p1 - 3*p2 + p3)*t3)
 end
 
--- Produce screen-space points along the spline
 local function buildSpline(mapX, mapY, data, samples)
     local out, n = {}, #data
     for i = 1, n-1 do
@@ -83,23 +71,14 @@ local function buildSpline(mapX, mapY, data, samples)
     return out
 end
 
-------------------------------------------------------------------
---  PAINT
-------------------------------------------------------------------
 function PANEL:Paint(w, h)
     surface.SetFont(self.Font)
 
-    -- 1 ▸ background
-    --surface.SetDrawColor(self.BgColor)
-    --surface.DrawRect(0, 0, w, h)
-
     if #self.Data < 2 then return end
 
-    -- 2 ▸ data range
     local minX, maxX = range(self.Data, "x")
     local minY, maxY = range(self.Data, "y")
 
-    -- 3 ▸ dynamic padding (left)
     local widest = 0
     for i = 0, self.TickY do
         local txt = fmt(Lerp(i/self.TickY, minY, maxY)) .. self.UnitY
@@ -114,7 +93,6 @@ function PANEL:Paint(w, h)
     local mapX = function(x) return padL      + (x-minX)/(maxX-minX) * gw end
     local mapY = function(y) return h - padB - (y-minY)/(maxY-minY) * gh end
 
-    -- 4 ▸ spline & polygon for fill mask
     local spline = buildSpline(mapX, mapY, self.Data, self.SamplesPerSeg)
     local poly   = {}
     for _, pt in ipairs(spline) do poly[#poly+1] = {x = pt.x, y = pt.y} end
@@ -123,9 +101,12 @@ function PANEL:Paint(w, h)
         poly[#poly+1] = {x = spline[i].x, y = baseY}
     end
 
-    ----------------------------------------------------------------
-    -- 5 ▸ gradient fill via stencil
-    ----------------------------------------------------------------
+    surface.SetDrawColor(self.AxisColor)
+    for i = 0, self.TickY do
+        local y = mapY(Lerp(i/self.TickY, minY, maxY))
+        surface.DrawLine(padL, y, w-padR, y)
+    end
+
     render.ClearStencil()
     render.SetStencilEnable(true)
         render.SetStencilWriteMask(1)
@@ -137,7 +118,6 @@ function PANEL:Paint(w, h)
         render.SetStencilPassOperation  (STENCIL_REPLACE)
         render.SetStencilCompareFunction(STENCIL_ALWAYS)
 
-        -- ▸ build stencil one quad per segment
         surface.SetDrawColor(255,255,255,255)
         for i = 2, #spline do
             local p1, p2 = spline[i-1], spline[i]
@@ -149,26 +129,16 @@ function PANEL:Paint(w, h)
             })
         end
 
-        -- ▸ restrict drawing to where stencil == 1
         render.SetStencilCompareFunction(STENCIL_EQUAL)
         render.SetStencilPassOperation  (STENCIL_KEEP)
 
-        -- vertical gradient (opaque at top → 0 α at base)
-        surface.SetMaterial(Material("vgui/gradient-u"))   -- fades downward
+        surface.SetMaterial(Material("vgui/gradient-u"))
         local lc = self.LineColor
         surface.SetDrawColor(lc.r, lc.g, lc.b, self.FillAlphaTop)
         surface.DrawTexturedRect(padL, padT, gw, gh)
 
     render.SetStencilEnable(false)
 
-    -- 6 ▸ horizontal grid (drawn after gradient so lines stay visible)
-    surface.SetDrawColor(self.AxisColor)
-    for i = 0, self.TickY do
-        local y = mapY(Lerp(i/self.TickY, minY, maxY))
-        surface.DrawLine(padL, y, w-padR, y)
-    end
-
-    -- 7 ▸ smoothed curve (2-px)
     surface.SetDrawColor(self.LineColor)
     for i = 2, #spline do
         local p1, p2 = spline[i-1], spline[i]
@@ -176,19 +146,16 @@ function PANEL:Paint(w, h)
         surface.DrawLine(p1.x+1, p1.y, p2.x+1, p2.y)
     end
 
-    -- 8 ▸ axes
-    surface.SetDrawColor(200,200,200,120)
+    surface.SetDrawColor(50,50,50)
     surface.DrawLine(padL, h-padB, w-padR, h-padB) -- X
     surface.DrawLine(padL, padT,   padL,   h-padB) -- Y
 
-    -- 9 ▸ ticks & labels
     local function drawTick(v, isX)
         if isX then
             local x  = mapX(v)
             local str = fmt(v)..self.UnitX
             local tw  = surface.GetTextSize(str)
 
-            -- keep the label fully inside [padL , w-padR]
             local labelX = math.Clamp(x, padL + tw/2, w - padR - tw/2)
 
             surface.DrawLine(x, h-padB, x, h-padB+3)
@@ -206,4 +173,4 @@ function PANEL:Paint(w, h)
     for i = 0, self.TickY do drawTick(Lerp(i/self.TickY, minY, maxY), false) end
 end
 
-vgui.Register("Elib.Graph", PANEL, "DPanel")
+vgui.Register("Elib.LineGraph", PANEL, "DPanel")
