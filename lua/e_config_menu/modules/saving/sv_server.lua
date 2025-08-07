@@ -9,13 +9,7 @@ if not sql.TableExists("Elib_settings") then
 end
 
 local function Save(addon, realm, category, id, value, vType)
-    -- serialize tables, stringify everything else
-    if vType == "table" then
-        value = util.TableToJSON(value)
-    else
-        value = tostring(value)
-    end
-
+    
     local qAddon    = sql.SQLStr(addon)
     local qCategory = sql.SQLStr(category)
     local qID       = sql.SQLStr(id)
