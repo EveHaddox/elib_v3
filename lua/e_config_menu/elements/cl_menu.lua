@@ -184,7 +184,7 @@ function PANEL:GenerateCategories()
         self.categoryNav:AddItem(i, cat.name, SwichCat, i)
     end
 
-    if #self.categoryNav.Items > 0 then
+    if #self.categoryNav.Items > 0 and self.categoryNav.Items[self.categoryNav.SelectedItem] then
         self.category = string.lower(self.categoryNav.Items[self.categoryNav.SelectedItem]:GetName())
         self:GeneratePage()
     end
