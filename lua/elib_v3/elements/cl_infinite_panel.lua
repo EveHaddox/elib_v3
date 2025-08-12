@@ -10,6 +10,8 @@ local PANEL = {}
 Elib.RegisterFont("Elib.InfinitePnl.Coordinates", "Inter SemiBold", 18)
 
 function PANEL:Init()
+
+    self.Owned = nil
     
     self.pos = {
         x = 0,
@@ -60,9 +62,6 @@ function PANEL:Init()
         end
     end
 
-    self:addItem("btn1", 10, 10, 90, 50)
-    self:addItem("Testing pos", 120, 400, 150, 50)
-
 end
 
 function PANEL:SetBounds(minX, minY, maxX, maxY)
@@ -72,7 +71,7 @@ function PANEL:SetBounds(minX, minY, maxX, maxY)
     self.MaxY = maxY
 end
 
-function PANEL:addItem(id, x, y, w, h)
+function PANEL:AddItem(id, x, y, w, h, required, conflicting) -- conflicting means you can't have this item if you have the conflicting item
     
     self.itemsLog[id] = {
         x = x,
@@ -81,10 +80,54 @@ function PANEL:addItem(id, x, y, w, h)
         h = h
     }
 
-    self.items[id] = self:Add("Elib.TextButton") // the item getting added to the panel
+    self.items[id] = self:Add("Elib.TextButton")
     self.items[id]:SetPos(self.pos.x + x, self.pos.y + y)
     self.items[id]:SetSize(w, h)
     self.items[id]:SetText(id)
+
+    if !self.Owned or !required then return end
+    if !self.Owned[required] then
+        self.items[id]:SetEnabled(false)
+    end
+
+end
+
+function PANEL:AddConnection(id, x, y, w, h)
+    
+    self.itemsLog[id] = {
+        x = x,
+        y = y,
+        w = w,
+        h = h
+    }
+
+    self.items[id] = self:Add("DPanel")
+    self.items[id]:SetPos(self.pos.x + x, self.pos.y + y)
+    self.items[id]:SetSize(w, h)
+
+    self.items[id].Paint = function(self, w, h)
+        surface.SetDrawColor(Elib.Colors.Silver)
+        surface.DrawRect(0, 0, w, h)
+    end
+
+end
+
+function PANEL:AddImage(id, x, y, w, h, url, col)
+    
+    self.itemsLog[id] = {
+        x = x,
+        y = y,
+        w = w,
+        h = h
+    }
+
+    self.items[id] = self:Add("DPanel")
+    self.items[id]:SetPos(self.pos.x + x, self.pos.y + y)
+    self.items[id]:SetSize(w, h)
+
+    self.items[id].Paint = function(self, w, h)
+        Elib.DrawImage(0, 0, w, h, url, col)
+    end
 
 end
 
