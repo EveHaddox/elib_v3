@@ -22,18 +22,10 @@ local render_CopyRenderTargetToTexture = render.CopyRenderTargetToTexture
 local math_min = math.min
 local math_max = math.max
 local DisableClipping = DisableClipping
+local type = type
 
-local BLUR_RT = GetRenderTargetEx("DownsampledSceneRT" .. SysTime(),
-	512, 512,
-	RT_SIZE_LITERAL,
-	MATERIAL_RT_DEPTH_SEPARATE,
-	bit.bor(2, 256, 4, 8 --[[4, 8 is clamp_s + clamp-t]]),
-	0,
-	IMAGE_FORMAT_BGRA8888
-)
-
-local SHADERS_VERSION = "1744632549"
-local SHADERS_GMA = [========[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]========]
+local SHADERS_VERSION = "1754895369"
+local SHADERS_GMA = [========[R01BRAOHS2tdVNwrAAmUmWgAAAAAAFJORFhfMTc1NDg5NTM2OQAAdW5rbm93bgABAAAAAQAAAHNoYWRlcnMvZnhjLzE3NTQ4OTUzNjlfcm5keF9yb3VuZGVkX2JsdXJfcHMzMC52Y3MAUAUAAAAAAAAAAAAAAgAAAHNoYWRlcnMvZnhjLzE3NTQ4OTUzNjlfcm5keF9yb3VuZGVkX3BzMzAudmNzADQEAAAAAAAAAAAAAAMAAABzaGFkZXJzL2Z4Yy8xNzU0ODk1MzY5X3JuZHhfc2hhZG93c19ibHVyX3BzMzAudmNzADYFAAAAAAAAAAAAAAQAAABzaGFkZXJzL2Z4Yy8xNzU0ODk1MzY5X3JuZHhfc2hhZG93c19wczMwLnZjcwDeAwAAAAAAAAAAAAAFAAAAc2hhZGVycy9meGMvMTc1NDg5NTM2OV9ybmR4X3ZlcnRleF92czMwLnZjcwAeAQAAAAAAAAAAAAAAAAAABgAAAAEAAAABAAAAAAAAAAAAAAACAAAAHUcBbAAAAAAwAAAA/////1AFAAAAAAAAGAUAQExaTUG0DgAABwUAAF0AAAABAABoqV8kgL/sqj/+eCjfxRdm72ukxxrZJOmY5BiSff6UK8jKnQg0wmy60gGA6OIVrm+AZ/lvb8Ywy3K8LU+BJPZn395onULJrRD4M/GDQNqeVSGshmtApEeReU+ZTtlBcM3KgMP5kNHFcYeMjOP18v1rXRkhTnsRXCivQkjpG0AzOenhnTzSeUk0VRjyYUnN3TMr2QcLKyqCwWb6m/Fs7nXcrvFthAwSs0ciBXYmrkwlQ310qhdU+A7QyOJg9+a4osRtdsSFsU0kDnqfMCg3LJ/xPGbKLgrBp9Gp9WHeJZlAkxwGefkRNGJxCIQHLe/mMKU3/zoj0lpzNB+tDMSouHs1pc4Tao0Vnw7+gilRptrVd106Cc9HdUId8tlzu3EUSh75xRLQ/LkyqbgLeHg6VjD9cWcx8Fdq1e3Icg6ut5v0rg30grbcJQU4teRPS4Wf5+1qeYTID52pLXIKqTBQGZtYOuSjbA8roO5AKZw7hBirqZ8H4WC7dSmHudrAvjtPeVPjOpABK3Q+N+KPu97KER7zTZMx9Uwmtb5yXpTSpKsuRX03kZxlL1bi4l8GF/2zPP1barOH4ZWuC4c+l/N+/naMPMfTau5LXAMg0FTc23AFYG1D0/BRWSIueZ8BeyFkoOL12W2I9Kvoga0GYSKR9rSnQdG9RkIFf0UXv8PYoESenIWvFLY7dFuzqNeJUXT4U0KKswIb5OLisV5vjTS/KZCkvZxgj6YVYOev8K2SUAd7wC2lrE6hJxdRxFSfnnlebSIjW7dIP3JJATeZBVJGQdPY7YTxKYISudydzgEjEeBGo8XP+7zuiF/53LicBsZu2m/gaEQ6RBGWkv5kMZTWRe1TS1xzLlxZCMSHRniAHZBA6+Xu7b5C5+vVYxG1/Uo7AXzUYRkaX076jIFYdhH5jiUl3kDFW80VAbJya5jVQPX6H0osnxcyY9Tqya7iENMj19Nf8NIXXsq31uSew+ev7LIyrqiGgDQc50KDmu7VTELYGEfVZmFjuPoOpNxzd3sGvn+tULFd8pEOTjzZNJIxmcVUGS8OTkRZa/0ntBj80P6HZzT3XJkv5Trc1zmAf0ee+mRuMXLO4o4wkkwvt2/JmeMRdGptSXBh015K/iwDqknZvuNbCwI7ILoeHP0S78lC3o6nQpe/96CeVmEPwXvbqbMly76i4z7ELTbbMHxCG4S0UjKUtB1R41Z4uDEEds624Zy8LnwjnJ6nJqEiEZy68bDShzBg8VoGqnl5/NFMBrTNpHdZ73euE2Fxm4tMBxDBOexUPSP5D2qcg73zMVTuCIE4i4blFWIwDdoPNG3SHQNLgZ+DLkLmgAlf3syt2myk5t2rTrqoYiw6Ow1EDNENSACJK+bu4IqiEFz7FEhJkq2G9tM+RZ4OHIqSikUymqgNIC5k+Se/4sk3gjKnqdW8UjO1f5CQNk8Z1kAAeIdFM67xRTGafWAbjIpA7f2bvMMPDtkHEAGXcC2RLd4ZcWRV79g8txCT8HjMBlzJA1S+2Kwsbws1SX+aIa/rm55ONmwVmaVcPWp6yf4xQ+hvBn2rZry1XVH+cCiXSN+DjgUpc9nL+QcwRixWTt1SHTTmbEkY2sZwfYT889oXKgTEpx8/qhVFQQYiS2FbhkeBXnxSXArAfnR6Pm4RmKhxw3Lvgjf4Eo4aSb2f4CEUlJVDjIeDeumTv/9OzAfoRZXEIDuXWcEZ4VoTdAAA/////wYAAAABAAAAAQAAAAAAAAAAAAAAAgAAAC+rzZYAAAAAMAAAAP////80BAAAAAAAAPwDAEBMWk1BgAoAAOsDAABdAAAAAQAAaJxe2IK/7KknxcSXK86dhEFS5n0YZtr4ZBTKG6WPr92ZGhquZzTIAKwwliLKh/wHyv7F/aVS8kpvJo5JPXNZPgXTFX/r2QzKEbGTOLiSpZb0yRzahJKiusbwU71tIeclNnMc/99W3WWjJetsaZ+WtSVKSPK1gik1voA3BrTI/PRBgTM4UIhTe2kkA8iMqPHiXR2hcqYwuuWgpVPHQXAVTuZnx9Zxn7bIpbv064K2rh42q3/XhlqkGkdjxR91QiiLMG9Chi6pQUshsjfAtQOYMGq/uDdmEXd3u6d7fVl4c4khoVbbs2840Tl3f+HX6kaJop667+ZhIxCIkHfBTkrJVyGuzpHDwvLTlI5u9FFg5v5w3m6nvQDpubo8iNPkx7pjnYOAApaD8p7PB42hx7Z/zDRIokdXY5O20wkNlzug1BHGm3HZuO0jXQsDIlSsiFurNm3N8maWhjLOKVcjm6y0TUPSQwTk/XUHjT/sj0X7Rq1sTXMCPdkV17lw+p6UozRKJJpxjouFdqyLH9BgT+fPSp2sWHjdy0kfhm8Sz94+HMWo5RtnOIfBws69zzbIFHJu70Jt32rZA6N5YM3No0C65Mi+FMX6HIqCu/DXXoGuKzxyBcnxURaE7ICSKx+A5aLOTWg+60yTxguXcqAx/RGYRJzv/6UDfEMoTjfRPz6a8TdPpNg2OxDLbzsu3SzLEwbPJMLSHS+ZuZ3QGew39UBbHHnxsyv3o3ft+zZ4/D8l/IIc0Ra0JFwgPkQQNl7gxpW0LFsfPjW7IobAXwqtczEM5HdClLhNE6YcRzQmtugRzHHrYnSOKpcf3mwr2AxTwpqtEw198bpfhpM1PQxKmSCJtzhuZz9atBHdInc/GhB2PlaDBm71z4I4T0EaDqgfp4WCmoolhi4Z4kJ9sWZ505wJxIOczgalRbgnERpjYFhSVUxmSs4yhEXijcptcncWvN87f0peWcxvWRFtiLdbxi33jFb8qklA7UnSp6cN0jz8Prs7QDJxAIUMN7WWnUSrJsHC1JEr+Z8WVMJGMYfLOVeRSCgu1BMHgvd7r9keQBsbMpUjIKBY9qeOqyZxyEu3HIWurvGd5r5mw8VE6J3kDUTxc4PRETqcyCIj52ys7wexeU3c/MSu6/UG0zFwJpJRzbTAhFWD9CamRx9SA8BrD7TtdErPhcc/L5diqGfBvN3WZv4Bp7rQHr4lfO2KUkxqq/8tVe7z+EpHN4WGYPS2k4Imc7PqUk5mNzk4jJ4YnWENas9Qz5JkNOZCJxSilqhDy4KqjHkiBCNmUJvWLy5XGu6TnwK4XJ9kCuA7EAOiM+H6uB8uxDTWt5CzuQD/////BgAAAAEAAAABAAAAAAAAAAAAAAACAAAA5CvzcQAAAAAwAAAA/////zYFAAAAAAAA/gQAQExaTUEgDgAA7QQAAF0AAAABAABohF/3ANos8ikRxPcBjHHEdepXp59WPT3vqirl6vheC7siJXviLHTHGaBqsjjm8uLG5Ve4w16rPpO+g1UZp520DHb0HpjYXJSk0M5IFR3Z3LJ6CXR6tPtNlqpMD8ZAKDdvjwcIwfPX2C0FiL5+eD32kebgYrV8PQnqCCxXZiN+/fwfAX0dF/AhVpUarBAj7DQRYywlck3WHyM09yjgwHsv5JdVZ+yabdwWo7K9bIQZkzVC4wJbWodKY9XjuDKoe7X6nat7dsjajdvnb8b5dWXoFBIwIuv4w+98OvjAM8uZqF4CbCoEBV/r7nqxx2RYsv+CYtPIPYAu6d7gK4BsVxy6kZRrI54N0cWF63nYa93Ce6GrkCPKg0p1QJMfe4/roFMA2GOp/7wkY2j3b+KwvFJh4vX2vsMdDL0oZ3MOhA5P+7nGrJECft7fEI7H9ykxU3jwbCyKfbBtPK6WSqWKiunXV2cHqBe9tNysHz0zGyIftTRZK8DXWdxswDEgAKhjqD+DIYey23RiC1HQX4oUMtadmoZ7QN9YcyhPnJQOPxMmKmtk7+DW6lBK92Ikyyr/lrZv+CR6c/Dhxr52JvtZLwWYv4bja08Ks6ZhHk9j9laSsMrN/q1XMbMtiAYleup8IXxgJgVYorVQBn/zcaRx0HTm7txKdNgWe4DyzrkqT7uYWTNNwLFmwKhiLd2RCGR4vwZ+nQsSS443H/TgPROTccB4WxTSBuSIRQVotQAUpJGTEmro0vsCEqoDkQxCuuHz7kWdWzXp5HQlwb2qlWYbd27nObHO1uUKJ9FpOkTInUPdWZ7I6Y3kcnGC5X2KabIzOPOh0GirJYmNpybhJrpLBRzQHvxV3AD0w3qP0Od67MrhZnv1wn3LDy8iroHOR58ab1jZ0xCGH9Qwo1EXtTuMUhyCi4riP5SiHFGRXXaOl32lW+rCoUi3QFm3wpoJ6N0kjQwAeUqHneaOjD3uyihFQrG6RC4VeVQLRwhW5kJIx9qXQBguOS4u1/hUlW+HfD3BwpdrvOBaICxBGNkAuju8+ah3vPyvESXbQZaDAhg7dfxnNOB951z/ftzEt489RsAZXz646GLTJGyLD25rLOhFRrn3LsVHgkQyD9YADf+fvwDYg9QHWCmhkgEluRTsiYcO87vMuma3+3++u3NmsSEPdDpYON6/EY4OE6WktRPDS19FflOA/aHh/GnrsQ7bJ7jYmV+d1R+3oXBMq+GIAkD3D/O22HroGKkoYC6tUQf1wMCmZ/mj+ihc6mtoV1KdVDLYWatmlR4U8avkG5RFI4vAs/7z0c34UDoutvoIwWrRG+rYQ1ALHp4+Nlquu3rhltrYk6n2gzSpnEjozJoJ+TGs4bttDCqggliwUCnHsDeRM8+wiGLEoo/ib+otxzTiRue28334DMQw3ec2PfzbLMnB5AYB8cw78oaIzkbRob5H+tsE0QFOwumh3nnyjOq1QuIIwJRCTs/wz+dhUJU7yKiMBfdYqJIa+tomn+Biaexl/d98Onnn+Aoguen1I29+DRkG7fvom2rHpXAOXH41W/cvczU0jwYabtKkdvA43c97oDu2rcegTlxpza4C4v/HquZa3nJ27UlYI89jM73vOSWcOfaRSoeEGXuwxgWGnGMaC1OKGrcp7+HsAUTec3yFir5DQWGN3ImkF17dOoXXAP////8GAAAAAQAAAAEAAAAAAAAAAAAAAAIAAABJTIjdAAAAADAAAAD/////3gMAAAAAAACmAwBATFpNQUAJAACVAwAAXQAAAAEAAGiMXviDP+ypJ8XER2Obf/Gub4RtwST2I5aFElPLRnYyBGKzzWHS3j92PM7OOrjSszB3wZMwdm0ahxEzeRRdNzXWcyklmZpnZnyTRC1yzISeAfbjOOXNofxCuF8x+RimSjb0+CE9pgV8Fgs6Nza/MSog2twkgUxmn0aoky4CECmnsEJJcQ66Ump+4tkbY284nKlxFxhT5k59LWkOwjOaFUysSXLX5R+gwJC82uA54PE1GidvXhqA/AkjGjcz0crb5k/rsqQ77T/wZsFhxana52fesSgZCV6fvqoGjkzqZnmsJVRGQcSPS2LBaJLIc+OOk8ZbDiGqBn5Xsxb9J31v/qjpov8yGxRyHi4yXRCCjE2QeaMeDtDSLxCXdTCYhjFtCJZytirhuAigToCAO1qMzZy4fREQYWlH0l8lEp13GryblNQkYNdwjgxZlwnavBf/O9G5hNH10VgiONbDa++CPCMStyDovKk1rOP6F3++I9wOyI5nnzYDxWd1Zo9j549iEsN8JbdhcD1JQUI/mt0N21t/FFJ5IWnChz3s/CmajA6AhG7xEXPc9SdqDDRegPwDBdktJSHOEpSmZOkeizeev4Emz0y76UP6oREqOSa8w9o2cgcxiPlbWqcQzIYb3D/WbwiYYexKjJM2Wszl2l401eHQLrduaUc5oYBufGT+do+LUUbxPvl1XwMIH6KyrwKFwHv2KsWRtCjNWB75xugj5FJcE1L1g2J2YUXkqFNuZveahmgjJ4KjyETVWv7DBlj6/GD5vJzEeIICH+mrkgKArOgHcEeMbNzGIUhAwY4wwMjxdMrUpwUwwKkmfx6L1eNjiqWrrholmk8qUGFN5IJMIvCAKUHujMSaqnCMO/7jvlWeWy5nsejSnWBNii/+YQJAxMBcUKmeSC54PzInKQxWTPygv1hxoD60xjr7B403/1ym7C0JKZEMrkLpB2dQ/9MrXqWH5jnpQuNd7GZ/wFYNMBQHQlODNaeWwPRJ8qbUlcgkeqWRC5/zhJ1H03Lb9hhGPTew9EHrKcDpUJvRQcJD2S5QMJ8wqbS6fODbJJxWCK6TU30bHf25JKqxv/S6sCAtPh7L/LypsErbO2f8sril+ZYtOWOdYJldzYzK79DNl453VbFjBfqlla+E74sKEC29OoaGAzIb+dFd8Ozl2fi1iB5tzXwwbauu9M0uKGvtZgQu2Zsx53qVwM7rC4TFKYfxEf7cAP////8GAAAAAQAAAAEAAAAAAAAAAAAAAAIAAAB3Q0KZAAAAADAAAAD/////HgEAAAAAAADmAABATFpNQWQBAADVAAAAXQAAAAEAAGiVXdSHP+xjGaphZkpGU+Usm+MtQUH83EbXXMjgea+yS5+C8AjZsriU7FrSa/C3QwfnfNO2E25hgUTRGIDQmsxKx7Q+ggw5O2Hyu6lPnEYPfqt3jvm3cjj6Z1X02PoibeZEF4V28Or5mSkKcqgZk6cbnqeeVgnqfAvD/O3uLu+nT7VAOydRrNBSD1yQVTBZUZtIJLmvDuIE27Eo7GuwHoYCUrVUwgW6q0SbikkxwEeOthaz5bMITbOd2JgjhkHkQV22VJTNinlRW2ADS1E/dJnyAAD/////AAAAAA==]========]
 do
 	local DECODED_SHADERS_GMA = util.Base64Decode(SHADERS_GMA)
 	if not DECODED_SHADERS_GMA or #DECODED_SHADERS_GMA == 0 then
@@ -49,9 +41,18 @@ local function GET_SHADER(name)
 	return SHADERS_VERSION:gsub("%.", "_") .. "_" .. name
 end
 
+local BLUR_RT = GetRenderTargetEx("RNDX" .. SHADERS_VERSION .. SysTime(),
+	1024, 1024,
+	RT_SIZE_LITERAL,
+	MATERIAL_RT_DEPTH_SEPARATE,
+	bit.bor(2, 256, 4, 8 --[[4, 8 is clamp_s + clamp-t]]),
+	0,
+	IMAGE_FORMAT_BGRA8888
+)
+
 -- I know it exists in gmod, but I want to have math.min and math.max localized
 local function math_clamp(val, min, max)
-	return (math_min(math_max(val, min), max))
+	return math_min(math_max(val, min), max)
 end
 
 local NEW_FLAG; do
@@ -152,7 +153,7 @@ local SHADOWS_MAT = create_shader_mat("rounded_shadows", {
 local SHADOWS_BLUR_MAT = create_shader_mat("shadows_blur_horizontal", {
 	["$pixshader"] = GET_SHADER("rndx_shadows_blur_ps30"),
 	["$vertexshader"] = GET_SHADER("rndx_vertex_vs30"),
-	["$basetexture"] = "_rt_PowerOfTwoFB",
+	["$basetexture"] = BLUR_RT:GetName(),
 	["$texture1"] = "_rt_FullFrameFB",
 })
 
@@ -161,40 +162,68 @@ local SHAPES = {
 	[SHAPE_FIGMA] = 2.2,
 	[SHAPE_IOS] = 4,
 }
+local DEFAULT_SHAPE = SHAPE_FIGMA
 
 local MATERIAL_SetTexture = ROUNDED_MAT.SetTexture
 local MATERIAL_SetMatrix = ROUNDED_MAT.SetMatrix
 local MATERIAL_SetFloat = ROUNDED_MAT.SetFloat
 local MATRIX_SetUnpacked = Matrix().SetUnpacked
 
-local function SetParams(
-	mat,
-	tl, tr, bl, br,
-	w, h,
-	power,
-	use_texture,
-	outline_thickness,
-	aa
-)
-	local matrix = MATRIXES[mat]
+local MAT
+local X, Y, W, H
+local TL, TR, BL, BR
+local TEXTURE
+local USING_BLUR, BLUR_INTENSITY
+local COL_R, COL_G, COL_B, COL_A
+local SHAPE, OUTLINE_THICKNESS
+local START_ANGLE, END_ANGLE, ROTATION
+local CLIP_PANEL
+local SHADOW_ENABLED, SHADOW_SPREAD, SHADOW_INTENSITY
+local function RESET_PARAMS()
+	MAT = nil
+	X, Y, W, H = 0, 0, 0, 0
+	TL, TR, BL, BR = 0, 0, 0, 0
+	TEXTURE = nil
+	USING_BLUR, BLUR_INTENSITY = false, 1.0
+	COL_R, COL_G, COL_B, COL_A = 255, 255, 255, 255
+	SHAPE, OUTLINE_THICKNESS = SHAPES[DEFAULT_SHAPE], -1
+	START_ANGLE, END_ANGLE, ROTATION = 0, 360, 0
+	CLIP_PANEL = nil
+	SHADOW_ENABLED, SHADOW_SPREAD, SHADOW_INTENSITY = false, 0, 0
+end
+
+local function SetupDraw()
+	local max_rad = math_min(W, H) / 2
+	TL, TR, BL, BR = math_clamp(TL, 0, max_rad), math_clamp(TR, 0, max_rad), math_clamp(BL, 0, max_rad),
+		math_clamp(BR, 0, max_rad)
+
+	local matrix = MATRIXES[MAT]
 	MATRIX_SetUnpacked(
 		matrix,
 
-		bl, w, outline_thickness, 0,
-		br, h, aa, 0,
-		tr, power, 0, 0,
-		tl, use_texture, 0, 0
+		BL, W, OUTLINE_THICKNESS or -1, END_ANGLE,
+		BR, H, SHADOW_INTENSITY, ROTATION,
+		TR, SHAPE, BLUR_INTENSITY or 1.0, 0,
+		TL, TEXTURE and 1 or 0, START_ANGLE, 0
 	)
-	MATERIAL_SetMatrix(mat, "$viewprojmat", matrix)
+	MATERIAL_SetMatrix(MAT, "$viewprojmat", matrix)
+
+	if COL_R then
+		surface_SetDrawColor(COL_R, COL_G, COL_B, COL_A)
+	end
+
+	surface_SetMaterial(MAT)
 end
 
 local MANUAL_COLOR = NEW_FLAG()
-local DEFAULT_DRAW_FLAGS = SHAPE_FIGMA
+local DEFAULT_DRAW_FLAGS = DEFAULT_SHAPE
 
 local function draw_rounded(x, y, w, h, col, flags, tl, tr, bl, br, texture, thickness)
 	if col and col.a == 0 then
 		return
 	end
+
+	RESET_PARAMS()
 
 	if not flags then
 		flags = DEFAULT_DRAW_FLAGS
@@ -202,122 +231,144 @@ local function draw_rounded(x, y, w, h, col, flags, tl, tr, bl, br, texture, thi
 
 	local using_blur = bit_band(flags, BLUR) ~= 0
 	if using_blur then
-		RNDX.DrawBlur(x, y, w, h, flags, tl, tr, bl, br, thickness)
-		return
+		return RNDX.DrawBlur(x, y, w, h, flags, tl, tr, bl, br, thickness)
 	end
 
-	local mat = ROUNDED_MAT; if texture then
-		mat = ROUNDED_TEXTURE_MAT
-		MATERIAL_SetTexture(mat, "$basetexture", texture)
-	end
-	local max_rad = math_min(w, h) / 2
-	local shape_value = SHAPES[bit_band(flags, SHAPE_CIRCLE + SHAPE_FIGMA + SHAPE_IOS)]
-	SetParams(
-		mat,
-		bit_band(flags, NO_TL) == 0 and math_clamp(tl, 0, max_rad) or 0,
-		bit_band(flags, NO_TR) == 0 and math_clamp(tr, 0, max_rad) or 0,
-		bit_band(flags, NO_BL) == 0 and math_clamp(bl, 0, max_rad) or 0,
-		bit_band(flags, NO_BR) == 0 and math_clamp(br, 0, max_rad) or 0,
-		w, h,
-		shape_value or 2.2,
-		texture and 1 or 0,
-		thickness or -1,
-		0
-	)
-
-	if bit_band(flags, MANUAL_COLOR) == 0 then
-		if col then
-			surface_SetDrawColor(col.r, col.g, col.b, col.a)
-		else
-			surface_SetDrawColor(255, 255, 255, 255)
-		end
+	MAT = ROUNDED_MAT; if texture then
+		MAT = ROUNDED_TEXTURE_MAT
+		MATERIAL_SetTexture(MAT, "$basetexture", texture)
+		TEXTURE = texture
 	end
 
-	surface_SetMaterial(mat)
+	W, H = w, h
+	TL, TR, BL, BR = bit_band(flags, NO_TL) == 0 and tl or 0,
+		bit_band(flags, NO_TR) == 0 and tr or 0,
+		bit_band(flags, NO_BL) == 0 and bl or 0,
+		bit_band(flags, NO_BR) == 0 and br or 0
+	SHAPE = SHAPES[bit_band(flags, SHAPE_CIRCLE + SHAPE_FIGMA + SHAPE_IOS)] or SHAPES[DEFAULT_SHAPE]
+	OUTLINE_THICKNESS = thickness
+
+	if bit_band(flags, MANUAL_COLOR) ~= 0 then
+		COL_R = nil
+	elseif col then
+		COL_R, COL_G, COL_B, COL_A = col.r, col.g, col.b, col.a
+	else
+		COL_R, COL_G, COL_B, COL_A = 255, 255, 255, 255
+	end
+
+	SetupDraw()
+
 	-- https://github.com/Jaffies/rboxes/blob/main/rboxes.lua
 	-- fixes setting $basetexture to ""(none) not working correctly
-	surface_DrawTexturedRectUV(x, y, w, h, -0.015625, -0.015625, 1.015625, 1.015625)
+	return surface_DrawTexturedRectUV(x, y, w, h, -0.015625, -0.015625, 1.015625, 1.015625)
 end
 
 function RNDX.Draw(r, x, y, w, h, col, flags)
-	draw_rounded(x, y, w, h, col, flags, r, r, r, r)
-end
-
-function RNDX.DrawEx(r, x, y, w, h, col, flags, tl, tr, bl, br)
-	draw_rounded(x, y, w, h, col, flags, tl and r or 0, tr and r or 0, bl and r or 0, br and r or 0)
+	return draw_rounded(x, y, w, h, col, flags, r, r, r, r)
 end
 
 function RNDX.DrawOutlined(r, x, y, w, h, col, thickness, flags)
-	draw_rounded(x, y, w, h, col, flags, r, r, r, r, nil, thickness or 1)
+	return draw_rounded(x, y, w, h, col, flags, r, r, r, r, nil, thickness or 1)
 end
 
 function RNDX.DrawTexture(r, x, y, w, h, col, texture, flags)
-	draw_rounded(x, y, w, h, col, flags, r, r, r, r, texture)
+	return draw_rounded(x, y, w, h, col, flags, r, r, r, r, texture)
 end
 
 function RNDX.DrawMaterial(r, x, y, w, h, col, mat, flags)
 	local tex = mat:GetTexture("$basetexture")
 	if tex then
-		RNDX.DrawTexture(r, x, y, w, h, col, tex, flags)
+		return RNDX.DrawTexture(r, x, y, w, h, col, tex, flags)
 	end
 end
 
 function RNDX.DrawCircle(x, y, r, col, flags)
-	RNDX.Draw(r / 2, x - r / 2, y - r / 2, r, r, col, (flags or 0) + SHAPE_CIRCLE)
+	return RNDX.Draw(r / 2, x - r / 2, y - r / 2, r, r, col, (flags or 0) + SHAPE_CIRCLE)
 end
 
 function RNDX.DrawCircleOutlined(x, y, r, col, thickness, flags)
-	RNDX.DrawOutlined(r / 2, x - r / 2, y - r / 2, r, r, col, thickness, (flags or 0) + SHAPE_CIRCLE)
+	return RNDX.DrawOutlined(r / 2, x - r / 2, y - r / 2, r, r, col, thickness, (flags or 0) + SHAPE_CIRCLE)
 end
 
 function RNDX.DrawCircleTexture(x, y, r, col, texture, flags)
-	RNDX.DrawTexture(r / 2, x - r / 2, y - r / 2, r, r, col, texture, (flags or 0) + SHAPE_CIRCLE)
+	return RNDX.DrawTexture(r / 2, x - r / 2, y - r / 2, r, r, col, texture, (flags or 0) + SHAPE_CIRCLE)
 end
 
 function RNDX.DrawCircleMaterial(x, y, r, col, mat, flags)
-	RNDX.DrawMaterial(r / 2, x - r / 2, y - r / 2, r, r, col, mat, (flags or 0) + SHAPE_CIRCLE)
+	return RNDX.DrawMaterial(r / 2, x - r / 2, y - r / 2, r, r, col, mat, (flags or 0) + SHAPE_CIRCLE)
 end
 
 local USE_SHADOWS_BLUR = false
-local SHADOWS_AA = 0
+
+local function draw_blur()
+	if USE_SHADOWS_BLUR then
+		MAT = SHADOWS_BLUR_MAT
+	else
+		MAT = ROUNDED_BLUR_MAT
+	end
+
+	COL_R, COL_G, COL_B, COL_A = 255, 255, 255, 255
+	SetupDraw()
+
+	render_CopyRenderTargetToTexture(BLUR_RT)
+	MATERIAL_SetFloat(MAT, BLUR_VERTICAL, 0)
+	surface_DrawTexturedRect(X, Y, W, H)
+
+	render_CopyRenderTargetToTexture(BLUR_RT)
+	MATERIAL_SetFloat(MAT, BLUR_VERTICAL, 1)
+	surface_DrawTexturedRect(X, Y, W, H)
+end
+
 function RNDX.DrawBlur(x, y, w, h, flags, tl, tr, bl, br, thickness)
+	RESET_PARAMS()
+
 	if not flags then
 		flags = DEFAULT_DRAW_FLAGS
 	end
 
-	local aa = 0
-	local mat; if USE_SHADOWS_BLUR then
-		mat = SHADOWS_BLUR_MAT
-		aa = SHADOWS_AA
-	else
-		mat = ROUNDED_BLUR_MAT
+	X, Y = x, y
+	W, H = w, h
+	TL, TR, BL, BR = bit_band(flags, NO_TL) == 0 and tl or 0,
+		bit_band(flags, NO_TR) == 0 and tr or 0,
+		bit_band(flags, NO_BL) == 0 and bl or 0,
+		bit_band(flags, NO_BR) == 0 and br or 0
+	SHAPE = SHAPES[bit_band(flags, SHAPE_CIRCLE + SHAPE_FIGMA + SHAPE_IOS)] or SHAPES[DEFAULT_SHAPE]
+	OUTLINE_THICKNESS = thickness
+
+	draw_blur()
+end
+
+local function setup_shadows()
+	X = X - SHADOW_SPREAD
+	Y = Y - SHADOW_SPREAD
+	W = W + (SHADOW_SPREAD * 2)
+	H = H + (SHADOW_SPREAD * 2)
+
+	TL = TL + (SHADOW_SPREAD * 2)
+	TR = TR + (SHADOW_SPREAD * 2)
+	BL = BL + (SHADOW_SPREAD * 2)
+	BR = BR + (SHADOW_SPREAD * 2)
+end
+
+local function draw_shadows(r, g, b, a)
+	if USING_BLUR then
+		USE_SHADOWS_BLUR = true
+		draw_blur()
+		USE_SHADOWS_BLUR = false
 	end
 
-	local max_rad = math_min(w, h) / 2
-	local shape_value = SHAPES[bit_band(flags, SHAPE_CIRCLE + SHAPE_FIGMA + SHAPE_IOS)]
-	SetParams(
-		mat,
-		bit_band(flags, NO_TL) == 0 and math_clamp(tl, 0, max_rad) or 0,
-		bit_band(flags, NO_TR) == 0 and math_clamp(tr, 0, max_rad) or 0,
-		bit_band(flags, NO_BL) == 0 and math_clamp(bl, 0, max_rad) or 0,
-		bit_band(flags, NO_BR) == 0 and math_clamp(br, 0, max_rad) or 0,
-		w, h,
-		shape_value or 2.2,
-		0,
-		thickness or -1,
-		aa
-	)
+	MAT = SHADOWS_MAT
 
-	surface_SetDrawColor(255, 255, 255, 255)
-	surface_SetMaterial(mat)
+	if r == false then
+		COL_R = nil
+	else
+		COL_R, COL_G, COL_B, COL_A = r, g, b, a
+	end
 
-	render_CopyRenderTargetToTexture(BLUR_RT)
-	MATERIAL_SetFloat(mat, BLUR_VERTICAL, 0)
-	surface_DrawTexturedRect(x, y, w, h)
-
-	render_CopyRenderTargetToTexture(BLUR_RT)
-	MATERIAL_SetFloat(mat, BLUR_VERTICAL, 1)
-	surface_DrawTexturedRect(x, y, w, h)
+	SetupDraw()
+	-- https://github.com/Jaffies/rboxes/blob/main/rboxes.lua
+	-- fixes having no $basetexture causing uv to be broken
+	surface_DrawTexturedRectUV(X, Y, W, H, -0.015625, -0.015625, 1.015625, 1.015625)
 end
 
 function RNDX.DrawShadowsEx(x, y, w, h, col, flags, tl, tr, bl, br, spread, intensity, thickness)
@@ -325,72 +376,223 @@ function RNDX.DrawShadowsEx(x, y, w, h, col, flags, tl, tr, bl, br, spread, inte
 		return
 	end
 
+	local OLD_CLIPPING_STATE = DisableClipping(true)
+
+	RESET_PARAMS()
+
 	if not flags then
 		flags = DEFAULT_DRAW_FLAGS
 	end
 
-	local using_blur = bit_band(flags, BLUR) ~= 0
+	X, Y = x, y
+	W, H = w, h
+	SHADOW_SPREAD = spread or 30
+	SHADOW_INTENSITY = intensity or SHADOW_SPREAD * 1.2
 
-	-- Shadows are a bit bigger than the actual box
-	spread = spread or 30
-	intensity = intensity or spread * 1.2
+	TL, TR, BL, BR = bit_band(flags, NO_TL) == 0 and tl or 0,
+		bit_band(flags, NO_TR) == 0 and tr or 0,
+		bit_band(flags, NO_BL) == 0 and bl or 0,
+		bit_band(flags, NO_BR) == 0 and br or 0
 
-	x = x - spread
-	y = y - spread
-	w = w + (spread * 2)
-	h = h + (spread * 2)
+	SHAPE = SHAPES[bit_band(flags, SHAPE_CIRCLE + SHAPE_FIGMA + SHAPE_IOS)] or SHAPES[DEFAULT_SHAPE]
 
-	tl = tl + (spread * 2)
-	tr = tr + (spread * 2)
-	bl = bl + (spread * 2)
-	br = br + (spread * 2)
-	--
+	OUTLINE_THICKNESS = thickness
 
-	local mat = SHADOWS_MAT
-	local max_rad = math_min(w, h) / 2
-	local shape_value = SHAPES[bit_band(flags, SHAPE_CIRCLE + SHAPE_FIGMA + SHAPE_IOS)]
-	SetParams(
-		mat,
-		bit_band(flags, NO_TL) == 0 and math_clamp(tl, 0, max_rad) or 0,
-		bit_band(flags, NO_TR) == 0 and math_clamp(tr, 0, max_rad) or 0,
-		bit_band(flags, NO_BL) == 0 and math_clamp(bl, 0, max_rad) or 0,
-		bit_band(flags, NO_BR) == 0 and math_clamp(br, 0, max_rad) or 0,
-		w, h,
-		shape_value or 2.2,
-		0,
-		thickness or -1,
-		intensity
-	)
+	setup_shadows()
 
-	-- if we are inside a panel, we need to draw outside of it
-	local old_clipping_state = DisableClipping(true)
+	USING_BLUR = bit_band(flags, BLUR) ~= 0
 
-	if using_blur then
-		SHADOWS_AA = intensity
-		USE_SHADOWS_BLUR = true
-		RNDX.DrawBlur(x, y, w, h, flags, tl, tr, bl, br, thickness)
-		USE_SHADOWS_BLUR = false
+	if bit_band(flags, MANUAL_COLOR) ~= 0 then
+		draw_shadows(false, nil, nil, nil)
+	elseif col then
+		draw_shadows(col.r, col.g, col.b, col.a)
+	else
+		draw_shadows(0, 0, 0, 255)
 	end
 
-	if bit_band(flags, MANUAL_COLOR) == 0 then
-		if col then
-			surface_SetDrawColor(col.r, col.g, col.b, col.a)
-		else
-			surface_SetDrawColor(0, 0, 0, 255)
-		end
-	end
-
-	surface_SetMaterial(mat)
-	-- https://github.com/Jaffies/rboxes/blob/main/rboxes.lua
-	-- fixes having no $basetexture causing uv to be broken
-	surface_DrawTexturedRectUV(x, y, w, h, -0.015625, -0.015625, 1.015625, 1.015625)
-
-	DisableClipping(old_clipping_state)
+	DisableClipping(OLD_CLIPPING_STATE)
 end
 
 function RNDX.DrawShadows(r, x, y, w, h, col, spread, intensity, flags)
-	RNDX.DrawShadowsEx(x, y, w, h, col, flags, r, r, r, r, spread, intensity)
+	return RNDX.DrawShadowsEx(x, y, w, h, col, flags, r, r, r, r, spread, intensity)
 end
+
+function RNDX.DrawShadowsOutlined(r, x, y, w, h, col, thickness, spread, intensity, flags)
+	return RNDX.DrawShadowsEx(x, y, w, h, col, flags, r, r, r, r, spread, intensity, thickness or 1)
+end
+
+local BASE_FUNCS = {
+	Rad = function(self, rad)
+		TL, TR, BL, BR = rad, rad, rad, rad
+		return self
+	end,
+	Radii = function(self, tl, tr, bl, br)
+		TL, TR, BL, BR = tl or 0, tr or 0, bl or 0, br or 0
+		return self
+	end,
+	Texture = function(self, texture)
+		TEXTURE = texture
+		return self
+	end,
+	Material = function(self, mat)
+		local tex = mat:GetTexture("$basetexture")
+		if tex then
+			TEXTURE = tex
+		end
+		return self
+	end,
+	Outline = function(self, thickness)
+		OUTLINE_THICKNESS = thickness
+		return self
+	end,
+	Shape = function(self, shape)
+		SHAPE = SHAPES[shape] or 2.2
+		return self
+	end,
+	Color = function(self, col_or_r, g, b, a)
+		if type(col_or_r) == "number" then
+			COL_R, COL_G, COL_B, COL_A = col_or_r, g or 255, b or 255, a or 255
+		else
+			COL_R, COL_G, COL_B, COL_A = col_or_r.r, col_or_r.g, col_or_r.b, col_or_r.a
+		end
+		return self
+	end,
+	Blur = function(self, intensity)
+		if not intensity then
+			intensity = 1.0
+		end
+		intensity = math_max(intensity, 0)
+		USING_BLUR, BLUR_INTENSITY = true, intensity
+		return self
+	end,
+	Rotation = function(self, angle)
+		ROTATION = math.rad(angle or 0)
+		return self
+	end,
+	StartAngle = function(self, angle)
+		START_ANGLE = angle or 0
+		return self
+	end,
+	EndAngle = function(self, angle)
+		END_ANGLE = angle or 360
+		return self
+	end,
+	Shadow = function(self, spread, intensity)
+		SHADOW_ENABLED, SHADOW_SPREAD, SHADOW_INTENSITY = true, spread or 30, intensity or (spread or 30) * 1.2
+		return self
+	end,
+	Clip = function(self, pnl)
+		CLIP_PANEL = pnl
+		return self
+	end,
+}
+
+local RECT = {
+	Rad         = BASE_FUNCS.Rad,
+	Radii       = BASE_FUNCS.Radii,
+	Texture     = BASE_FUNCS.Texture,
+	Material    = BASE_FUNCS.Material,
+	Outline     = BASE_FUNCS.Outline,
+	Shape       = BASE_FUNCS.Shape,
+	Color       = BASE_FUNCS.Color,
+	Blur        = BASE_FUNCS.Blur,
+	Rotation    = BASE_FUNCS.Rotation,
+	StartAngle  = BASE_FUNCS.StartAngle,
+	EndAngle    = BASE_FUNCS.EndAngle,
+	Clip        = BASE_FUNCS.Clip,
+	Shadow      = BASE_FUNCS.Shadow,
+
+	Draw        = function(self)
+		local OLD_CLIPPING_STATE
+		if SHADOW_ENABLED or CLIP_PANEL then
+			-- if we are inside a panel, we need to draw outside of it
+			OLD_CLIPPING_STATE = DisableClipping(true)
+		end
+
+		if CLIP_PANEL then
+			local sx, sy = CLIP_PANEL:LocalToScreen(0, 0)
+			local sw, sh = CLIP_PANEL:GetSize()
+			render.SetScissorRect(sx, sy, sx + sw, sy + sh, true)
+		end
+
+		if SHADOW_ENABLED then
+			setup_shadows()
+			draw_shadows(COL_R, COL_G, COL_B, COL_A)
+		elseif USING_BLUR then
+			draw_blur()
+		else
+			if TEXTURE then
+				MAT = ROUNDED_TEXTURE_MAT
+				MATERIAL_SetTexture(MAT, "$basetexture", TEXTURE)
+			end
+
+			SetupDraw()
+			surface_DrawTexturedRectUV(X, Y, W, H, -0.015625, -0.015625, 1.015625, 1.015625)
+		end
+
+		if CLIP_PANEL then
+			render.SetScissorRect(0, 0, 0, 0, false)
+		end
+
+		if SHADOW_ENABLED or CLIP_PANEL then
+			DisableClipping(OLD_CLIPPING_STATE)
+		end
+	end,
+
+	GetMaterial = function(self)
+		if SHADOW_ENABLED or USING_BLUR then
+			error("You can't get the material of a shadowed or blurred rectangle!")
+		end
+
+		if TEXTURE then
+			MAT = ROUNDED_TEXTURE_MAT
+			MATERIAL_SetTexture(MAT, "$basetexture", TEXTURE)
+		end
+		SetupDraw()
+
+		return MAT
+	end,
+}
+
+local CIRCLE = {
+	Texture = BASE_FUNCS.Texture,
+	Material = BASE_FUNCS.Material,
+	Outline = BASE_FUNCS.Outline,
+	Color = BASE_FUNCS.Color,
+	Blur = BASE_FUNCS.Blur,
+	Rotation = BASE_FUNCS.Rotation,
+	StartAngle = BASE_FUNCS.StartAngle,
+	EndAngle = BASE_FUNCS.EndAngle,
+	Clip = BASE_FUNCS.Clip,
+	Shadow = BASE_FUNCS.Shadow,
+
+	Draw = RECT.Draw,
+	GetMaterial = RECT.GetMaterial,
+}
+
+local TYPES = {
+	Rect = function(x, y, w, h)
+		RESET_PARAMS()
+		MAT = ROUNDED_MAT
+		X, Y, W, H = x, y, w, h
+		return RECT
+	end,
+	Circle = function(x, y, r)
+		RESET_PARAMS()
+		MAT = ROUNDED_MAT
+		SHAPE = SHAPES[SHAPE_CIRCLE]
+		X, Y, W, H = x - r / 2, y - r / 2, r, r
+		r = r / 2
+		TL, TR, BL, BR = r, r, r, r
+		return CIRCLE
+	end
+}
+
+setmetatable(RNDX, {
+	__call = function()
+		return TYPES
+	end
+})
 
 -- Flags
 RNDX.NO_TL = NO_TL
@@ -412,6 +614,11 @@ function RNDX.SetFlag(flags, flag, bool)
 	else
 		return bit.band(flags, bit.bnot(flag))
 	end
+end
+
+function RNDX.SetDefaultShape(shape)
+	DEFAULT_SHAPE = shape or SHAPE_FIGMA
+	DEFAULT_DRAW_FLAGS = DEFAULT_SHAPE
 end
 
 return RNDX
