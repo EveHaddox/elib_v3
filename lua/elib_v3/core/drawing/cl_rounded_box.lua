@@ -84,7 +84,13 @@ end
 ]]
 
 function Elib.DrawRoundedBoxEx(borderSize, x, y, w, h, col, topLeft, topRight, bottomLeft, bottomRight)
-	Elib.RNDX.DrawEx(borderSize, x, y, w, h, col, nil, topLeft, topRight, bottomLeft, bottomRight)
+    local flags = 0
+    if not topLeft then flags = bit.bor(flags, Elib.RNDX.NO_TL) end
+    if not topRight then flags = bit.bor(flags, Elib.RNDX.NO_TR) end
+    if not bottomLeft then flags = bit.bor(flags, Elib.RNDX.NO_BL) end
+    if not bottomRight then flags = bit.bor(flags, Elib.RNDX.NO_BR) end
+
+    Elib.RNDX.Draw(borderSize, x, y, w, h, col, flags)
 end
 
 local drawRoundedBoxEx = Elib.DrawRoundedBoxEx
