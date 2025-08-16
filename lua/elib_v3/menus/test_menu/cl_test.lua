@@ -94,6 +94,16 @@ local function CreateTestMenu()
     page13:DockMargin(8, 8, 8, 8)
     pages[13] = page13
 
+    local page14 = vgui.Create("Elib.Test.Page14", Elib.TestFrame)
+    page14:Dock(FILL)
+    page14:DockMargin(8, 8, 8, 8)
+    pages[14] = page14
+
+    local page15 = vgui.Create("Elib.Test.Page15", Elib.TestFrame)
+    page15:Dock(FILL)
+    page15:DockMargin(8, 8, 8, 8)
+    pages[15] = page15
+
     local pageData = {
         {name = "Welcome", icon = "https://construct-cdn.physgun.com/images/1e154095-79b2-436e-80a3-cb6b924d14a2.png"},
         {name = "Buttons", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
@@ -108,6 +118,8 @@ local function CreateTestMenu()
         {name = "Scroll Panel", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Categories", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Graphs", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Dropdowns", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Slider", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
     }
 
     // Sidebar
