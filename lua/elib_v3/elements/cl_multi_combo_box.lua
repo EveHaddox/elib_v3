@@ -79,14 +79,15 @@ function PANEL:ChooseOption(value, index)
         self.Menu = nil
     end
 
-    -- Toggle selection for multi-select
-    if table.HasValue(self.selected, index) then
+    local wasSelected = table.HasValue(self.selected, index)
+    if wasSelected then
         table.RemoveByValue(self.selected, index)
     else
         table.insert(self.selected, index)
     end
 
-    -- Update the display text to show selected items
+    self:OnSelectionChanged(index, value, not wasSelected)
+
     local displayText = ""
     for i, selectedIndex in ipairs(self.selected) do
         if i > 1 then displayText = displayText .. ", " end
@@ -103,6 +104,16 @@ function PANEL:ChooseOption(value, index)
     if not self:GetSizeToText() then return end
     self:SizeToText()
     self:SetWide(self:GetWide() + Elib.Scale(10))
+end
+
+function PANEL:OnSelectionChanged(index, value, selected) end
+
+function PANEL:GetSelectedValues()
+    local values = {}
+    for _, index in ipairs(self.selected) do
+        values[self:GetOptionText(index)] = true
+    end
+    return values
 end
 
 function PANEL:ChooseOptionID(index)

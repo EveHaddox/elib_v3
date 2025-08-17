@@ -1,3 +1,10 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
+
+///////////////////
+// SV Notifications
+///////////////////
 if SERVER then
     util.AddNetworkString("Elib:AddNotification")
 
