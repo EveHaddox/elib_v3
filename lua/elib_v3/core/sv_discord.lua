@@ -57,3 +57,19 @@ function Elib.SendWebhook(WebhookURL, Content, PureText)
         end
     })
 end
+
+--[[ EXAMPLE USAGE (won't work by itself, just for reference)
+// Discord Webhook Notification
+local PlayerString = " "
+for _, player in ipairs(players) do
+    PlayerString = PlayerString .."\n- ".. player
+end
+
+local Content = {
+    title = "POŚWIADCZENIE",
+    color = 0xffff00,
+    text = "**NAZWA I RODZAJ AKTYWNOŚCI:** " .. name .. "\n**CZAS AKTYWNOŚCI:** " .. tostring(time) .. " minut\n**MIEJSCE AKTYWNOŚCI:** " .. location .. "\n**OSOBY BIORĄCE UDZIAŁ:**" .. PlayerString .. "\n**WYSTAWIA:** " .. ply:Name() .. " (" .. ply:SteamID64() .. ")",
+    image = ""
+}
+Elib.SendWebhook(KDP.WebhookURL, Content, false)
+]]
