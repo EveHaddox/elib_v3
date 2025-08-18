@@ -44,13 +44,12 @@ function Elib.SendWebhook(WebhookURL, Content, PureText)
         }
     end
 
-    HTTP_REPLACED({
+    HTTP({
         method = "POST",
         url = WebhookURL,
         headers = { ["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36" },
         type = "application/json",
         body = util.TableToJSON(tabela),
-        --body = '{"embeds":[{' .. '"title":"' .. title .. '","color":' .. tostring(colorson) .. ',"footer":{"text":"' .. '' .. '"},"description":"' .. desc .. '","thumbnail":{"url":"' .. imageURL .. '"}}]}',
         success = function(code, body, headers)
         end,
         failure = function(reason)
