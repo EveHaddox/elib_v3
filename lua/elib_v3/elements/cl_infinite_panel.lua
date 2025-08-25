@@ -71,7 +71,7 @@ function PANEL:SetBounds(minX, minY, maxX, maxY)
     self.MaxY = maxY
 end
 
-function PANEL:AddItem(id, x, y, w, h, required, conflicting) -- conflicting means you can't have this item if you have the conflicting item
+function PANEL:AddItem(panel, id, x, y, w, h) -- conflicting means you can't have this item if you have the conflicting item
     
     self.itemsLog[id] = {
         x = x,
@@ -80,32 +80,31 @@ function PANEL:AddItem(id, x, y, w, h, required, conflicting) -- conflicting mea
         h = h
     }
 
-    self.items[id] = self:Add("Elib.TextButton")
+    self.items[id] = self:Add(panel)
     self.items[id]:SetPos(self.pos.x + x, self.pos.y + y)
     self.items[id]:SetSize(w, h)
-    self.items[id]:SetText(id)
+
+    return self.items[id]
+
+end
+
+function PANEL:AddTextButton(id, x, y, w, h, required, conflicting) -- conflicting means you can't have this item if you have the conflicting item
+    
+    local pnl = self:AddItem("Elib.TextButton", id, x, y, w, h, required, conflicting)
+    pnl:SetText(id)
 
     if !self.Owned or !required then return end
     if !self.Owned[required] then
-        self.items[id]:SetEnabled(false)
+       pnl:SetEnabled(false)
     end
 
 end
 
 function PANEL:AddConnection(id, x, y, w, h)
     
-    self.itemsLog[id] = {
-        x = x,
-        y = y,
-        w = w,
-        h = h
-    }
+    local pnl = self:AddItem("DPanel", id, x, y, w, h)
 
-    self.items[id] = self:Add("DPanel")
-    self.items[id]:SetPos(self.pos.x + x, self.pos.y + y)
-    self.items[id]:SetSize(w, h)
-
-    self.items[id].Paint = function(self, w, h)
+    pnl.Paint = function(self, w, h)
         surface.SetDrawColor(Elib.Colors.Silver)
         surface.DrawRect(0, 0, w, h)
     end
