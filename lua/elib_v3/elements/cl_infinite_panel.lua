@@ -113,19 +113,11 @@ end
 
 function PANEL:AddImage(id, x, y, w, h, url, col)
     
-    self.itemsLog[id] = {
-        x = x,
-        y = y,
-        w = w,
-        h = h
-    }
+    local pnl = self:AddItem("DPanel", id, x, y, w, h)
 
-    self.items[id] = self:Add("DPanel")
-    self.items[id]:SetPos(self.pos.x + x, self.pos.y + y)
-    self.items[id]:SetSize(w, h)
-
-    self.items[id].Paint = function(self, w, h)
-        Elib.DrawImage(0, 0, w, h, url, col)
+    pnl.Paint = function(self, w, h)
+        surface.SetDrawColor(Elib.Colors.Silver)
+        surface.DrawRect(0, 0, w, h)
     end
 
 end
