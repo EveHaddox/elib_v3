@@ -116,8 +116,7 @@ function PANEL:AddImage(id, x, y, w, h, url, col)
     local pnl = self:AddItem("DPanel", id, x, y, w, h)
 
     pnl.Paint = function(self, w, h)
-        surface.SetDrawColor(Elib.Colors.Silver)
-        surface.DrawRect(0, 0, w, h)
+        Elib.DrawImage(0, 0, w, h, url, col)
     end
 
 end
