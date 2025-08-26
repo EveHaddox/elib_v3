@@ -1,3 +1,64 @@
+                    elib_v3 — Licensing Terms
+=========================
+
+This repository contains code under multiple licenses.
+
+──────────────────────────────────────────────
+1. Original Code by Eve Haddox
+──────────────────────────────────────────────
+
+All original code written by Eve Haddox is licensed under the
+"Haddox Permission License" (HPL-1.0):
+
+Copyright (c) 2025 Eve Haddox
+All rights reserved.
+
+Permission to use, copy, modify, merge, publish, distribute,
+sublicense, or sell copies of this software, in whole or in part,
+is NOT granted, except under the following conditions:
+
+  • You may use this software as part of products, addons, or works
+    created and officially distributed by Eve Haddox.
+
+  • You may use this software if you have received prior written
+    permission from Eve Haddox.
+
+Any other use, including but not limited to:
+  • Commercial use of any kind,
+  • Training, fine-tuning, or operating artificial intelligence
+    or machine learning models,
+  • Redistribution in unrelated works,
+
+is strictly prohibited without prior written consent.
+
+This license terminates automatically upon violation of these terms.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE,
+ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+
+──────────────────────────────────────────────
+2. Pixel UI–Derived Code
+──────────────────────────────────────────────
+
+Certain files in this repository include or are based on code from
+Pixel UI © 2023 Thomas O’Sullivan.
+
+These files are licensed under the GNU General Public License v3
+(GPLv3). Each such file contains the GPLv3 license header at the top.
+
+The full text of the GNU General Public License v3 is included below.
+
+
+──────────────────────────────────────────────
+3. GNU General Public License v3
+──────────────────────────────────────────────
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
