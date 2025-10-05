@@ -70,7 +70,7 @@ function PANEL:Init()
     end
 
     do
-        local min, max = ep.config.minPartySize, ep.config.maxPartySize
+        local min, max = 5, 10
         local size = math.Round(min + (max - min) * self.Slider.Fraction)
         self.ValueEntry:SetValue(size)
     end
