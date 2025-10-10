@@ -29,81 +29,6 @@ local function CreateTestMenu()
         end
     end
 
-    local page1 = vgui.Create("Elib.Test.Page1", Elib.TestFrame)
-    page1:Dock(FILL)
-    page1:DockMargin(8, 8, 8, 8)
-    pages[1] = page1
-
-    local page2 = vgui.Create("Elib.Test.Page2", Elib.TestFrame)
-    page2:Dock(FILL)
-    page2:DockMargin(8, 8, 8, 8)
-    pages[2] = page2
-
-    local page3 = vgui.Create("Elib.Test.Page3", Elib.TestFrame)
-    page3:Dock(FILL)
-    page3:DockMargin(8, 8, 8, 8)
-    pages[3] = page3
-
-    local page4 = vgui.Create("Elib.Test.Page4", Elib.TestFrame)
-    page4:Dock(FILL)
-    page4:DockMargin(8, 8, 8, 8)
-    pages[4] = page4
-
-    local page5 = vgui.Create("Elib.Test.Page5", Elib.TestFrame)
-    page5:Dock(FILL)
-    page5:DockMargin(8, 8, 8, 8)
-    pages[5] = page5
-
-    local page6 = vgui.Create("Elib.Test.Page6", Elib.TestFrame)
-    page6:Dock(FILL)
-    page6:DockMargin(8, 8, 8, 8)
-    pages[6] = page6
-
-    local page7 = vgui.Create("Elib.Test.Page7", Elib.TestFrame)
-    page7:Dock(FILL)
-    page7:DockMargin(8, 8, 8, 8)
-    pages[7] = page7
-
-    local page8 = vgui.Create("Elib.Test.Page8", Elib.TestFrame)
-    page8:Dock(FILL)
-    page8:DockMargin(8, 8, 8, 8)
-    pages[8] = page8
-
-    local page9 = vgui.Create("Elib.Test.Page9", Elib.TestFrame)
-    page9:Dock(FILL)
-    page9:DockMargin(8, 8, 8, 8)
-    pages[9] = page9
-
-    local page10 = vgui.Create("Elib.Test.Page10", Elib.TestFrame)
-    page10:Dock(FILL)
-    page10:DockMargin(8, 8, 8, 8)
-    pages[10] = page10
-
-    local page11 = vgui.Create("Elib.Test.Page11", Elib.TestFrame)
-    page11:Dock(FILL)
-    page11:DockMargin(8, 8, 8, 8)
-    pages[11] = page11
-
-    local page12 = vgui.Create("Elib.Test.Page12", Elib.TestFrame)
-    page12:Dock(FILL)
-    page12:DockMargin(8, 8, 8, 8)
-    pages[12] = page12
-
-    local page13 = vgui.Create("Elib.Test.Page13", Elib.TestFrame)
-    page13:Dock(FILL)
-    page13:DockMargin(8, 8, 8, 8)
-    pages[13] = page13
-
-    local page14 = vgui.Create("Elib.Test.Page14", Elib.TestFrame)
-    page14:Dock(FILL)
-    page14:DockMargin(8, 8, 8, 8)
-    pages[14] = page14
-
-    local page15 = vgui.Create("Elib.Test.Page15", Elib.TestFrame)
-    page15:Dock(FILL)
-    page15:DockMargin(8, 8, 8, 8)
-    pages[15] = page15
-
     local pageData = {
         {name = "Welcome", icon = "https://construct-cdn.physgun.com/images/1e154095-79b2-436e-80a3-cb6b924d14a2.png"},
         {name = "Buttons", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
@@ -121,6 +46,13 @@ local function CreateTestMenu()
         {name = "Dropdowns", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Slider", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
     }
+
+    for i = 1, #pageData do
+        local page = vgui.Create("Elib.Test.Page".. i, Elib.TestFrame)
+        page:Dock(FILL)
+        page:DockMargin(8, 8, 8, 8)
+        pages[i] = page
+    end
 
     // Sidebar
     local sidebar = Elib.TestFrame:CreateSidebar("Tab 1", "https://construct-cdn.physgun.com/images/5cfb8931-ed9d-4efe-a16b-7e9cc7c0952a.png", .8, -5, 15)
