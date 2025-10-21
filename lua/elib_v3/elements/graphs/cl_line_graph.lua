@@ -84,9 +84,8 @@ function PANEL:Paint(w, h)
         local txt = fmt(Lerp(i/self.TickY, minY, maxY)) .. self.UnitY
         widest = math.max(widest, surface.GetTextSize(txt))
     end
-    local padL, padR, padT = self.BasePad + widest,
-                             self.BasePad,
-                             self.BasePad
+    
+    local padL, padR, padT = self.BasePad + widest, self.BasePad, self.BasePad
     local padB = self.BasePad + 14
     local gw, gh = w - padL - padR, h - padT - padB
 
@@ -109,35 +108,33 @@ function PANEL:Paint(w, h)
 
     render.ClearStencil()
     render.SetStencilEnable(true)
-        render.SetStencilWriteMask(1)
-        render.SetStencilTestMask (1)
-        render.SetStencilReferenceValue(1)
+    render.SetStencilWriteMask(1)
+    render.SetStencilTestMask(1)
+    render.SetStencilReferenceValue(1)
 
-        render.SetStencilFailOperation  (STENCIL_KEEP)
-        render.SetStencilZFailOperation (STENCIL_KEEP)
-        render.SetStencilPassOperation  (STENCIL_REPLACE)
-        render.SetStencilCompareFunction(STENCIL_ALWAYS)
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+    render.SetStencilPassOperation(STENCIL_REPLACE)
+    render.SetStencilCompareFunction(STENCIL_ALWAYS)
 
-        surface.SetDrawColor(255,255,255,255)
-        for i = 2, #spline do
-            local p1, p2 = spline[i-1], spline[i]
-            surface.DrawPoly({
-                {x = p1.x, y = p1.y},
-                {x = p2.x, y = p2.y},
-                {x = p2.x, y = baseY},
-                {x = p1.x, y = baseY},
-            })
-        end
+    surface.SetDrawColor(255,255,255,255)
+    for i = 2, #spline do
+        local p1, p2 = spline[i-1], spline[i]
+        surface.DrawPoly({
+            {x = p1.x, y = p1.y},
+            {x = p2.x, y = p2.y},
+            {x = p2.x, y = baseY},
+            {x = p1.x, y = baseY},
+        })
+    end
 
-        render.SetStencilCompareFunction(STENCIL_EQUAL)
-        render.SetStencilPassOperation  (STENCIL_KEEP)
+    render.SetStencilCompareFunction(STENCIL_EQUAL)
+    render.SetStencilPassOperation(STENCIL_KEEP)
 
-        surface.SetMaterial(Material("vgui/gradient-u"))
-        local lc = self.LineColor
-        surface.SetDrawColor(lc.r, lc.g, lc.b, self.FillAlphaTop)
-        surface.DrawTexturedRect(padL, padT, gw, gh)
-
-    render.SetStencilEnable(false)
+    surface.SetMaterial(Material("vgui/gradient-u"))
+    local lc = self.LineColor
+    surface.SetDrawColor(lc.r, lc.g, lc.b, self.FillAlphaTop)
+    surface.DrawTexturedRect(padL, padT, gw, gh)
 
     surface.SetDrawColor(self.LineColor)
     for i = 2, #spline do
@@ -146,9 +143,11 @@ function PANEL:Paint(w, h)
         surface.DrawLine(p1.x+1, p1.y, p2.x+1, p2.y)
     end
 
+    render.SetStencilEnable(false)
+
     surface.SetDrawColor(50,50,50)
     surface.DrawLine(padL, h-padB, w-padR, h-padB) -- X
-    surface.DrawLine(padL, padT,   padL,   h-padB) -- Y
+    --surface.DrawLine(padL, padT, padL, h-padB) -- Y
 
     local function drawTick(v, isX)
         if isX then

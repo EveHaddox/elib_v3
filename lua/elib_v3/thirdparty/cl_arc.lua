@@ -79,7 +79,7 @@ function Elib.PrecacheArc(cx, cy, radius, thickness, startang, endang, roughness
 end
 
 --Draw a premade arc.
-function Elib.DrawArc(arc)
+function Elib.DrawArc2(arc)
     for k, v in ipairs(arc) do
         surface.DrawPoly(v)
     end

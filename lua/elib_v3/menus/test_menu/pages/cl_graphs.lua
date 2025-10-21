@@ -50,27 +50,29 @@ function PANEL:Init()
     }
     LineGraph:SetData(economy)
 
-    local pie = vgui.Create("Elib.PieChart", self.scroll)
-    pie:Dock(TOP)
-    pie:SetHeight(400)            -- keep it square
-    pie:SetDonut(0.35)          -- 0 = pie ; 0-0.9 = donut
-
-    pie:AddSlice("Copper", 40, Color(184,115,51))
-    pie:AddSlice("Tin",    25, Color(200,200,180))
-    pie:AddSlice("Iron",   60)                    -- default HSV colour
-    pie:AddSlice("Gold",   15, Color(255,215,  0))
-
     local bar = vgui.Create("Elib.BarChart", self.scroll)
     bar:Dock(TOP)
+    bar:DockMargin(0, 20, 0, 0)
     bar:SetHeight(Elib.Scale(300))
     bar:SetBarSpacing(0.4)
     bar:SetTicksY(4)
     bar:SetUnitY(" kg")
 
     bar:AddBar("Q1", 120)
-    bar:AddBar("Q2", 200, Color(  0,200,255))
-    bar:AddBar("Q3",  90)
+    bar:AddBar("Q2", 200, Color(0, 200, 255))
+    bar:AddBar("Q3", 90)
     bar:AddBar("Q4", 160)
+
+    local pie = vgui.Create("Elib.PieChart", self.scroll)
+    pie:Dock(TOP)
+    pie:DockMargin(0, 20, 0, 0)
+    pie:SetHeight(400)            -- keep it square
+
+    pie:AddDataPoint(35, "Sales")
+    pie:AddDataPoint(25, "Marketing") 
+    pie:AddDataPoint(15, "Development")
+    pie:AddDataPoint(10, "Support")
+    pie:AddDataPoint(15, "Other")
 
 end
 

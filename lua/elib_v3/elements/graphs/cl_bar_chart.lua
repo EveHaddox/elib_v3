@@ -77,9 +77,32 @@ function PANEL:Paint(w, h)
     local x = padL + gap
     for _,bar in ipairs(self.Data) do
         local bh = gh * (bar.value / maxY)
-        local by = h - padB - bh
-        surface.SetDrawColor(bar.color or self.BarColor)
-        surface.DrawRect(x, by, bw, bh)
+        local by = math.ceil(h - padB - bh)
+
+        render.ClearStencil()
+        render.SetStencilEnable(true)
+        render.SetStencilWriteMask(1)
+        render.SetStencilTestMask(1)
+        render.SetStencilReferenceValue(1)
+
+        render.SetStencilFailOperation(STENCIL_KEEP)
+        render.SetStencilZFailOperation(STENCIL_KEEP)
+        render.SetStencilPassOperation(STENCIL_REPLACE)
+        render.SetStencilCompareFunction(STENCIL_ALWAYS)
+
+        Elib.DrawRoundedBox(0, x, by, bw, bh, bar.color or self.BarColor)
+
+        render.SetStencilCompareFunction(STENCIL_EQUAL)
+        render.SetStencilPassOperation(STENCIL_KEEP)
+
+        surface.SetMaterial(Material("vgui/gradient-d"))
+        local lc = bar.color or self.BarColor
+        lc = Elib.OffsetColor(Elib.CopyColor(lc), -30)
+        surface.SetDrawColor(lc.r, lc.g, lc.b, self.FillAlphaTop)
+        surface.DrawTexturedRect(x, by, bw, bh)
+
+        render.SetStencilEnable(false)
+
 
         draw.SimpleText(bar.label or "", self.Font, x + bw*0.5, h - padB + 2, Color(240,240,240), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
@@ -89,7 +112,7 @@ function PANEL:Paint(w, h)
     -- axis lines
     surface.SetDrawColor(50,50,50)
     surface.DrawLine(padL, h-padB, w-padR, h-padB) -- X axis
-    surface.DrawLine(padL, padT,   padL,   h-padB) -- Y axis
+    --surface.DrawLine(padL, padT,   padL,   h-padB) -- Y axis
 end
 
 vgui.Register("Elib.BarChart", PANEL, "DPanel")
