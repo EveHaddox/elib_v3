@@ -131,11 +131,8 @@ function PANEL:DrawFilledPieSegment(x, y, radius, startAngle, endAngle, color)
     draw.NoTexture()
     surface.DrawPoly(vertices)
 
-    surface.SetMaterial(Material("vgui/gradient-d"))
     local lc = Elib.OffsetColor(Elib.CopyColor(color), -30)
-
-    surface.SetDrawColor(lc.r, lc.g, lc.b, self.FillAlphaTop)
-    surface.DrawTexturedRect(x - radius, y - radius, radius * 2, radius * 2)
+    Elib.DrawImage(x - radius, y - radius, radius * 2, radius * 2, "https://construct-cdn.physgun.com/images/1c1ed238-7a70-48ef-bcb2-ee0810162686.png", Color(lc.r, lc.g, lc.b))
 
     -- 8) Disable stencil
     render.SetStencilEnable(false)
