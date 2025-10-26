@@ -7,7 +7,7 @@
 -- roughness determines how many triangles are drawn. Number between 1-360; 2 or 3 is a good number.
 function Elib.DrawUncachedArc(cx, cy, radius, thickness, startang, endang, roughness, color)
     surface.SetDrawColor(color)
-    Elib.DrawArc(Elib.PrecacheArc(cx, cy, radius, thickness, startang, endang, roughness))
+    Elib.DrawArc2(Elib.PrecacheArc(cx, cy, radius, thickness, startang, endang, roughness))
 end
 
 function Elib.PrecacheArc(cx, cy, radius, thickness, startang, endang, roughness)
