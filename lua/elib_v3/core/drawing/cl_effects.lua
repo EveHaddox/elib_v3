@@ -1,0 +1,8 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
+
+///////////////////////
+// Lines
+///////////////////////
+local x = 1

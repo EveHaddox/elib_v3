@@ -1,3 +1,7 @@
+// Script made by Eve Haddox
+// discord evehaddox
+
+
 ///////////////////////
 // Shaking
 ///////////////////////
@@ -357,175 +361,35 @@ function DrawRainbowGradientText(text, fontSize, font, speed, align, x, y, width
     RainbowGradientPanel:PaintManual()
 end
 
+
 ///////////////////////
-// Shimmer
+// Glowing
 ///////////////////////
-local ShimmerLetterPanel = nil
-local lastShimmerTime = 0
+function GlowColor(col1, col2, mod)
+	local newr = col1.r + ((col2.r - col1.r) * (mod))
+	local newg = col1.g + ((col2.g - col1.g) * (mod))
+	local newb = col1.b + ((col2.b - col1.b) * (mod))
 
-local function EscapeHTML(str)
-    return str
-        :gsub("&", "&amp;")
-        :gsub("<", "&lt;")
-        :gsub(">", "&gt;")
-        :gsub('"', "&quot;")
-        :gsub("'", "&#39;")
+	return Color(newr, newg, newb)
 end
 
-local function CreateShimmerHTML(text, fontSize, font, duration, baseColor, align, intensity)
-    local textAlign = "left"
-    if align == TEXT_ALIGN_CENTER then
-        textAlign = "center"
-    elseif align == TEXT_ALIGN_RIGHT then
-        textAlign = "right"
-    end
+function DrawGlowingText(static, text, font, x, y, color, xalign, yalign)
 
-    -- Build shimmering letters
-    local spans = {}
-    for i = 1, #text do
-        local char = EscapeHTML(text:sub(i, i))
-        table.insert(spans, string.format(
-            [[<span class="shimmer-letter">%s</span>]],
-            char
-        ))
-    end
+	local xalign = xalign or TEXT_ALIGN_LEFT
+	local yalign = yalign or TEXT_ALIGN_TOP
 
-    local lettersHTML = table.concat(spans, "")
+	local initial_a = 20
+	local a_by_i = 5
+	local alpha_glow = math.abs( math.sin( ( RealTime() - 0.1 ) * 2 ) )
+	if (static) then alpha_glow = 1 end
 
-    local html = string.format([[
-        <html>
-        <head>
-        <style>
-        @keyframes shimmerLetter {
-            0%% {
-                background-position: -200%% -200%%;
-                opacity: 0;
-            }
-            10%% {
-                opacity: 1;
-            }
-            100%% {
-                background-position: 200%% 200%%;
-                opacity: 0;
-            }
-        }
-        .base-text {
-            color: %s;
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-        .shimmer-text {
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-        .shimmer-letter {
-            color: %s;
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,0) 20%%,
-                rgba(255,255,255,%.3f) 40%%,
-                rgba(255,255,255,%.3f) 60%%,
-                rgba(255,255,255,0) 80%%);
-            background-size: 200%% 200%%;
-            background-repeat: no-repeat;
-            background-position: -200%% -200%%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmerLetter %.2fs ease-out 1;
-            display: inline-block;
-            white-space: pre;
-        }
-        .container {
-            position: relative;
-            width: max-content;
-            height: max-content;
-            font-size: %dpx;
-            font-family: '%s', sans-serif;
-            font-weight: bold;
-            text-align: %s;
-            white-space: nowrap;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            background: transparent;
-            overflow: hidden;
-        }
-        </style>
-        </head>
-        <body>
-            <div class="container">
-                <span class="base-text">%s</span>
-                <span class="shimmer-text">%s</span>
-            </div>
-        </body>
-        </html>
-    ]],
-        baseColor,
-        baseColor,
-        intensity,
-        intensity,
-        duration,
-        fontSize,
-        font,
-        textAlign,
-        EscapeHTML(text),
-        lettersHTML
-    )
+	for i = 1, 2 do
+		draw.SimpleTextOutlined( text, font, x, y, color, xalign, yalign, i, Color( color.r, color.g, color.b, ( initial_a - ( i * a_by_i ) ) * alpha_glow ) )
+	end
 
-    return html
+	draw.SimpleText( text, font, x, y, color, xalign, yalign )
 end
 
-function DrawShimmerLetterText(
-    text, fontSize, font,
-    x, y,
-    align, baseColor,
-    speed, frequency, intensity,
-    width, height
-)
-    -- Defaults
-    text = text or "SHIMMER"
-    fontSize = fontSize or 24
-    font = font or "Arial"
-    x = x or 100
-    y = y or 100
-    align = align or TEXT_ALIGN_LEFT
-    baseColor = baseColor or "#ffffff"
-    speed = speed or 1.0
-    frequency = frequency or 0.33
-    intensity = intensity or 0.8
-
-    intensity = math.Clamp(intensity, 0, 1)
-
-    local period = (1 / frequency)
-    local cooldown = math.max(0, period - speed)
-
-    local charWidth = fontSize * 0.7
-    width = width or math.max(#text * charWidth + 20, 100)
-    height = height or fontSize * 1.6
-
-    if not IsValid(ShimmerLetterPanel) then
-        ShimmerLetterPanel = vgui.Create("DHTML")
-        ShimmerLetterPanel:SetMouseInputEnabled(false)
-        ShimmerLetterPanel:SetPaintedManually(true)
-    end
-
-    local now = CurTime()
-    if now - lastShimmerTime >= speed + cooldown then
-        local html = CreateShimmerHTML(
-            text, fontSize, font,
-            speed, baseColor, align, intensity
-        )
-        ShimmerLetterPanel:SetHTML(html)
-        lastShimmerTime = now
-    end
-
-    ShimmerLetterPanel:SetSize(width, height)
-    ShimmerLetterPanel:SetPos(x, y)
-    ShimmerLetterPanel:PaintManual()
-end
 
 ///////////////////////
 // Chromatic
@@ -1265,69 +1129,6 @@ local function DrawBlinkingText(
 end
 
 ///////////////////////
-// Skewing
-///////////////////////
-local SkewingPanel = nil
-
-local function DrawSkewingText(
-    text,
-    fontSize,
-    font,
-    x, y,
-    maxAngle,
-    color,
-    time,
-    speed,
-    w, h
-)
-    if not IsValid(SkewingPanel) then
-        SkewingPanel = vgui.Create("DHTML")
-        SkewingPanel:SetMouseInputEnabled(false)
-        SkewingPanel:SetPaintedManually(true)
-    end
-
-    w = w or 512
-    h = h or 128
-    SkewingPanel:SetSize(w, h)
-
-    -- calculate live angle in Lua
-    local angle = math.sin(time * speed) * maxAngle
-    local colorStr = string.format("rgba(%d,%d,%d,%d)", color.r, color.g, color.b, color.a or 255)
-
-    local html = string.format([[
-        <html>
-        <body style="
-            margin: 0;
-            padding: 0;
-            background: transparent;
-            overflow: hidden;
-        ">
-            <span style="
-                display: inline-block;
-                transform: skewX(%fdeg);
-                color: %s;
-                font-family: '%s', sans-serif;
-                font-size: %dpx;
-                font-weight: bold;
-            ">
-                %s
-            </span>
-        </body>
-        </html>
-    ]],
-        angle,
-        colorStr,
-        font,
-        fontSize,
-        text
-    )
-
-    SkewingPanel:SetHTML(html)
-    SkewingPanel:SetPos(x, y)
-    SkewingPanel:PaintManual()
-end
-
-///////////////////////
 // Pulsing
 ///////////////////////
 local function DrawColorPulseText(text, font, x, y, color1, color2, time, speed)
@@ -1347,15 +1148,60 @@ end
 ///////////////////////
 // Scrolling
 ///////////////////////
-local function DrawVerticalScrollText(text, font, x, y, color, time, speed, height)
+local function DrawVerticalScrollText(text, font, x, y, color, time, speed, spacing, bgColor)
     surface.SetFont(font)
-    surface.SetTextColor(color)
+    time = time or CurTime()
+    speed = speed or 60        -- pixels per second
+    spacing = spacing or 8
+    bgColor = bgColor or Color(0, 0, 0, 200)
 
-    local textHeight = select(2, surface.GetTextSize(text))
-    local offsetY = (time * speed) % (textHeight + height)
+    local tw, th = surface.GetTextSize(text)
+    if not tw or not th or tw <= 0 or th <= 0 then return end
 
-    surface.SetTextPos(x, y - offsetY)
-    surface.DrawText(text)
+    -- Prepare stencil: write a rect the size of the original text to use as mask
+    render.ClearStencil()
+    render.SetStencilEnable(true)
+
+    render.SetStencilWriteMask(255)
+    render.SetStencilTestMask(255)
+    render.SetStencilReferenceValue(1)
+
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilPassOperation(STENCIL_REPLACE)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+    render.SetStencilCompareFunction(STENCIL_ALWAYS)
+
+    -- Draw background rect (this writes 1 into the stencil inside rect)
+    surface.SetDrawColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a or 255)
+    surface.DrawRect(x, y, tw, th)
+
+    -- Now only draw where stencil == 1
+    render.SetStencilCompareFunction(STENCIL_EQUAL)
+    render.SetStencilPassOperation(STENCIL_KEEP)
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+
+    surface.SetFont(font)
+
+    -- Vertical cycle length (one full text height plus spacing)
+    local cycle = th + spacing
+    local offset = (time * speed) % cycle
+
+    -- Start drawing the first copy such that it comes from bottom -> top
+    local startY = y + th - offset
+
+    -- Draw multiple copies stacked by cycle to avoid empty gaps
+    surface.SetTextColor(color.r, color.g, color.b, color.a or 255)
+
+    for i = 0, 4 do
+        local drawY = startY - i * cycle
+        -- stop if far above the mask
+        if drawY < (y - th) then break end
+        surface.SetTextPos(x, drawY)
+        surface.DrawText(text)
+    end
+
+    render.SetStencilEnable(false)
 end
 
 ///////////////////////
@@ -1614,7 +1460,6 @@ end
 ///////////////////////
 // Test
 ///////////////////////
---[[
 hook.Add("HUDPaint", "MyWavyText", function()
 
     local CurTime = CurTime()
@@ -1627,8 +1472,8 @@ hook.Add("HUDPaint", "MyWavyText", function()
 
     DrawGradientText("Gradient", 24, 50, 260, "linear-gradient(to right, red, orange, yellow)", 800, 100)
     DrawRainbowGradientText("Rainbow", 24, "Arial", 10, TEXT_ALIGN_LEFT, 50, 300)
+    DrawGlowingText(true, "Glowing", "DermaLarge", 50, 340, Color(255,255,0))
 
-    DrawShimmerLetterText("Shimer", 24, "Arial", 50, 340, TEXT_ALIGN_LEFT, "#ffcc00", 2.3, .5, .8)
     DrawChromaticAberrationText("Chromatic", "DermaLarge", 50, 380, 2, nil, 8)
     
     DrawGlitchText("Glitch", "DermaLarge", 50, 420, Color(255,255,0), CurTime, 20, .05)
@@ -1643,13 +1488,13 @@ hook.Add("HUDPaint", "MyWavyText", function()
 
     DrawGrowingText("GROWING", "DermaLarge", 32, 50, 700, Color(255, 0, 0), CurTime, 1, 1.4, 5)
     DrawBlinkingText("BLINKING", "DermaLarge", 50, 740, Color(255, 255, 0), CurTime, 1, 0.5)
-    DrawSkewingText("Skewing", 26, "Arial", 50, 780, 20, Color(0, 0, 255), CurTime, 2.0, 800, 100)
 
+    DrawFadeText("Fade", "DermaLarge", 50, 780, Color(255, 255, 0), CurTime, 2)
     DrawColorPulseText("Pulsing", "DermaLarge", 50, 820, Color(255, 255, 0), Color(255, 0, 0), CurTime, 2)
     DrawControlledJitterText("Jittering", "DermaLarge", 50, 860, Color(255, 255, 0), CurTime, 0.2, 0.15, 1.5)
     DrawControlledFlickerText("Flickering", "DermaLarge", 50, 900, Color(255, 0, 0), CurTime, 0.3, 0.15)
     DrawCircularText("Orbit", "DermaLarge", 50 + 25, 940, 25, Color(255, 255, 0), CurTime, .6)
-    DrawVerticalScrollText("Scroll", "DermaLarge", 50, 980, Color(255, 255, 0), CurTime, 20, .5)
+    DrawVerticalScrollText("Scroll", "DermaLarge", 50, 980, Color(255, 255, 0), CurTime, 20, -4, Elib.Colors.Stencil)
 
     DrawScanlinesHTMLText(
         "SCANLINES HTML",
@@ -1666,7 +1511,6 @@ hook.Add("HUDPaint", "MyWavyText", function()
         800, 120
     )
 end)
-]]
 
 
 
@@ -1717,18 +1561,6 @@ local function m_AlignText( text, font, x, y, xalign, yalign )
 
 end
 
-function DrawShadowedText( shadow, text, font, x, y, color, xalign, yalign )
-
-	local xalign = xalign or TEXT_ALIGN_LEFT
-
-	local yalign = yalign or TEXT_ALIGN_TOP
-
-	draw.SimpleText( text, font, x + shadow, y + shadow, Color( 0, 0, 0, color.a or 255 ), xalign, yalign )
-
-	draw.SimpleText( text, font, x, y, color, xalign, yalign )
-
-end
-
 
 function GlowColor( col1, col2, mod )
 
@@ -1772,18 +1604,6 @@ function DrawEnchantedText( speed, text, font, x, y, color, glow_color, xalign, 
 		chars_x = chars_x + charw
 
 	end
-
-end
-
-function DrawFadingText( speed, text, font, x, y, color, fading_color, xalign, yalign )
-
-	local xalign = xalign or TEXT_ALIGN_LEFT
-
-	local yalign = yalign or TEXT_ALIGN_TOP
-
-	local color_fade = GlowColor( color, fading_color, math.abs( math.sin( ( RealTime() - 0.08 ) * speed ) ) )
-
-	draw.SimpleText( text, font, x, y, color_fade, xalign, yalign )
 
 end
 
@@ -1840,175 +1660,6 @@ function DrawGlowingText( static, text, font, x, y, color, xalign, yalign )
 
 end
 
-
-function DrawBouncingText( style, intesity, text, font, x, y, color, xalign, yalign )
-
-	local xalign = xalign or TEXT_ALIGN_LEFT
-	
-	local yalign = yalign or TEXT_ALIGN_TOP
-
-	local texte = string.Explode( "", text )
-
-	surface.SetFont( font )
-
-	local chars_x = 0
-
-	local x, y = m_AlignText( text, font, x, y, xalign, yalign )
-
-	for i = 1, #texte do
-
-		local char = texte[i]
-
-		local charw, charh = surface.GetTextSize( char )
-
-		local y_pos = 1
-
-		local mod = math.sin( ( RealTime() - ( i * 0.1 ) ) * ( 2 * intesity ) )
-
-		if ( style == 1 ) then
-
-			y_pos = y_pos - math.abs( mod )
-
-		elseif ( style == 2 ) then
-			
-			y_pos = y_pos + math.abs( mod )
-
-		else
-
-			y_pos = y_pos - mod
-
-		end
-
-		draw.SimpleText( char, font, x + chars_x, y - ( 5 * y_pos ), color, xalign, yalign )
-
-		chars_x = chars_x + charw
-
-	end
-
-end
-
-local next_electic_effect = CurTime() + 0
-
-local electric_effect_a = 0
-
-function DrawElecticText( intensity, text, font, x, y, color, xalign, yalign )
-
-	local xalign = xalign or TEXT_ALIGN_LEFT
-	
-	local yalign = yalign or TEXT_ALIGN_TOP
-
-	local charw, charh = surface.GetTextSize( text )
-
-	draw.SimpleText( text, font, x, y, color, xalign, yalign )
-
-	if ( electric_effect_a > 0 ) then
-		
-		electric_effect_a = electric_effect_a - ( 1000 * FrameTime() )
-
-	end
-
-	surface.SetDrawColor( 102, 255, 255, electric_effect_a )
-
-	for i = 1, math.random( 5 ) do
-
-		line_x = math.random( charw )
-
-		line_y = math.random( charh )
-
-		line_x2 = math.random( charw )
-
-		line_y2 = math.random( charh )
-
-		surface.DrawLine( x + line_x, y + line_y, x + line_x2, y + line_y2 )
-
-	end
-
-	local effect_min = 0.5 + ( 1 - intensity )
-
-	local effect_max = 1.5 + ( 1 - intensity )
-
-	if ( next_electic_effect <= CurTime() ) then
-
-		next_electic_effect = CurTime() + math.Rand( effect_min, effect_max )
-		
-		electric_effect_a = 255
-
-	end
-
-end
-
-
-function DrawFireText( intensity, text, font, x, y, color, xalign, yalign, glow, shadow )
-
-	local xalign = xalign or TEXT_ALIGN_LEFT
-	
-	local yalign = yalign or TEXT_ALIGN_TOP
-
-	surface.SetFont( font )
-
-	local charw, charh = surface.GetTextSize( text )
-
-	local fire_height = charh * intensity
-
-	for i = 1, charw do
-		
-		local line_y = math.random( fire_height, charh )
-
-		local line_x = math.random( -4, 4 )
-
-		local line_col = math.random( 255 )
-
-		surface.SetDrawColor( 255, line_col, 0, 150 )
-
-		surface.DrawLine( x - 1 + i, y + charh, x - 1 + i + line_x, y + line_y )
-
-	end
-
-	if ( glow ) then
-		
-		DrawGlowingText( true, text, font, x, y, color, xalign, yalign )
-
-	end
-
-	if ( shadow ) then
-
-		draw.SimpleText( text, font, x + 1, y + 1, Color( 0, 0, 0 ), xalign, yalign )
-
-	end
-
-	draw.SimpleText( text, font, x, y, color, xalign, yalign )
-
-end
-
-function DrawSnowingText( intensity, text, font, x, y, color, color2, xalign, yalign )
-
-	local xalign = xalign or TEXT_ALIGN_LEFT
-	
-	local yalign = yalign or TEXT_ALIGN_TOP
-
-	local color2 = color2 or Color( 255, 255, 255 )
-
-	draw.SimpleText( text, font, x, y, color, xalign, yalign )
-
-	surface.SetFont( font )
-
-	local textw, texth = surface.GetTextSize( text )
-
-	surface.SetDrawColor( color2.r, color2.g, color2.b, 255 )
-
-	for i = 1, intensity do
-		
-		local line_y = math.random( 0, texth )
-
-		local line_x = math.random( 0, textw )
-
-		surface.DrawLine( x + line_x, y + line_y, x + line_x, y + line_y + 1 )
-
-	end
-
-end
-
-
 local MOAT_SHOW_EFFECT_EXAMPLES = false
 
 function moat_DrawEffectExamples()
@@ -2017,17 +1668,13 @@ function moat_DrawEffectExamples()
 
 	local font = "DermaLarge"
 
-	draw.RoundedBox( 0, 50, 50, 700, 500, Color( 0, 0, 0, 200 ) )
+	draw.RoundedBox( 0, 450, 50, 700, 500, Color( 0, 0, 0, 200 ) )
 
-	local x = 100
+	local x = 500
 
 	local y = 100
 
-	DrawGlowingText( false, "GLOWING TEXT", font, x, y, Color( 255, 0, 0, 255 ) )
-
-	y = y + 50
-
-	DrawFadingText( 1, "FADING COLORS TEXT", font, x, y, Color( 255, 0, 0 ), Color( 0, 0, 255 ) )
+	DrawGlowingText( true, "GLOWING TEXT", font, x, y, Color( 255, 0, 0, 255 ) )
 
 	y = y + 50
 
@@ -2036,22 +1683,6 @@ function moat_DrawEffectExamples()
 	y = y + 50
 
 	DrawEnchantedText( 2, "ENCHANTED TEXT", font, x, y, Color( 255, 0, 0 ), Color( 0, 0, 255 ) )
-
-	y = y + 50
-
-	DrawFireText( 0.5, "INFERNO TEXT", font, x, y, Color( 255, 0, 0 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, true, true )
-
-	y = y + 50
-
-	DrawElecticText( 1, "ELECTRIC TEXT", font, x, y, Color( 255, 0, 0 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-
-	y = y + 50
-
-	DrawBouncingText( 3, 3, "BOUNCING AND WAVING TEXT", font, x, y, Color( 255, 0, 0 ), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
-
-	y = y + 50
-
-	DrawSnowingText( 10, "SPARKLING/SNOWING TEXT", font, x, y, Color( 255, 0, 0 ), Color( 255, 255, 255 ) )
 
 end
 
