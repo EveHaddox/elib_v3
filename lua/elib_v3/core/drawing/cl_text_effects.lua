@@ -1460,6 +1460,7 @@ end
 ///////////////////////
 // Test
 ///////////////////////
+--[[
 hook.Add("HUDPaint", "MyWavyText", function()
 
     local CurTime = CurTime()
@@ -1511,7 +1512,7 @@ hook.Add("HUDPaint", "MyWavyText", function()
         800, 120
     )
 end)
-
+]]
 
 
 
