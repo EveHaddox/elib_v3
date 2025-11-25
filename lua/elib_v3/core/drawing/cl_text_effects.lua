@@ -5,7 +5,7 @@
 ///////////////////////
 // Shaking
 ///////////////////////
-local function DrawShakingText(text, font, x, y, color, time, intensity)
+function Elib.DrawShakingText(text, font, x, y, color, time, intensity)
     surface.SetFont(font)
     
     local offsetX = x
@@ -31,7 +31,7 @@ end
 ///////////////////////
 // Waving
 ///////////////////////
-local function DrawWavingText(text, font, x, y, color, time, intensity)
+function Elib.DrawWavingText(text, font, x, y, color, time, intensity)
     surface.SetFont(font)
     surface.SetTextColor(color)
 
@@ -54,7 +54,7 @@ end
 ///////////////////////
 // Waving Sides
 ///////////////////////
-local function DrawIteratingHorizontalRippleText(text, font, x, y, color, time, amplitude, speed, wavelength)
+function Elib.DrawIteratingHorizontalRippleText(text, font, x, y, color, time, amplitude, speed, wavelength)
     surface.SetFont(font)
     surface.SetTextColor(color)
 
@@ -79,7 +79,7 @@ end
 ///////////////////////
 local lastWaveStart = 0
 
-local function DrawSequentialJumpText_SingleWave(
+function Elib.DrawSequentialJumpText_SingleWave(
     text, font, x, y, color,
     time, jumpDuration, spacing, amplitude, delayBetweenWaves
 )
@@ -125,7 +125,7 @@ end
 ///////////////////////
 local lastFlipStart = 0
 
-local function DrawFlippingLetterText(
+function Elib.DrawFlippingLetterText(
     text, font, x, y, color,
     time, flipDuration, spacing, delayBetweenFlips
 )
@@ -206,7 +206,7 @@ local function EnsureGradientPanel()
 end
 
 -- Function to draw gradient text anywhere
-function DrawGradientText(text, fontSize, x, y, gradientCSS, width, height)
+function Elib.DrawGradientText(text, fontSize, x, y, gradientCSS, width, height)
 
     EnsureGradientPanel()
 
@@ -341,7 +341,7 @@ local function EnsureRainbowPanel(text, fontSize, font, speed, align)
     RainbowGradientPanel:SetHTML(rainbowHTML)
 end
 
-function DrawRainbowGradientText(text, fontSize, font, speed, align, x, y, width, height)
+function Elib.DrawRainbowGradientText(text, fontSize, font, speed, align, x, y, width, height)
     text = text or "RAINBOW"
     fontSize = fontSize or 64
     font = font or "Arial"
@@ -365,7 +365,7 @@ end
 ///////////////////////
 // Glowing
 ///////////////////////
-function GlowColor(col1, col2, mod)
+local function GlowColor(col1, col2, mod)
 	local newr = col1.r + ((col2.r - col1.r) * (mod))
 	local newg = col1.g + ((col2.g - col1.g) * (mod))
 	local newb = col1.b + ((col2.b - col1.b) * (mod))
@@ -373,7 +373,7 @@ function GlowColor(col1, col2, mod)
 	return Color(newr, newg, newb)
 end
 
-function DrawGlowingText(static, text, font, x, y, color, xalign, yalign)
+function Elib.DrawGlowingText(static, text, font, x, y, color, xalign, yalign)
 
 	local xalign = xalign or TEXT_ALIGN_LEFT
 	local yalign = yalign or TEXT_ALIGN_TOP
@@ -397,7 +397,7 @@ end
 local chromaNextTime = 0
 local chromaOffsets = {}
 
-local function DrawChromaticAberrationText(text, font, x, y, intensity, time, speed)
+function Elib.DrawChromaticAberrationText(text, font, x, y, intensity, time, speed)
     surface.SetFont(font)
 
     intensity = intensity or 2
@@ -455,7 +455,7 @@ do
     for i = 1, #symbols do table.insert(glitchSet, symbols:sub(i,i)) end
 end
 
-local function DrawGlitchText(text, font, x, y, color, time, glitchSpeed, glitchIntensity)
+function Elib.DrawGlitchText(text, font, x, y, color, time, glitchSpeed, glitchIntensity)
     surface.SetFont(font)
     surface.SetTextColor(color)
 
@@ -507,7 +507,7 @@ do
     for i = 1, #symbols do table.insert(glitchSet, symbols:sub(i,i)) end
 end
 
-local function DrawChromaticGlitchText(text, font, x, y, time, chromaIntensity, glitchSpeed, glitchIntensity, chromaSpeed)
+function Elib.DrawChromaticGlitchText(text, font, x, y, time, chromaIntensity, glitchSpeed, glitchIntensity, chromaSpeed)
     surface.SetFont(font)
 
     chromaIntensity = chromaIntensity or 2
@@ -578,7 +578,7 @@ do
     for i = 1, #symbols do table.insert(glitchSet, symbols:sub(i,i)) end
 end
 
-local function DrawDecipherText(
+function Elib.DrawDecipherText(
     key,           -- unique key for this text block
     text, font, x, y,
     colorRandom,   -- color for flickering letters
@@ -662,7 +662,7 @@ end
 ///////////////////////
 local typingStates = {}
 
-local function DrawTypingText(
+function Elib.DrawTypingText(
     key, text, font, x, y,
     color,
     time,
@@ -755,7 +755,7 @@ local function generateTypingDelays(text)
     return delays
 end
 
-local function DrawTypingTextHuman(
+function Elib.DrawTypingTextHuman(
     key, text, font, x, y,
     color,
     time,
@@ -856,7 +856,7 @@ local function generateTypingDelays(text, mistakeMap)
     return delays
 end
 
-local function DrawTypingTextHumanAdvanced(
+function Elib.DrawTypingTextHumanAdvanced(
     key, text, font, x, y,
     color,
     time,
@@ -1031,7 +1031,7 @@ local function GetDynamicFont(baseFont, targetSize)
     return key
 end
 
-local function DrawGrowingText(
+function Elib.DrawGrowingText(
     text,
     baseFont,
     baseSize,
@@ -1108,7 +1108,7 @@ end
 ///////////////////////
 // Blinking
 ///////////////////////
-local function DrawBlinkingText(
+function Elib.DrawBlinkingText(
     text, font, x, y,
     color,
     time,
@@ -1131,7 +1131,7 @@ end
 ///////////////////////
 // Pulsing
 ///////////////////////
-local function DrawColorPulseText(text, font, x, y, color1, color2, time, speed)
+function Elib.DrawColorPulseText(text, font, x, y, color1, color2, time, speed)
     surface.SetFont(font)
     
     local t = (math.sin(time * speed) * 0.5) + 0.5
@@ -1148,7 +1148,7 @@ end
 ///////////////////////
 // Scrolling
 ///////////////////////
-local function DrawVerticalScrollText(text, font, x, y, color, time, speed, spacing, bgColor)
+function Elib.DrawVerticalScrollText(text, font, x, y, color, time, speed, spacing, bgColor)
     surface.SetFont(font)
     time = time or CurTime()
     speed = speed or 60        -- pixels per second
@@ -1207,7 +1207,7 @@ end
 ///////////////////////
 // fade in/out
 ///////////////////////
-local function DrawFadeText(text, font, x, y, color, time, speed)
+function Elib.DrawFadeText(text, font, x, y, color, time, speed)
     surface.SetFont(font)
 
     local alpha = (math.sin(time * speed) * 0.5 + 0.5) * 255
@@ -1222,7 +1222,7 @@ end
 local jitterActiveUntil = 0
 local jitterCooldownNext = 0
 
-local function DrawControlledJitterText(
+function Elib.DrawControlledJitterText(
     text, font, x, y,
     color,
     time,
@@ -1258,7 +1258,7 @@ end
 local flickerActiveUntil = 0
 local flickerCooldownNext = 0
 
-local function DrawControlledFlickerText(
+function Elib.DrawControlledFlickerText(
     text, font, x, y,
     color,
     time,
@@ -1291,7 +1291,7 @@ end
 ///////////////////////
 // circular
 ///////////////////////
-local function DrawCircularText(text, font, centerX, centerY, radius, color, time, speed)
+function Elib.DrawCircularText(text, font, centerX, centerY, radius, color, time, speed)
     surface.SetFont(font)
     surface.SetTextColor(color)
 
@@ -1322,7 +1322,7 @@ local function EnsureScanlinesPanel()
     end
 end
 
-function DrawScanlinesHTMLText(
+function Elib.DrawScanlinesHTMLText(
     text,
     fontSize,
     font,
@@ -1465,39 +1465,39 @@ hook.Add("HUDPaint", "MyWavyText", function()
 
     local CurTime = CurTime()
 
-    DrawShakingText("Shaking", "DermaLarge", 50, 60, Color(255,255,0), CurTime * 1.8, 1.05)
-    DrawWavingText("Waving", "DermaLarge", 50, 100, Color(255,255,0))
-    DrawIteratingHorizontalRippleText("Waving 2", "DermaLarge", 50, 140, Color(255,255,0), CurTime, 5, 5, .5)
-    DrawSequentialJumpText_SingleWave("Iterating", "DermaLarge", 50, 180, Color(255,255,0), CurTime, 0.3, 0.1, 5, .5)
-    DrawFlippingLetterText("Flipping", "DermaLarge", 50, 220, Color(255,255,0), nil, 0.5, 0.1, 0.5)
+    Elib.DrawShakingText("Shaking", "DermaLarge", 50, 60, Color(255,255,0), CurTime * 1.8, 1.05)
+    Elib.DrawWavingText("Waving", "DermaLarge", 50, 100, Color(255,255,0))
+    Elib.DrawIteratingHorizontalRippleText("Waving 2", "DermaLarge", 50, 140, Color(255,255,0), CurTime, 5, 5, .5)
+    Elib.DrawSequentialJumpText_SingleWave("Iterating", "DermaLarge", 50, 180, Color(255,255,0), CurTime, 0.3, 0.1, 5, .5)
+    Elib.DrawFlippingLetterText("Flipping", "DermaLarge", 50, 220, Color(255,255,0), nil, 0.5, 0.1, 0.5)
 
-    DrawGradientText("Gradient", 24, 50, 260, "linear-gradient(to right, red, orange, yellow)", 800, 100)
-    DrawRainbowGradientText("Rainbow", 24, "Arial", 10, TEXT_ALIGN_LEFT, 50, 300)
-    DrawGlowingText(true, "Glowing", "DermaLarge", 50, 340, Color(255,255,0))
+    Elib.DrawGradientText("Gradient", 24, 50, 260, "linear-gradient(to right, red, orange, yellow)", 800, 100)
+    Elib.DrawRainbowGradientText("Rainbow", 24, "Arial", 10, TEXT_ALIGN_LEFT, 50, 300)
+    Elib.DrawGlowingText(true, "Glowing", "DermaLarge", 50, 340, Color(255,255,0))
 
-    DrawChromaticAberrationText("Chromatic", "DermaLarge", 50, 380, 2, nil, 8)
+    Elib.DrawChromaticAberrationText("Chromatic", "DermaLarge", 50, 380, 2, nil, 8)
     
-    DrawGlitchText("Glitch", "DermaLarge", 50, 420, Color(255,255,0), CurTime, 20, .05)
-    DrawChromaticGlitchText("CHROMATIC GLITCH", "DermaLarge", 50, 460, CurTime, 2, 20, 0.05, 5)
-    DrawDecipherText("loopKey", "Access Granted", "DermaLarge", 50, 500, Color(255, 255, 255), CurTime, 8, true, 1.5, Color(35, 172, 35))
+    Elib.DrawGlitchText("Glitch", "DermaLarge", 50, 420, Color(255,255,0), CurTime, 20, .05)
+    Elib.DrawChromaticGlitchText("CHROMATIC GLITCH", "DermaLarge", 50, 460, CurTime, 2, 20, 0.05, 5)
+    Elib.DrawDecipherText("loopKey", "Access Granted", "DermaLarge", 50, 500, Color(255, 255, 255), CurTime, 8, true, 1.5, Color(35, 172, 35))
 
-    DrawTypingText("typingKey", "HELLO, USER. SYSTEM ONLINE.", "DermaLarge", 50, 540, Color(90, 230, 34), CurTime, 20, true)
-    DrawTypingText("typingLoopKey", "Robot with cursor:", "DermaLarge", 50, 580, Color(90, 230, 34), CurTime, 15, true, 1.5, "_")
+    Elib.DrawTypingText("typingKey", "HELLO, USER. SYSTEM ONLINE.", "DermaLarge", 50, 540, Color(90, 230, 34), CurTime, 20, true)
+    Elib.DrawTypingText("typingLoopKey", "Robot with cursor:", "DermaLarge", 50, 580, Color(90, 230, 34), CurTime, 15, true, 1.5, "_")
 
-    DrawTypingTextHuman("humanKey", "Human typing. looks nice!", "DermaLarge", 50, 620, Color(255, 255, 255), CurTime, true, 0.5, "_")
-    DrawTypingTextHumanAdvanced("humanMistakeKey", "Welcome fellow human.", "DermaLarge", 50, 660, Color(255, 255, 255), CurTime, true, 1.5, "_", {[11] = { wrong = "k", right = "l" }})
+    Elib.DrawTypingTextHuman("humanKey", "Human typing. looks nice!", "DermaLarge", 50, 620, Color(255, 255, 255), CurTime, true, 0.5, "_")
+    Elib.DrawTypingTextHumanAdvanced("humanMistakeKey", "Welcome fellow human.", "DermaLarge", 50, 660, Color(255, 255, 255), CurTime, true, 1.5, "_", {[11] = { wrong = "k", right = "l" }})
 
-    DrawGrowingText("GROWING", "DermaLarge", 32, 50, 700, Color(255, 0, 0), CurTime, 1, 1.4, 5)
-    DrawBlinkingText("BLINKING", "DermaLarge", 50, 740, Color(255, 255, 0), CurTime, 1, 0.5)
+    Elib.DrawGrowingText("GROWING", "DermaLarge", 32, 50, 700, Color(255, 0, 0), CurTime, 1, 1.4, 5)
+    Elib.DrawBlinkingText("BLINKING", "DermaLarge", 50, 740, Color(255, 255, 0), CurTime, 1, 0.5)
 
-    DrawFadeText("Fade", "DermaLarge", 50, 780, Color(255, 255, 0), CurTime, 2)
-    DrawColorPulseText("Pulsing", "DermaLarge", 50, 820, Color(255, 255, 0), Color(255, 0, 0), CurTime, 2)
-    DrawControlledJitterText("Jittering", "DermaLarge", 50, 860, Color(255, 255, 0), CurTime, 0.2, 0.15, 1.5)
-    DrawControlledFlickerText("Flickering", "DermaLarge", 50, 900, Color(255, 0, 0), CurTime, 0.3, 0.15)
-    DrawCircularText("Orbit", "DermaLarge", 50 + 25, 940, 25, Color(255, 255, 0), CurTime, .6)
-    DrawVerticalScrollText("Scroll", "DermaLarge", 50, 980, Color(255, 255, 0), CurTime, 20, -4, Elib.Colors.Stencil)
+    Elib.DrawFadeText("Fade", "DermaLarge", 50, 780, Color(255, 255, 0), CurTime, 2)
+    Elib.DrawColorPulseText("Pulsing", "DermaLarge", 50, 820, Color(255, 255, 0), Color(255, 0, 0), CurTime, 2)
+    Elib.DrawControlledJitterText("Jittering", "DermaLarge", 50, 860, Color(255, 255, 0), CurTime, 0.2, 0.15, 1.5)
+    Elib.DrawControlledFlickerText("Flickering", "DermaLarge", 50, 900, Color(255, 0, 0), CurTime, 0.3, 0.15)
+    Elib.DrawCircularText("Orbit", "DermaLarge", 50 + 25, 940, 25, Color(255, 255, 0), CurTime, .6)
+    Elib.DrawVerticalScrollText("Scroll", "DermaLarge", 50, 980, Color(255, 255, 0), CurTime, 20, -4, Elib.Colors.Stencil)
 
-    DrawScanlinesHTMLText(
+    Elib.DrawScanlinesHTMLText(
         "SCANLINES HTML",
         24,
         "Arial",
