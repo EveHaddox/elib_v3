@@ -8,9 +8,9 @@
 function Elib.DrawLineAnim() end
 function Elib.DrawRoundedLineAnim() end
 do
-    local offset = 0
-    local cooldown = 0
-    local function DrawAnim(x, y, w, h, col, speed)
+    local offsets = {}
+    local cooldowns = {}
+    local function DrawAnim(x, y, w, h, col, speed, key)
         local stripeWidth = 10
         local spacing     = 20
         local angle       = 45
@@ -18,10 +18,19 @@ do
         local d_x, d_y    = math.cos(radians), math.sin(radians)
         local n_x, n_y    = -d_y, d_x
 
+        key = key or 1
+        if not offsets[key] then offsets[key] = 0 end
+        local offset = offsets[key]
+        if not cooldowns[key] then cooldowns[key] = 0 end
+        local cooldown = cooldowns[key]
+
         speed = speed or 50
         if CurTime() > cooldown then
             offset = (offset + FrameTime() * speed) % spacing
             cooldown = CurTime() + FrameTime()
+            
+            offsets[key] = offset
+            cooldowns[key] = cooldown
         end
 
         -- compute projection range of rectangle corners onto the normal vector
@@ -66,7 +75,7 @@ do
         end
     end
 
-    function Elib.DrawLineAnim(x, y, w, h, col1, col2, speed)
+    function Elib.DrawLineAnim(x, y, w, h, col1, col2, speed, key)
         render.ClearStencil()
         render.SetStencilEnable(true)
 
@@ -89,12 +98,12 @@ do
         render.SetStencilFailOperation(STENCIL_KEEP)
         render.SetStencilZFailOperation(STENCIL_KEEP)
 
-        DrawAnim(x, y, w, h, col2, speed)
+        DrawAnim(x, y, w, h, col2, speed, key)
 
         render.SetStencilEnable(false)
     end
 
-    function Elib.DrawEoundedLineAnim(rounded, x, y, w, h, col1, col2, speed)
+    function Elib.DrawEoundedLineAnim(rounded, x, y, w, h, col1, col2, speed, key)
         render.ClearStencil()
         render.SetStencilEnable(true)
 
@@ -108,7 +117,7 @@ do
         render.SetStencilCompareFunction(STENCIL_ALWAYS)
 
         -- Draw background rect (this writes 1 into the stencil inside rect)
-        Elib.DrawRoundedBox(rounded, x, y, w, h, col1, speed)
+        Elib.DrawRoundedBox(rounded, x, y, w, h, col1)
 
         -- Now only draw where stencil == 1
         render.SetStencilCompareFunction(STENCIL_EQUAL)
@@ -116,7 +125,7 @@ do
         render.SetStencilFailOperation(STENCIL_KEEP)
         render.SetStencilZFailOperation(STENCIL_KEEP)
 
-        DrawAnim(x, y, w, h, col2)
+        DrawAnim(x, y, w, h, col2, speed, key)
 
         render.SetStencilEnable(false)
     end
