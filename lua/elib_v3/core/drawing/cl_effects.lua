@@ -5,8 +5,8 @@
 ///////////////////////
 // Lines
 ///////////////////////
-local function DrawLineAnim() end
-local function DrawRoundedLineAnim() end
+function Elib.DrawLineAnim() end
+function Elib.DrawRoundedLineAnim() end
 do
     local offset = 0
     local cooldown = 0
@@ -65,7 +65,7 @@ do
         end
     end
 
-    function DrawLineAnim(x, y, w, h, col1, col2)
+    function Elib.DrawLineAnim(x, y, w, h, col1, col2)
         render.ClearStencil()
         render.SetStencilEnable(true)
 
@@ -93,7 +93,7 @@ do
         render.SetStencilEnable(false)
     end
 
-    function DrawEoundedLineAnim(rounded, x, y, w, h, col1, col2)
+    function Elib.DrawEoundedLineAnim(rounded, x, y, w, h, col1, col2)
         render.ClearStencil()
         render.SetStencilEnable(true)
 
@@ -494,8 +494,8 @@ end
 ///////////////////////
 hook.Add("HUDPaint", "Elib:EffectsTest", function()
     // Lines
-    --DrawLineAnim(200, 200, 200, 400, Color(96, 109, 188), Color(70, 82, 152))
-    --DrawEoundedLineAnim(6, 450, 200, 200, 400, Color(96, 109, 188), Color(70, 82, 152))
+    --Elib.DrawLineAnim(200, 200, 200, 400, Color(96, 109, 188), Color(70, 82, 152))
+    --Elib.DrawEoundedLineAnim(6, 450, 200, 200, 400, Color(96, 109, 188), Color(70, 82, 152))
 
     // Square Particles
     --Elib.DrawRoundedBox(0, 200, 200, 200, 400, Elib.Colors.Background)
