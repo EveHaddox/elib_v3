@@ -10,16 +10,17 @@ function Elib.DrawRoundedLineAnim() end
 do
     local offset = 0
     local cooldown = 0
-    local function DrawAnim(x, y, w, h, col)
-        local stripeWidth = 10      -- width of each stripe in pixels
-        local spacing     = 20      -- distance between stripes
+    local function DrawAnim(x, y, w, h, col, speed)
+        local stripeWidth = 10
+        local spacing     = 20
         local angle       = 45
         local radians     = math.rad(angle)
-        local d_x, d_y    = math.cos(radians), math.sin(radians)   -- direction of the stripe
-        local n_x, n_y    = -d_y, d_x                              -- normal (perpendicular) to stripe
+        local d_x, d_y    = math.cos(radians), math.sin(radians)
+        local n_x, n_y    = -d_y, d_x
 
+        speed = speed or 50
         if CurTime() > cooldown then
-            offset = (offset + FrameTime() * 100) % spacing
+            offset = (offset + FrameTime() * speed) % spacing
             cooldown = CurTime() + FrameTime()
         end
 
@@ -65,7 +66,7 @@ do
         end
     end
 
-    function Elib.DrawLineAnim(x, y, w, h, col1, col2)
+    function Elib.DrawLineAnim(x, y, w, h, col1, col2, speed)
         render.ClearStencil()
         render.SetStencilEnable(true)
 
@@ -88,12 +89,12 @@ do
         render.SetStencilFailOperation(STENCIL_KEEP)
         render.SetStencilZFailOperation(STENCIL_KEEP)
 
-        DrawAnim(x, y, w, h, col2)
+        DrawAnim(x, y, w, h, col2, speed)
 
         render.SetStencilEnable(false)
     end
 
-    function Elib.DrawEoundedLineAnim(rounded, x, y, w, h, col1, col2)
+    function Elib.DrawEoundedLineAnim(rounded, x, y, w, h, col1, col2, speed)
         render.ClearStencil()
         render.SetStencilEnable(true)
 
@@ -107,7 +108,7 @@ do
         render.SetStencilCompareFunction(STENCIL_ALWAYS)
 
         -- Draw background rect (this writes 1 into the stencil inside rect)
-        Elib.DrawRoundedBox(rounded, x, y, w, h, col1)
+        Elib.DrawRoundedBox(rounded, x, y, w, h, col1, speed)
 
         -- Now only draw where stencil == 1
         render.SetStencilCompareFunction(STENCIL_EQUAL)
