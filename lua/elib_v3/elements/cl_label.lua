@@ -17,7 +17,7 @@
 
 local PANEL = {}
 
-AccessorFunc(PANEL, "Text", "Text", FORCE_STRING)
+-- Remove AccessorFunc for Text to use custom SetText
 AccessorFunc(PANEL, "Font", "Font", FORCE_STRING)
 AccessorFunc(PANEL, "TextAlign", "TextAlign", FORCE_NUMBER)
 AccessorFunc(PANEL, "TextColor", "TextColor")
@@ -36,8 +36,51 @@ function PANEL:Init()
 end
 
 function PANEL:SetText(text)
-    self.Text = text
     self.OriginalText = text
+    self:ParseColoredText()
+end
+
+function PANEL:GetText()
+    return self.Text or ""
+end
+
+function PANEL:ParseColoredText()
+    self.ColorSegments = {}
+    local text = self.OriginalText or ""
+    local plainText = ""
+    local pos = 1
+
+    while pos <= #text do
+        local tagStart, tagEnd, r, g, b, a = string.find(text, "<color%((%d+),%s*(%d+),%s*(%d+),%s*(%d+)%)>", pos)
+        
+        if tagStart then
+            if tagStart > pos then
+                plainText = plainText .. string.sub(text, pos, tagStart - 1)
+            end
+
+            local closeStart, closeEnd = string.find(text, "</color>", tagEnd + 1)
+            if closeStart then
+                local content = string.sub(text, tagEnd + 1, closeStart - 1)
+
+                table.insert(self.ColorSegments, {
+                    start = #plainText + 1,
+                    length = #content,
+                    color = Color(tonumber(r), tonumber(g), tonumber(b), tonumber(a))
+                })
+
+                plainText = plainText .. content
+                pos = closeEnd + 1
+            else
+                plainText = plainText .. string.sub(text, pos)
+                break
+            end
+        else
+            plainText = plainText .. string.sub(text, pos)
+            break
+        end
+    end
+    
+    self.OriginalText = plainText
 end
 
 function PANEL:CalculateSize()
@@ -64,16 +107,54 @@ end
 function PANEL:Paint(w, h)
     local align = self:GetTextAlign()
     local text = self:GetEllipses() and Elib.EllipsesText(self:GetText(), w, self:GetFont()) or self:GetText()
+    local font = self:GetFont()
+    local baseColor = self:GetTextColor()
 
-    if align == TEXT_ALIGN_CENTER then
-        Elib.DrawText(text, self:GetFont(), w / 2, 0, self:GetTextColor(), TEXT_ALIGN_CENTER)
-        return
-    elseif align == TEXT_ALIGN_RIGHT then
-        Elib.DrawText(text, self:GetFont(), w, 0, self:GetTextColor(), TEXT_ALIGN_RIGHT)
+    if self.ColorSegments and #self.ColorSegments > 0 then
+        Elib.SetFont(font)
+        
+        local xPos = 0
+        local yPos = 0
+
+        if align == TEXT_ALIGN_CENTER then
+            local totalWidth = Elib.GetTextSize(text)
+            xPos = w / 2 - totalWidth / 2
+        elseif align == TEXT_ALIGN_RIGHT then
+            local totalWidth = Elib.GetTextSize(text)
+            xPos = w - totalWidth
+        end
+        
+        local currentSegment = 1
+        local currentPos = 1
+
+        for i = 1, #text do
+            local char = string.sub(text, i, i)
+            local charColor = baseColor
+
+            for _, segment in ipairs(self.ColorSegments) do
+                if i >= segment.start and i < segment.start + segment.length then
+                    charColor = segment.color
+                    break
+                end
+            end
+            
+            Elib.DrawText(char, font, xPos, yPos, charColor, TEXT_ALIGN_LEFT)
+            local charWidth = Elib.GetTextSize(char)
+            xPos = xPos + charWidth
+        end
+        
         return
     end
 
-    Elib.DrawText(text, self:GetFont(), 0, 0, self:GetTextColor())
+    if align == TEXT_ALIGN_CENTER then
+        Elib.DrawText(text, font, w / 2, 0, baseColor, TEXT_ALIGN_CENTER)
+        return
+    elseif align == TEXT_ALIGN_RIGHT then
+        Elib.DrawText(text, font, w, 0, baseColor, TEXT_ALIGN_RIGHT)
+        return
+    end
+
+    Elib.DrawText(text, font, 0, 0, baseColor)
 end
 
 vgui.Register("Elib.Label", PANEL, "Panel")
