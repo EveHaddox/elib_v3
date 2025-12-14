@@ -112,37 +112,49 @@ function PANEL:Paint(w, h)
 
     if self.ColorSegments and #self.ColorSegments > 0 then
         Elib.SetFont(font)
-        
-        local xPos = 0
-        local yPos = 0
 
-        if align == TEXT_ALIGN_CENTER then
-            local totalWidth = Elib.GetTextSize(text)
-            xPos = w / 2 - totalWidth / 2
-        elseif align == TEXT_ALIGN_RIGHT then
-            local totalWidth = Elib.GetTextSize(text)
-            xPos = w - totalWidth
+        local lines = string.Explode("\n", text)
+        local lineWidths = {}
+        for i, line in ipairs(lines) do
+            lineWidths[i] = (Elib.GetTextSize(line))
         end
-        
-        local currentSegment = 1
-        local currentPos = 1
 
-        for i = 1, #text do
-            local char = string.sub(text, i, i)
-            local charColor = baseColor
+        local _, lineHeight = Elib.GetTextSize("Ay")
+        local globalIndex = 1
 
-            for _, segment in ipairs(self.ColorSegments) do
-                if i >= segment.start and i < segment.start + segment.length then
-                    charColor = segment.color
-                    break
-                end
+        for li, line in ipairs(lines) do
+            local lineWidth = lineWidths[li] or 0
+            local xPos = 0
+            local yPos = (li - 1) * lineHeight
+
+            if align == TEXT_ALIGN_CENTER then
+                xPos = w / 2 - lineWidth / 2
+            elseif align == TEXT_ALIGN_RIGHT then
+                xPos = w - lineWidth
             end
-            
-            Elib.DrawText(char, font, xPos, yPos, charColor, TEXT_ALIGN_LEFT)
-            local charWidth = Elib.GetTextSize(char)
-            xPos = xPos + charWidth
+
+            for i = 1, #line do
+                local char = string.sub(line, i, i)
+                local charColor = baseColor
+
+                for _, segment in ipairs(self.ColorSegments) do
+                    if globalIndex >= segment.start and globalIndex < segment.start + segment.length then
+                        charColor = segment.color
+                        break
+                    end
+                end
+
+                Elib.DrawText(char, font, xPos, yPos, charColor, TEXT_ALIGN_LEFT)
+                local charWidth = Elib.GetTextSize(char)
+                xPos = xPos + charWidth
+                globalIndex = globalIndex + 1
+            end
+
+            if li < #lines then
+                globalIndex = globalIndex + 1
+            end
         end
-        
+
         return
     end
 
