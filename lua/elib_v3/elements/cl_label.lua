@@ -37,6 +37,7 @@ end
 
 function PANEL:SetText(text)
     self.OriginalText = text
+    self.Text = text
     self:ParseColoredText()
 end
 
