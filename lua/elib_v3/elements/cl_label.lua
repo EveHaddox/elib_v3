@@ -35,7 +35,46 @@ function PANEL:Init()
     self:SetTextColor(Elib.Colors.SecondaryText)
 end
 
+local function StripInvalidUtf8(str)
+    str = tostring(str or "")
+    if pcall(utf8.len, str) then return str end
+
+    local bytes = { string.byte(str, 1, #str) }
+    local out, i = {}, 1
+    while i <= #bytes do
+        local b = bytes[i]
+        local len = (b < 0x80 and 1)
+            or (b >= 0xC2 and b <= 0xDF and 2)
+            or (b >= 0xE0 and b <= 0xEF and 3)
+            or (b >= 0xF0 and b <= 0xF4 and 4)
+            or 1
+
+        local ok, ch
+        if i + len - 1 <= #bytes then
+            local slice = {}
+            for j = 0, len - 1 do slice[#slice + 1] = bytes[i + j] end
+            ok, ch = pcall(utf8.char, unpack(slice))
+        end
+
+        if ok and ch then
+            out[#out + 1] = ch
+            i = i + len
+        else
+            i = i + 1
+        end
+    end
+    return table.concat(out)
+end
+
+local function ForEachUtf8Char(line, fn)
+    line = StripInvalidUtf8(tostring(line or ""))
+    for ch in string.gmatch(line, utf8.charpattern) do
+        fn(ch)
+    end
+end
+
 function PANEL:SetText(text)
+    text = StripInvalidUtf8(text)
     self.OriginalText = text
     self.Text = text
     self:ParseColoredText()
@@ -47,7 +86,7 @@ end
 
 function PANEL:ParseColoredText()
     self.ColorSegments = {}
-    local text = self.OriginalText or ""
+    local text = StripInvalidUtf8(self.OriginalText or "")
     local plainText = ""
     local pos = 1
 
@@ -64,8 +103,8 @@ function PANEL:ParseColoredText()
                 local content = string.sub(text, tagEnd + 1, closeStart - 1)
 
                 table.insert(self.ColorSegments, {
-                    start = #plainText + 1,
-                    length = #content,
+                    start = (utf8.len(plainText) or #plainText) + 1,
+                    length = utf8.len(content) or #content,
                     color = Color(tonumber(r), tonumber(g), tonumber(b), tonumber(a))
                 })
 
@@ -108,7 +147,8 @@ end
 function PANEL:Paint(w, h)
     local align = self:GetTextAlign()
     local text = self:GetEllipses() and Elib.EllipsesText(self:GetText(), w, self:GetFont()) or self:GetText()
-    local font = self:GetFont()
+    text = StripInvalidUtf8(text)
+    local font = self.GetFont and self:GetFont() or "UI.Label"
     local baseColor = self:GetTextColor()
 
     if self.ColorSegments and #self.ColorSegments > 0 then
@@ -117,6 +157,8 @@ function PANEL:Paint(w, h)
         local lines = string.Explode("\n", text)
         local lineWidths = {}
         for i, line in ipairs(lines) do
+            line = StripInvalidUtf8(line)
+            lines[i] = line
             lineWidths[i] = (Elib.GetTextSize(line))
         end
 
@@ -134,8 +176,7 @@ function PANEL:Paint(w, h)
                 xPos = w - lineWidth
             end
 
-            for i = 1, #line do
-                local char = string.sub(line, i, i)
+            ForEachUtf8Char(line, function(char)
                 local charColor = baseColor
 
                 for _, segment in ipairs(self.ColorSegments) do
@@ -149,10 +190,10 @@ function PANEL:Paint(w, h)
                 local charWidth = Elib.GetTextSize(char)
                 xPos = xPos + charWidth
                 globalIndex = globalIndex + 1
-            end
+            end)
 
             if li < #lines then
-                globalIndex = globalIndex + 1
+                globalIndex = globalIndex + 1 -- newline
             end
         end
 
