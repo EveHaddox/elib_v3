@@ -100,6 +100,10 @@ function Elib.OffsetColor(col, offset)
     return createColor(col.r + offset, col.g + offset, col.b + offset)
 end
 
+function Elib.SetColorAlpha(col, alpha)
+    return Color(col.r, col.g, col.b, alpha)
+end
+
 do
     local match = string.match
     local tonumber = tonumber

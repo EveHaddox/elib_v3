@@ -91,3 +91,7 @@ function Elib.FormatTime(time)
 
     return format("%im %is", m, s)
 end
+
+function Elib.LimitCharacters(text, limit)
+    return string.sub(text, 1, limit)
+end
