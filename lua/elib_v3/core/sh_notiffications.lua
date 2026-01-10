@@ -23,3 +23,15 @@ else
         notification.AddLegacy(text, type, length)
     end)
 end
+
+///////////////////
+// Chat Message
+///////////////////
+if SERVER then
+    function Elib.AddMessage(addon, color, message, ply)
+        ply:ChatAddText(
+            color, addon,
+            Elib.Colors.PrimaryText,  " ".. message
+        )
+    end
+end
