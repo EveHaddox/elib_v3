@@ -45,6 +45,7 @@ local function CreateTestMenu()
         {name = "Graphs", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Dropdowns", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
         {name = "Slider", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
+        {name = "Horizontal Scroll", icon = "https://construct-cdn.physgun.com/images/2dea4a43-79f1-4025-a6a6-9aaf059214e9.png"},
     }
 
     for i = 1, #pageData do
