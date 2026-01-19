@@ -44,7 +44,11 @@ function PANEL:Paint(w, h)
     end
 
     if self:GetValue() == "" then
-        Elib.DrawSimpleText(self:GetPlaceholderText() or "", "UI.TextEntry", Elib.Scale(10), h / 2, self.PlaceholderTextCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        if self:IsMultiline() then
+            Elib.DrawSimpleText(self:GetPlaceholderText() or "", "UI.TextEntry", 10, 10, self.PlaceholderTextCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
+        else
+            Elib.DrawSimpleText(self:GetPlaceholderText() or "", "UI.TextEntry", Elib.Scale(10), h / 2, self.PlaceholderTextCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        end
     end
 
     local outlineThickness = Elib.Scale(1)
