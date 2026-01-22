@@ -167,7 +167,8 @@ function PANEL:GenerateCategories()
         self:GeneratePage()
     end
 
-    if Elib.Config.Addons[self.addon] == nil or Elib.Config.Addons[self.addon][self.realm] == nil then 
+    if Elib.Config.Addons[self.addon] == nil or Elib.Config.Addons[self.addon][self.realm] == nil then
+        self.categoryNav:RemoveItem(1)
         self.categoryNav:AddItem(1, "No Data", function() end, 1)
         self.scroll:Clear()
         return
