@@ -26,7 +26,7 @@ function Elib.Config:AddAddon(name, order, author)
 end
 
 local count = 0
-function Elib.Config:AddValue(addon, realm, category, id, name, value, type, order, onComplete, resetMenu, table, network)
+function Elib.Config:AddValue(addon, realm, category, id, name, value, type, order, onComplete, resetMenu, table, network, fullscreen)
     count = count + 1
     order = order or count
 
@@ -53,6 +53,7 @@ function Elib.Config:AddValue(addon, realm, category, id, name, value, type, ord
         resetMenu = resetMenu or false,
         table = table or nil,
         network = network or false,
+        fullscreen = fullscreen or false,
     }
 end
 

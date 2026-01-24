@@ -10,6 +10,7 @@ function PANEL:Init()
     self.category = nil
 
     self.panels = {}
+    self.Cleanup = {}
 
     self.func = function() end
 
@@ -205,6 +206,14 @@ function PANEL:GeneratePage()
     self.scroll:Clear()
     self.panels = {}
 
+    if !table.IsEmpty(self.Cleanup) then
+        for k, v in ipairs(self.Cleanup) do
+            if IsValid(v) then
+                v:Remove()
+            end
+        end
+    end
+
     if Elib.Config.Addons[self.addon][self.realm][self.category] == nil or table.IsEmpty(Elib.Config.Addons[self.addon][self.realm][self.category]) then return end
 
     local sortedPanels = {}
@@ -220,18 +229,27 @@ function PANEL:GeneratePage()
     for _, v in ipairs(sortedPanels) do
         local k = v.key
         
-        self.panels[k] = self.scroll:Add("Elib.Config.Panels." .. v.type)
-        local item = self.panels[k]
+        local item
+        if v.fullscreen then
+            self.panels[k] = self:Add("Elib.Config.Panels." .. v.type)
+            item = self.panels[k]
+            item:Dock(FILL)
 
-        item:Dock(TOP)
-        item:DockMargin(0, 0, 0, 4)
+            table.insert(self.Cleanup, self.panels[k])
+        else
+            self.panels[k] = self.scroll:Add("Elib.Config.Panels." .. v.type)
+            item = self.panels[k]
+
+            item:Dock(TOP)
+            item:DockMargin(0, 0, 0, 4)
+        end
+
         item:SetText(v.name)
         item:SetValue(v.value, v.table)
         item:SetPath(self.addon, self.realm, self.category, k)
 
         item.onComplete = v.onComplete
         item.resetMenu = v.resetMenu or false
-
     end
 
     self:InvalidateLayout(true)
