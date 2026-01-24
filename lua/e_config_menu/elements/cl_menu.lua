@@ -29,9 +29,13 @@ function PANEL:Init()
     self.categoryNav:Dock(TOP)
     self.categoryNav:SetHeight(Elib.Scale(32))
 
-    self.scroll = self:Add("Elib.ScrollPanel")
+    self.ScrollLayout = self:Add("DPanel")
+    self.ScrollLayout:Dock(FILL)
+    self.ScrollLayout:DockMargin(6, 6, 6, 6)
+    self.ScrollLayout.Paint = function(pnl, w, h) end
+
+    self.scroll = self.ScrollLayout:Add("Elib.ScrollPanel")
     self.scroll:Dock(FILL)
-    self.scroll:DockMargin(6, 6, 6, 6)
 
     if LocalPlayer():IsSuperAdmin() then
         self.realmNav:AddItem("client", "client", self.SwichRealm, 1, Color(207, 144, 49))
@@ -199,6 +203,7 @@ end
 function PANEL:GeneratePage()
 
     self.scroll:Clear()
+    self.panels = {}
 
     if Elib.Config.Addons[self.addon][self.realm][self.category] == nil or table.IsEmpty(Elib.Config.Addons[self.addon][self.realm][self.category]) then return end
 
@@ -229,11 +234,11 @@ function PANEL:GeneratePage()
 
     end
 
-    self.scroll:InvalidateLayout(true)
+    self:InvalidateLayout(true)
 
     timer.Simple(0, function()
         if not IsValid(self) then return end
-        self.scroll:InvalidateLayout(true)
+        self:InvalidateLayout(true)
     end)
 end
 
@@ -242,6 +247,17 @@ function PANEL:SetFunc(func)
 end
 
 function PANEL:PerformLayout(w, h)
+    self.scroll:InvalidateLayout(true)
+
+    local spacing = 4
+    local barSpacing = self.scroll.VBar.Enabled and 4 or 0
+
+    for _, v in pairs(self.panels) do
+        if IsValid(v) then
+            print("valid")
+            v:DockMargin(0, 0, barSpacing, spacing)
+        end
+    end
 end
 
 function PANEL:Paint(w, h)
