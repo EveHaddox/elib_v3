@@ -254,7 +254,6 @@ function PANEL:PerformLayout(w, h)
 
     for _, v in pairs(self.panels) do
         if IsValid(v) then
-            print("valid")
             v:DockMargin(0, 0, barSpacing, spacing)
         end
     end
