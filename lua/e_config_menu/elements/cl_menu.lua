@@ -69,7 +69,6 @@ function PANEL:Init()
     end
 
     self.Reset.Paint = function(pnl, w, h)
-
         if pnl:IsDown() then
             self.Reset.Color = Elib.Colors.Negative
         elseif pnl:IsHovered() then
@@ -106,7 +105,6 @@ function PANEL:Init()
     end
 
     self.Save.Paint = function(pnl, w, h)
-
         if pnl:IsDown() then
             self.Save.Color = Elib.Colors.Positive
         elseif pnl:IsHovered() then
@@ -127,7 +125,6 @@ function PANEL:Init()
     end
 
     self.Back.Paint = function(pnl, w, h)
-
         if pnl:IsDown() then
             self.Back.Color = Elib.Colors.Primary
         elseif pnl:IsHovered() then
@@ -151,9 +148,7 @@ function PANEL:Init()
         self.Reset:SetSize(btnSize, btnSize)
         self.Save:SetSize(btnSize, btnSize)
         self.Back:SetSize(btnSize, btnSize)
-        
     end
-    
 end
 
 function PANEL:SetAddon(addon)
@@ -162,8 +157,6 @@ function PANEL:SetAddon(addon)
 end
 
 function PANEL:GenerateCategories()
-    local toDelete
-    PrintTable(self.categoryNav.Items)
     if self.categoryNav and self.categoryNav.Items then
         for k, v in ipairs(self.categoryNav.Items) do
             v:Remove()
@@ -202,7 +195,6 @@ function PANEL:GenerateCategories()
 end
 
 function PANEL:GeneratePage()
-
     self.scroll:Clear()
     self.panels = {}
 
