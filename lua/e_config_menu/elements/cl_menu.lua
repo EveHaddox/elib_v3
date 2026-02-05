@@ -163,8 +163,11 @@ end
 
 function PANEL:GenerateCategories()
     local toDelete
+    PrintTable(self.categoryNav.Items)
     if self.categoryNav and self.categoryNav.Items then
-        toDelete = table.Copy(self.categoryNav.Items)
+        for k, v in ipairs(self.categoryNav.Items) do
+            v:Remove()
+        end
     end
 
     local function SwichCat(item)
@@ -173,7 +176,6 @@ function PANEL:GenerateCategories()
     end
 
     if Elib.Config.Addons[self.addon] == nil or Elib.Config.Addons[self.addon][self.realm] == nil then
-        self.categoryNav:RemoveItem(1)
         self.categoryNav:AddItem(1, "No Data", function() end, 1)
         self.scroll:Clear()
         return
@@ -196,9 +198,6 @@ function PANEL:GenerateCategories()
     end
 
     self.categoryNav:SelectItem(1)
-    for k, v in ipairs(toDelete) do
-        v:Remove()
-    end
 end
 
 function PANEL:GeneratePage()
