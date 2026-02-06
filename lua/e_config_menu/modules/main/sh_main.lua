@@ -64,13 +64,13 @@ function Elib.Config:GetValue(addon, realm, category, id)
     if SERVER and realm == "client" then return nil end
 
     if not Elib.Config.Addons[addon] then
-        printf("Elib.Config: Addon '%s' not found!", addon)
+        print(string.format("Elib.Config: Addon '%s' not found!", addon))
         return nil
     elseif not Elib.Config.Addons[addon][realm][category] then
-        printf("Elib.Config: Category '%s' for addon '%s' in realm '%s' not found!", category, addon, realm)
+        print(string.format("Elib.Config: Category '%s' for addon '%s' in realm '%s' not found!", category, addon, realm))
         return nil
     elseif not Elib.Config.Addons[addon][realm][category][id] then
-        printf("Elib.Config: ID '%s' for addon '%s' in realm '%s' and category '%s' not found!", id, addon, realm, category)
+        print(string.format("Elib.Config: ID '%s' for addon '%s' in realm '%s' and category '%s' not found!", id, addon, realm, category))
         return nil
     end
 
