@@ -18,7 +18,6 @@ function PANEL:Init()
     self.TextEntry:Dock(RIGHT)
     self.TextEntry:DockMargin(0, 4, 4, 4)
     self.TextEntry:SetWide(Elib.Scale(200))
-    self.TextEntry:SetNumeric(true)
     self.TextEntry:SetUpdateOnType(true)
     self.TextEntry:SetPlaceholderText("Text")
 
@@ -62,7 +61,6 @@ function PANEL:Init()
 
         Elib.DrawImage(0, 0, w, h, "https://construct-cdn.physgun.com/images/5fa7c9c8-d9d5-4c77-aed6-975b4fb039b5.png", self.Reset.Color)
     end
-    
 end
 
 function PANEL:SetValue(value)
