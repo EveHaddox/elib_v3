@@ -20,7 +20,7 @@ function PANEL:Init()
     self.TextEntry:SetWide(Elib.Scale(200))
     self.TextEntry:SetNumeric(true)
     self.TextEntry:SetUpdateOnType(true)
-    self.TextEntry:SetPlaceholderText("Number")
+    self.TextEntry:SetPlaceholderText("Text")
 
     function self.TextEntry:OnLoseFocus()
 
