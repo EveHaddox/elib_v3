@@ -142,7 +142,7 @@ function PANEL:GetSaved()
 end
 
 function PANEL:SetPath(addon, realm, category, k)
-    self.Path = { addon = addon, realm = realm, category = category, id = k }
+    self.Path = {addon = addon, realm = realm, category = category, id = k}
 end
 
 function PANEL:RestoreDefault()
