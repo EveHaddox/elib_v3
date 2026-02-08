@@ -7,4 +7,5 @@
 - https://www.gmodstore.com/market/view/ereports-eazy-reports-sit-system-with-nlr
 - https://www.gmodstore.com/market/view/elevels-easy-leveling-system
 
-Thanks to https://github.com/Srlion for making RNDX and Papi!
+## Credits
+> Thanks to https://github.com/Srlion for making RNDX and Papi!
