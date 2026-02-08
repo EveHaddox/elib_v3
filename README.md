@@ -6,3 +6,5 @@
 - https://www.gmodstore.com/market/view/ehud-easy-solution-for-your-ui
 - https://www.gmodstore.com/market/view/ereports-eazy-reports-sit-system-with-nlr
 - https://www.gmodstore.com/market/view/elevels-easy-leveling-system
+
+Thanks to https://github.com/Srlion for making RNDX and Papi!
