@@ -5,7 +5,9 @@
 ## My addons using it
 - https://www.gmodstore.com/market/view/ehud-easy-solution-for-your-ui
 - https://www.gmodstore.com/market/view/ereports-eazy-reports-sit-system-with-nlr
-- https://www.gmodstore.com/market/view/elevels-easy-leveling-system
+- https://www.gmodstore.com/market/view/ewarn-easy-warn-punishment-system
+- https://www.gmodstore.com/market/view/eparty-easy-party-group-system
+- https://www.gmodstore.com/market/view/ef4-easy-f4-menu
 
 ## Credits
 > Thanks to https://github.com/Srlion for making RNDX and Papi!  
