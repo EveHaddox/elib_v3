@@ -80,6 +80,7 @@ end
 
 // loading the library
 Elib.RNDX = include("rndx.lua")
+Elib.Papi = include("papi.lua")
 Elib.LoadDirectoryRecursive("elib_v3")
 Elib.IncludeShared("e_config_menu/sh_loader")
 
