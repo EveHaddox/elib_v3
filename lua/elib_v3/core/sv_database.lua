@@ -9,7 +9,6 @@
 Elib.Database = Elib.Database or {}
 Elib.Database.Registered = Elib.Database.Registered or {}
 
-require("mysqloo")
 
 local DATABASE = {}
 DATABASE.__index = DATABASE
