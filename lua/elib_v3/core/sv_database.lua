@@ -10,6 +10,7 @@ Elib.Database = Elib.Database or {}
 Elib.Database.Registered = Elib.Database.Registered or {}
 
 pcall(require, "mysqloo")
+print("If you can see an error about not having mysqloo ignore it (its an active issue in gmod: https://github.com/Facepunch/garrysmod-issues/issues/2498)")
 
 local DATABASE = {}
 DATABASE.__index = DATABASE
