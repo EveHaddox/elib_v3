@@ -9,6 +9,7 @@
 Elib.Database = Elib.Database or {}
 Elib.Database.Registered = Elib.Database.Registered or {}
 
+pcall(require, "mysqloo")
 
 local DATABASE = {}
 DATABASE.__index = DATABASE
