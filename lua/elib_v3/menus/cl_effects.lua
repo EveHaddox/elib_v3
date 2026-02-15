@@ -352,14 +352,14 @@ end
 -- Finally, register the panel so we can create it via vgui.Create(...)
 vgui.Register("Elib.BgEffect", PANEL)
 
---[[
 
-local gridSize = 30
+--[[
+local gridSize = 50
 local particles = {}
 local repelDistance = 100
 local repelForce = 200
 local maxSpeed = 30
-local speed = 2
+local speed = 4
 
 -- Set up particles
 hook.Add("Initialize", "InitFloatingParticles", function()
