@@ -100,80 +100,34 @@ end
 
 InitializeStatic()
 
-local snow, beams, static = false, false, true
+local snow, EnableBeams, static = true, false, false
 
 // paint
 function PANEL:Paint(w, h)
 
-    --[[
-    // Draw the background gradient
-    -- Black background.
-    local colorm = Color(0, 0, 0, 255)
-    -- Time by a factor of 10 to speed it up.
-    local t = 1--CurTime()*10
-    -- How much the color differs between sides.
-    local spread = 30
-    -- Color progression in a clock-wise manner.
-    local colorl = Elib.OffsetColor(Elib.Colors.Background, -50) --HSVToColor((t+spread*0)%360, 1, 1)
-    local colort = Elib.OffsetColor(Elib.Colors.Background, 0) --HSVToColor((t+spread*1)%360, 1, 1)
-    local colorr = Elib.OffsetColor(Elib.Colors.Background, 50) --HSVToColor((t+spread*2)%360, 1, 1)
-    local colorb = Elib.OffsetColor(Elib.Colors.Background, 100) --HSVToColor((t+spread*3)%360, 1, 1)
- 
-    -- Lower the alpha of each gradient to 50
-    -- so that when they layer over eachother they
-    -- won't be too bright.
-    local a = 50
-    colorl.a = a
-    colorr.a = a
-    colort.a = a
-    colorb.a = a
- 
-    -- Clear the background.
-    surface.SetDrawColor(colorm)
-    surface.DrawRect(0, 0, w, h)
- 
-    -- Draw left gradient.
-    surface.SetDrawColor(colorl)
-    surface.SetMaterial(self.gradientH)
-    surface.DrawTexturedRect(0, 0, w, h)
- 
-    -- Draw right gradient.
-    surface.SetDrawColor(colorr)
-    surface.SetMaterial(self.gradientH)
-    surface.DrawTexturedRectUV(0, 0, w, h, 1, 0, 0, 1)
- 
-    -- Draw top gradient.
-    surface.SetDrawColor(colort)
-    surface.SetMaterial(self.gradientV)
-    surface.DrawTexturedRect(0, 0, w, h)
- 
-    -- Draw bottom gradient.
-    surface.SetDrawColor(colorb)
-    surface.SetMaterial(self.gradientV)
-    surface.DrawTexturedRectUV(0, 0, w, h, 0, 1, 1, 0)
-    ]]
-
     // static noise
-    if SysTime() - lastUpdate > updateInterval then
-        UpdateStatic()
-        lastUpdate = SysTime()
-    end
+    if static then
+        if SysTime() - lastUpdate > updateInterval then
+            UpdateStatic()
+            lastUpdate = SysTime()
+        end
 
-    for _, pixel in ipairs(staticPixels) do
-        surface.SetDrawColor(pixel.color.r, pixel.color.g, pixel.color.b, staticOpacity)
-        surface.DrawRect(pixel.x, pixel.y, pixel.size, pixel.size)
+        for _, pixel in ipairs(staticPixels) do
+            surface.SetDrawColor(pixel.color.r, pixel.color.g, pixel.color.b, staticOpacity)
+            surface.DrawRect(pixel.x, pixel.y, pixel.size, pixel.size)
+        end
     end
 
     // Draw the snow particles
     if snow then
         for _, p in ipairs(particles) do
             p.y = (p.y + p.speed * FrameTime()) % ScrH()
-            draw.RoundedBox(p.size, p.x, p.y, p.size, p.size, Color(255, 255, 255, p.alpha))
+            Elib.DrawRoundedBox(p.size, p.x, p.y, p.size, p.size, Color(255, 255, 255, p.alpha))
         end
     end
 
     // Draw the beams
-    if beams then
+    if EnableBeams then
         for i = #beams, 1, -1 do
             local beam = beams[i]
 
@@ -461,3 +415,56 @@ hook.Add("HUDPaint", "DrawFloatingParticles", function()
     end
 end)
 ]]
+--hook.Remove("HUDPaint", "DrawFloatingParticles")
+
+///////////////////
+// Menu & Opening
+///////////////////
+local function CreateMenu()
+    Elib.EffectsMenu = vgui.Create("Elib.Frame")
+    Elib.EffectsMenu:SetTitle("Elib.Effects Menu")
+    Elib.EffectsMenu:SetImageURL("https://construct-cdn.physgun.com/images/51bf125e-b357-42df-949c-2bffff7e8b6c.png")
+    Elib.EffectsMenu:SetSize(Elib.Scale(950), Elib.Scale(600))
+    Elib.EffectsMenu:SetSizable(true)
+    Elib.EffectsMenu:Center()
+    Elib.EffectsMenu:SetRemoveOnClose(false)
+
+    Elib.EffectsMenu.Content = Elib.EffectsMenu:Add("MenuBackgroundGradient")
+    Elib.EffectsMenu.Content:Dock(FILL)
+
+    Elib.EffectsMenu:MakePopup()
+end
+
+local function ToggleMenu(enable)
+    if not IsValid(Elib.EffectsMenu) then
+        CreateMenu()
+        return
+    end
+    if not IsValid(Elib.EffectsMenu) then return end
+    if Elib.EffectsMenu:IsVisible() then
+        Elib.EffectsMenu:Close()
+    else
+        Elib.EffectsMenu:MakePopup()
+    end
+end
+
+local function RefreshMenu()
+    if IsValid(Elib.EffectsMenu) then Elib.EffectsMenu:Remove() CreateMenu() end
+end
+
+concommand.Add("Elib.Effects_menu", function()
+    if not IsValid(Elib.EffectsMenu) then
+        CreateMenu()
+        return
+    end
+    if not IsValid(Elib.EffectsMenu) then return end
+    if Elib.EffectsMenu:IsVisible() then
+        Elib.EffectsMenu:Close()
+    else
+        Elib.EffectsMenu:MakePopup()
+    end
+end)
+
+
+// Refreshing Menu to see updates in real time
+RefreshMenu()
