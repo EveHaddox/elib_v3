@@ -77,32 +77,8 @@ function Elib.Config:GetValue(addon, realm, category, id)
     return Elib.Config.Addons[addon][realm][category][id].value
 end
 
-// Panel list
-
--- Number (int)
--- Float
--- String
--- Toggle (bool)
--- Key (keybind)
--- Color (color)
--- Dropdown (string)
--- list (numeric table)
-
----- XX not done yet XX ----
--- table (table)
-
-// Example
+// Config
 Elib.Config:AddAddon("Elib")
-
-// Test / Example values
-Elib.Config:AddValue("Elib", "client", "Test", "test_num", "Test Number", 2, "Number")
-Elib.Config:AddValue("Elib", "client", "Test", "test_toggle", "Test Toggle", true, "Toggle")
-Elib.Config:AddValue("Elib", "client", "Test", "test_key", "Test Key", KEY_1, "Key")
-Elib.Config:AddValue("Elib", "client", "Test", "test_color", "Test Color", Color(153, 57, 57), "Color")
-Elib.Config:AddValue("Elib", "client", "Test", "test_deopdown", "Test Dropdown", "test", "Dropdown", nil, nil, nil, {"test", "smth?", "idk", "idk 2", "long one, like really long one"})
-Elib.Config:AddValue("Elib", "client", "Test", "test_list", "Test List", {"/open", "!open"}, "List")
-
-Elib.Config:AddValue("Elib", "server", "Test", "test_num", "Test Number Server", 7, "Number", nil, nil, true)
 
 // Colors
 Elib.Config:AddValue("Elib", "client", "colors", "background_color", "Background Color", Color(20, 20, 20), "Color", 1, function(value)
