@@ -35,6 +35,14 @@ function PANEL:Init()
     self.HoverCol = Elib.Colors.Scroller
 
     self.BackgroundCol = Elib.CopyColor(self.NormalCol)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.NormalCol = Elib.Colors.Transparent
+    self.HoverCol = Elib.Colors.Scroller
+    self.BackgroundCol = Elib.CopyColor(self.NormalCol)
 end
 
 function PANEL:SetIcon() end

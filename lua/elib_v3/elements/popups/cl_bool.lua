@@ -59,6 +59,20 @@ function PANEL:Init()
     self.Confirm.HoverCol = Elib.OffsetColor(self.Confirm.NormalCol, -15)
     self.Confirm.ClickedCol = Elib.OffsetColor(self.Confirm.NormalCol, 15)
     self.Confirm.BackgroundCol = self.Confirm.NormalCol
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.Text:SetTextColor(Elib.Colors.SecondaryText)
+    self.Cancel.NormalCol = Elib.CopyColor(Elib.Colors.Negative)
+    self.Cancel.HoverCol = Elib.OffsetColor(self.Cancel.NormalCol, -15)
+    self.Cancel.ClickedCol = Elib.OffsetColor(self.Cancel.NormalCol, 15)
+    self.Cancel.BackgroundCol = self.Cancel.NormalCol
+    self.Confirm.NormalCol = Elib.CopyColor(Elib.Colors.Positive)
+    self.Confirm.HoverCol = Elib.OffsetColor(self.Confirm.NormalCol, -15)
+    self.Confirm.ClickedCol = Elib.OffsetColor(self.Confirm.NormalCol, 15)
+    self.Confirm.BackgroundCol = self.Confirm.NormalCol
 end
 
 function PANEL:PerformSecondaryLayout()

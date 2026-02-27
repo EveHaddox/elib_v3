@@ -18,6 +18,8 @@ function PANEL:Init()
     self.HoverCol = Elib.OffsetColor(Elib.Colors.Background, 12)
     self.ClickedCol = Elib.CopyColor(Elib.Colors.Background)
 
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+
     self.func = function() end
     
     self.Scroll = self:Add("Elib.ScrollPanel")
@@ -91,6 +93,12 @@ function PANEL:PerformLayout(w, h)
 end
 
 function PANEL:Paint(w, h)
+end
+
+function PANEL:UpdateColors()
+    self.BackkgroundCol = Elib.OffsetColor(Elib.Colors.Background, 6)
+    self.HoverCol = Elib.OffsetColor(Elib.Colors.Background, 12)
+    self.ClickedCol = Elib.CopyColor(Elib.Colors.Background)
 end
 
 vgui.Register("Elib.Config.Addons", PANEL, "DPanel")

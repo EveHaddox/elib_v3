@@ -21,6 +21,8 @@ function PANEL:Init()
     self.Text:SetAutoWrap(true)
     self.Text:SetAutoHeight(true)
 
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+
     self.Confirm = self.Frame:Add("Elib.GradientTextButton")
     self.Confirm:SetText("Understood")
     self.Confirm:Dock(TOP)
@@ -33,6 +35,10 @@ end
 
 function PANEL:SetText(text)
     self.Text:SetText(text)
+end
+
+function PANEL:UpdateColors()
+    self.Text:SetTextColor(Elib.Colors.SecondaryText)
 end
 
 vgui.Register("Elib.PopupInfo", PANEL, "Elib.PopupBase")

@@ -30,6 +30,15 @@ function PANEL:Init()
     self.HoverCol = Elib.Colors.SecondaryText
 
     self.TextCol = Elib.CopyColor(self.NormalCol)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self:SetColor(Elib.Colors.Primary)
+    self.NormalCol = Elib.Colors.PrimaryText
+    self.HoverCol = Elib.Colors.SecondaryText
+    self.TextCol = Elib.CopyColor(self.NormalCol)
 end
 
 function PANEL:GetItemSize()
@@ -63,6 +72,12 @@ function PANEL:Init()
     self.SelectionW = 0
     self.SelectionColor = Color(0, 0, 0)
 
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
     self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
 end
 

@@ -43,6 +43,15 @@ function PANEL:Init()
 	self.AccentCol = Elib.CopyColor(Elib.Colors.Primary)
 
 	self.AnimH = 0
+
+	hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+	self.TextCol = Elib.CopyColor(Elib.Colors.SecondaryText)
+	self.BackgroundCol = Elib.CopyColor(Elib.Colors.Transparent)
+	self.BackgroundHoverCol = ColorAlpha(Elib.Colors.Scroller, 80)
+	self.AccentCol = Elib.CopyColor(Elib.Colors.Primary)
 end
 
 function PANEL:Paint(w, h)
@@ -145,6 +154,12 @@ function PANEL:Init()
 	self:SetImageOffset(0)
 	self:SetButtonOffset(0)
 
+	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Header, -5)
+
+	hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
 	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Header, -5)
 end
 

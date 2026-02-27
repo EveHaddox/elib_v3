@@ -25,6 +25,12 @@ function PANEL:Init()
     self.ArrowRotation = 0
 
     self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 6)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 6)
 end
 
 function PANEL:DoClick()
@@ -67,6 +73,12 @@ function PANEL:Init()
     self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 2)
 
     self:InvalidateLayout(true)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 2)
 end
 
 function PANEL:UnselectAll()

@@ -39,6 +39,12 @@ function PANEL:Init()
     self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
 
     RegisterDermaMenuForClose(self)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
 end
 
 function PANEL:AddPanel(pnl)

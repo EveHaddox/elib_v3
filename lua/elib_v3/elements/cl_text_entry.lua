@@ -27,6 +27,16 @@ function PANEL:Init()
 
     self.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
     self.InnerOutlineCol = Elib.CopyColor(Elib.Colors.Transparent)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.PlaceholderTextCol = Elib.OffsetColor(Elib.Colors.SecondaryText, -110)
+    self.DisabledCol = Elib.OffsetColor(Elib.Colors.Background, 6)
+    self.FocusedOutlineCol = Elib.Colors.PrimaryText
+    self.OutlineCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
+    self.InnerOutlineCol = Elib.CopyColor(Elib.Colors.Transparent)
 end
 
 function PANEL:PerformLayout(w, h)

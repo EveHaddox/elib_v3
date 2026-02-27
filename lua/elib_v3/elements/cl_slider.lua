@@ -42,6 +42,16 @@ function PANEL:Init()
 
     self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 20)
     self.FillCol = Elib.OffsetColor(Elib.Colors.Background, 10)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.Grip:SetNormalColor(Elib.CopyColor(Elib.Colors.Primary))
+    self.Grip:SetHoverColor(Elib.OffsetColor(Elib.Colors.Primary, -15))
+    self.Grip:SetClickColor(Elib.OffsetColor(Elib.Colors.Primary, 15))
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 20)
+    self.FillCol = Elib.OffsetColor(Elib.Colors.Background, 10)
 end
 
 function PANEL:OnMousePressed()

@@ -20,6 +20,8 @@ function PANEL:Init()
     self.Text:SetAutoWrap(true)
     self.Text:SetAutoHeight(true)
 
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+
     self.Input = self.Frame:Add("Elib.TextEntry")
     self.Input:Dock(TOP)
     self.Input:SetTall(Elib.Scale(30))
@@ -49,6 +51,10 @@ end
 
 function PANEL:SetPlaceholder(text)
     self.Input:SetPlaceholderText(text)
+end
+
+function PANEL:UpdateColors()
+    self.Text:SetTextColor(Elib.Colors.SecondaryText)
 end
 
 vgui.Register("Elib.PopupString", PANEL, "Elib.PopupBase")

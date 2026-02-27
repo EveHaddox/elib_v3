@@ -11,6 +11,13 @@ function PANEL:Init()
 
     self.BackgroundCol = Elib.CopyColor(Elib.Colors.Primary)
     self.MainCol = Elib.OffsetColor(Elib.Colors.Header, 10)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.BackgroundCol = Elib.CopyColor(Elib.Colors.Primary)
+    self.MainCol = Elib.OffsetColor(Elib.Colors.Header, 10)
 end
 
 function PANEL:PaintBackground(w, h)

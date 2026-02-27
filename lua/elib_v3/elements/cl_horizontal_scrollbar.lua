@@ -12,6 +12,14 @@ function PANEL:Init()
     self.HoverCol = Elib.OffsetColor(self.NormalCol, 15)
 
     self.Colour = Elib.CopyColor(self.NormalCol)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.NormalCol = Elib.Colors.Scroller
+    self.HoverCol = Elib.OffsetColor(self.NormalCol, 15)
+    self.Colour = Elib.CopyColor(self.NormalCol)
 end
 
 function PANEL:OnMousePressed()
@@ -42,6 +50,12 @@ function PANEL:Init()
 
     self.Scrollbar = vgui.Create("Elib.HorizontalScrollbarGrip", self)
     self:SetVisibleFullWidth(false)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 5)
 end
 
 function PANEL:SetEnabled(b)

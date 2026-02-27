@@ -33,6 +33,16 @@ function PANEL:Init()
     self:SetImageSize(.8)
 
     self.BackgroundCol = Elib.CopyColor(Elib.Colors.Primary)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self:SetNormalColor(Elib.Colors.Transparent)
+    self:SetHoverColor(Elib.Colors.PrimaryText)
+    self:SetClickColor(Elib.Colors.PrimaryText)
+    self:SetDisabledColor(Elib.Colors.Transparent)
+    self.BackgroundCol = Elib.CopyColor(Elib.Colors.Primary)
 end
 
 function PANEL:PaintBackground(w, h)

@@ -19,6 +19,12 @@ function PANEL:Init()
 
     self.SamplesPerSeg = 10   -- spline smoothness
     self.FillAlphaTop  = 120   -- gradient opacity at curve
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.LineColor = Elib.Colors.Primary
 end
 
 function PANEL:SetData(tbl)             self.Data = tbl or {} end

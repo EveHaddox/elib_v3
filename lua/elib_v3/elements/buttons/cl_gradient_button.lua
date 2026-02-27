@@ -11,6 +11,16 @@ function PANEL:Init()
     self.DisabledCol = Elib.CopyColor(Elib.Colors.Disabled)
 
     self.BackgroundCol = self.NormalCol
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.NormalCol = Elib.CopyColor(Elib.OffsetColor(Elib.Colors.Background, 10))
+    self.HoverCol = Elib.OffsetColor(self.NormalCol, -5)
+    self.ClickedCol = Elib.OffsetColor(self.NormalCol, 5)
+    self.DisabledCol = Elib.CopyColor(Elib.Colors.Disabled)
+    self.BackgroundCol = self.NormalCol
 end
 
 local gradientMat = Material("gui/gradient_up")

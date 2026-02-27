@@ -89,6 +89,15 @@ function PANEL:Init()
 		oldMakePopup(self)
 		self:Open()
 	end
+
+	hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+	self.CloseButton:SetNormalColor(Elib.Colors.PrimaryText)
+	self.CloseButton:SetHoverColor(Elib.Colors.Negative)
+	self.CloseButton:SetClickColor(Elib.Colors.Negative)
+	self.CloseButton:SetDisabledColor(Elib.Colors.DisabledText)
 end
 
 function PANEL:DragThink(targetPanel, hoverPanel)

@@ -20,6 +20,12 @@ function PANEL:Init()
     self:SetSize(Elib.Scale(100), Elib.Scale(30))
 
     self.TextColor = Elib.Colors.PrimaryText
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.TextColor = Elib.Colors.PrimaryText
 end
 
 function PANEL:SizeToText()

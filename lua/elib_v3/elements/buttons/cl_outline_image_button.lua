@@ -24,6 +24,12 @@ function PANEL:Init()
 
     self.ImageCol = Elib.CopyColor(color_white)
     self.TextColor = Elib.Colors.PrimaryText
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.TextColor = Elib.Colors.PrimaryText
 end
 
 function PANEL:SizeToText()

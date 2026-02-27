@@ -31,6 +31,17 @@ function PANEL:Init()
 
 	self.Color = Elib.CopyColor(self.BackgroundCol)
 	self.TextColor = Elib.CopyColor(self.UnselectedTextCol)
+
+	hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, -4)
+	self.SelectedCol = Elib.Colors.Primary
+	self.UnselectedTextCol = Elib.Colors.SecondaryText
+	self.SelectedTextCol = Elib.Colors.PrimaryText
+	self.Color = Elib.CopyColor(self.BackgroundCol)
+	self.TextColor = Elib.CopyColor(self.UnselectedTextCol)
 end
 
 function PANEL:Setup(text, propertySheet, panel)
@@ -106,6 +117,12 @@ function PANEL:Init()
 
 	self.Items = {}
 
+	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 2)
+
+	hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
 	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 2)
 end
 

@@ -33,6 +33,12 @@ function PANEL:Init()
     self:SetFont("UI.Label")
     self:SetTextAlign(TEXT_ALIGN_LEFT)
     self:SetTextColor(Elib.Colors.SecondaryText)
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self:SetTextColor(Elib.Colors.SecondaryText)
 end
 
 local function StripInvalidUtf8(str)

@@ -16,6 +16,12 @@ function PANEL:Init()
     self.UnitY      = ""
     self.TickY      = 5
     self.BarSpacing = 0.5       -- as fraction of bar width
+
+    hook.Add("Elib.ThemeChanged", self, function(s) s:UpdateColors() end)
+end
+
+function PANEL:UpdateColors()
+    self.BarColor = Elib.Colors.Primary
 end
 
 function PANEL:SetData(tbl)          self.Data = tbl or {} end
