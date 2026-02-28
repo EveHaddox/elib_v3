@@ -85,6 +85,13 @@ function PANEL:Paint(w, h)
     local minX, maxX = range(self.Data, "x")
     local minY, maxY = range(self.Data, "y")
 
+    -- Add vertical padding so the curve doesn't touch top/bottom edges
+    local yRange = maxY - minY
+    local yPad = yRange * 0.2 -- 20% breathing room on each side
+    if yPad == 0 then yPad = 1 end
+    minY = minY - yPad
+    maxY = maxY + yPad
+
     local widest = 0
     for i = 0, self.TickY do
         local txt = fmt(Lerp(i/self.TickY, minY, maxY)) .. self.UnitY
@@ -147,6 +154,9 @@ function PANEL:Paint(w, h)
         local p1, p2 = spline[i-1], spline[i]
         surface.DrawLine(p1.x, p1.y, p2.x, p2.y)
         surface.DrawLine(p1.x+1, p1.y, p2.x+1, p2.y)
+        surface.DrawLine(p1.x-1, p1.y, p2.x-1, p2.y)
+        surface.DrawLine(p1.x, p1.y+1, p2.x, p2.y+1)
+        surface.DrawLine(p1.x, p1.y-1, p2.x, p2.y-1)
     end
 
     render.SetStencilEnable(false)
