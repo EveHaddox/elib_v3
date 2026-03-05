@@ -16,7 +16,10 @@
 --]]
 
 function Elib.Scale(value)
-    return math.max(value * (ScrH() / 1080), 1)
+	local scaleW = math.max(value * (ScrW() / 1920), 1)
+    local scaleH = math.max(value * (ScrH() / 1080), 1)
+
+    return math.min(scaleW, scaleH)
 end
 
 local constants = {}
