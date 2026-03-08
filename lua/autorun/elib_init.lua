@@ -19,7 +19,7 @@
 --]]
 
 Elib = Elib or {}
-Elib.Version = "1.4"
+Elib.Version = "1.5"
 
 // Automatic loader
 function Elib.LoadDirectory(path)
