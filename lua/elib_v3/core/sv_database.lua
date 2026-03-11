@@ -251,7 +251,7 @@ end
 // Transaction Support
 ///////////////////
 function DATABASE:BeginTransaction(callback, errorCallback)
-    self:Query("START TRANSACTION", callback, errorCallback)
+    self:Query(self.useMySQL and "START TRANSACTION" or "BEGIN TRANSACTION", callback, errorCallback)
 end
 
 function DATABASE:Commit(callback, errorCallback)
