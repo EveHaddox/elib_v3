@@ -565,28 +565,47 @@ function PANEL:GetChild(num)
 end
 
 function PANEL:LayoutContent(w, h)
-	w = self:GetMinimumWidth()
+	local contentW = self:GetMinimumWidth()
 
 	local children = self:GetCanvas():GetChildren()
 	for k, pnl in pairs(children) do
 		pnl:InvalidateLayout(true)
-		w = math.max(w, pnl:GetWide())
+		contentW = math.max(contentW, pnl:GetWide())
 	end
 
-	self:SetWide(w)
-
 	local padding = Elib.Scale(4)
+
+	local totalY = padding
+	for k, pnl in pairs(children) do
+		pnl:SetWide(contentW)
+		pnl:SetPos(0, totalY)
+		pnl:InvalidateLayout(true)
+		totalY = totalY + pnl:GetTall()
+	end
+	totalY = totalY + padding
+
+	local maxH = self:GetMaxHeight()
+	local needsScrollbar = totalY > maxH
+	local scrollbarW = 0
+
+	if needsScrollbar and IsValid(self.VBar) then
+		scrollbarW = self.VBar:GetWide() + Elib.Scale(2)
+	end
+
+	local menuW = contentW + scrollbarW
+
+	self:SetWide(menuW)
+
 	local y = padding
 	for k, pnl in pairs(children) do
-		pnl:SetWide(w)
+		pnl:SetWide(contentW)
 		pnl:SetPos(0, y)
 		pnl:InvalidateLayout(true)
-
 		y = y + pnl:GetTall()
 	end
 
 	y = y + padding
-	y = math.min(y, self:GetMaxHeight())
+	y = math.min(y, maxH)
 
 	self:SetTall(y)
 
@@ -685,244 +704,3 @@ function Elib.UseMenuV1()
 
 	Elib.MenuV2Active = false
 end
-
--- testing
-concommand.Add("elib_menu_v2_test", function()
-
-	if IsValid(Elib._MenuV2TestFrame) then
-		Elib._MenuV2TestFrame:Remove()
-	end
-
-	local frame = vgui.Create("Elib.Frame")
-	frame:SetTitle("Menu V2 Playground")
-	frame:SetSize(Elib.Scale(520), Elib.Scale(500))
-	frame:Center()
-	frame:SetSizable(true)
-	frame:SetMinWidth(Elib.Scale(420))
-	frame:SetMinHeight(Elib.Scale(400))
-	frame:MakePopup()
-	Elib._MenuV2TestFrame = frame
-
-	local scroll = vgui.Create("Elib.ScrollPanel", frame)
-	scroll:Dock(FILL)
-	scroll:DockMargin(0, Elib.Scale(42), 0, 0)
-
-	local pad = Elib.Scale(10)
-	scroll:GetCanvas():DockPadding(pad, pad, pad, pad)
-
-	local state = {
-		showIcons      = true,
-		showKeybinds   = true,
-		showSwatches   = true,
-		showSections   = true,
-		showDisabled   = true,
-		showCheckable  = true,
-		showSubmenu    = true,
-		animateOpen    = true,
-		cornerRadius   = 8,
-		minWidth       = 120,
-	}
-
-	local function AddSectionLabel(parent, text)
-		local lbl = vgui.Create("DPanel", parent)
-		lbl:Dock(TOP)
-		lbl:DockMargin(0, Elib.Scale(8), 0, Elib.Scale(4))
-		lbl:SetTall(Elib.Scale(22))
-		lbl.Paint = function(s, w, h)
-			Elib.DrawSimpleText(text, "UI.MenuOptionV2", Elib.Scale(2), h / 2, Elib.Colors.Primary, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-			surface.SetDrawColor(Elib.OffsetColor(Elib.Colors.Background, 20))
-			surface.DrawRect(0, h - 1, w, 1)
-		end
-		return lbl
-	end
-
-	local function AddToggleRow(parent, text, key)
-		local row = vgui.Create("DPanel", parent)
-		row:Dock(TOP)
-		row:DockMargin(0, 0, 0, Elib.Scale(2))
-		row:SetTall(Elib.Scale(28))
-		row.Paint = function() end
-
-		local toggle = vgui.Create("Elib.LabelledCheckbox", row)
-		toggle:Dock(FILL)
-		toggle:SetText(text)
-		toggle:SetToggle(state[key])
-		toggle.OnToggled = function(s, val)
-			state[key] = val
-		end
-
-		return row
-	end
-
-	local function AddSliderRow(parent, text, key, minVal, maxVal)
-		local row = vgui.Create("DPanel", parent)
-		row:Dock(TOP)
-		row:DockMargin(0, 0, 0, Elib.Scale(4))
-		row:SetTall(Elib.Scale(32))
-		row.Paint = function() end
-
-		local lbl = vgui.Create("DPanel", row)
-		lbl:Dock(LEFT)
-		lbl:SetWide(Elib.Scale(130))
-		lbl.Paint = function(s, w, h)
-			Elib.DrawSimpleText(text .. ": " .. tostring(state[key]), "UI.Toast.Body", Elib.Scale(2), h / 2, Elib.Colors.SecondaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-		end
-
-		local slider = vgui.Create("Elib.Slider", row)
-		slider:Dock(FILL)
-		slider:DockMargin(Elib.Scale(4), Elib.Scale(6), Elib.Scale(4), Elib.Scale(6))
-
-		local range = maxVal - minVal
-		slider.Fraction = (state[key] - minVal) / range
-
-		slider.OnValueChanged = function(s, fraction)
-			state[key] = math.Round(minVal + fraction * range)
-		end
-
-		return row
-	end
-
-	AddSectionLabel(scroll, "Features to show")
-
-	AddToggleRow(scroll, "Icon options",      "showIcons")
-	AddToggleRow(scroll, "Keybind hints",     "showKeybinds")
-	AddToggleRow(scroll, "Color swatches",    "showSwatches")
-	AddToggleRow(scroll, "Section headers",   "showSections")
-	AddToggleRow(scroll, "Disabled option",   "showDisabled")
-	AddToggleRow(scroll, "Checkable options", "showCheckable")
-	AddToggleRow(scroll, "Submenu",           "showSubmenu")
-	AddToggleRow(scroll, "Animate open",      "animateOpen")
-
-	AddSectionLabel(scroll, "Properties")
-
-	AddSliderRow(scroll, "Corner radius",  "cornerRadius", 0, 16)
-	AddSliderRow(scroll, "Min width",      "minWidth",     80, 300)
-
-	local spacer = vgui.Create("DPanel", scroll)
-	spacer:Dock(TOP)
-	spacer:SetTall(Elib.Scale(10))
-	spacer.Paint = function() end
-
-	local openBtn = vgui.Create("Elib.TextButton", scroll)
-	openBtn:Dock(TOP)
-	openBtn:DockMargin(Elib.Scale(40), Elib.Scale(4), Elib.Scale(40), Elib.Scale(4))
-	openBtn:SetTall(Elib.Scale(36))
-	openBtn:SetText("Open Menu V2")
-
-	openBtn.DoClick = function()
-		local menu = vgui.Create("Elib.MenuV2")
-		menu:SetAnimateOpen(state.animateOpen)
-		menu:SetCornerRadius(state.cornerRadius)
-		menu:SetMinimumWidth(Elib.Scale(state.minWidth))
-
-		if state.showIcons then
-			if state.showSections then menu:AddSectionHeader("File") end
-
-			menu:AddIconOption("Save", "https://construct-cdn.physgun.com/images/2b2f5ea0-3cb3-4207-82db-bb8484da738a.png", function()
-				Elib.Toast("Save clicked!", "success")
-			end)
-			menu:AddIconOption("Open", "https://construct-cdn.physgun.com/images/ab014fa0-a7fe-4ba2-b822-3254ce3108fc.png", function()
-				Elib.Toast("Open clicked!", "info")
-			end)
-			menu:AddSpacer()
-		end
-
-		if state.showKeybinds then
-			if state.showSections then menu:AddSectionHeader("Edit") end
-
-			menu:AddKeybindOption("Copy", "Ctrl+C", function()
-				Elib.Toast("Copied to clipboard!", "success")
-			end)
-			menu:AddKeybindOption("Paste", "Ctrl+V", function()
-				Elib.Toast("Pasted from clipboard!", "info")
-			end)
-			menu:AddKeybindOption("Undo", "Ctrl+Z", function()
-				Elib.Toast("Undo!", "warning")
-			end)
-			menu:AddSpacer()
-		end
-
-		if state.showSwatches then
-			if state.showSections then menu:AddSectionHeader("Themes") end
-
-			for _, name in ipairs({"Default", "Blue", "Green", "Purple", "Orange", "Arctic Neon", "Bloodsteel"}) do
-				local theme = Elib.Themes[name]
-				if theme then
-					menu:AddColorOption(name, theme.Primary, function()
-						Elib.SetTheme(name)
-						Elib.Toast("Theme → " .. name, "success")
-					end)
-				end
-			end
-			menu:AddSpacer()
-		end
-
-		if state.showCheckable then
-			if state.showSections then menu:AddSectionHeader("Options") end
-
-			local opt1 = menu:AddOption("Show HUD")
-			opt1:SetIsCheckable(true)
-			opt1:SetChecked(true)
-			opt1:SetCallback(function()
-				Elib.Toast("HUD: " .. (opt1:GetChecked() and "ON" or "OFF"), "info")
-			end)
-
-			local opt2 = menu:AddOption("God Mode")
-			opt2:SetIsCheckable(true)
-			opt2:SetCallback(function()
-				Elib.Toast("God: " .. (opt2:GetChecked() and "ON" or "OFF"), "info")
-			end)
-
-			local opt3 = menu:AddOption("Noclip")
-			opt3:SetIsCheckable(true)
-			opt3:SetCallback(function()
-				Elib.Toast("Noclip: " .. (opt3:GetChecked() and "ON" or "OFF"), "info")
-			end)
-
-			menu:AddSpacer()
-		end
-
-		if state.showDisabled then
-			menu:AddDisabledOption("Premium Only")
-		end
-
-		if state.showSubmenu then
-			if state.showSections then menu:AddSectionHeader("Advanced") end
-
-			local sub, _ = menu:AddSubMenu("Render Settings")
-			sub:AddOption("Low", function() Elib.Toast("Render: Low", "info") end)
-			sub:AddOption("Medium", function() Elib.Toast("Render: Medium", "info") end)
-			sub:AddOption("High", function() Elib.Toast("Render: High", "info") end)
-			sub:AddSpacer()
-			sub:AddOption("Ultra", function() Elib.Toast("Render: Ultra", "success") end)
-
-			local sub2, _ = menu:AddSubMenu("Audio Settings")
-			sub2:AddOption("Mute All", function() Elib.Toast("Audio: Muted", "warning") end)
-			sub2:AddOption("50%", function() Elib.Toast("Audio: 50%", "info") end)
-			sub2:AddOption("100%", function() Elib.Toast("Audio: 100%", "info") end)
-		end
-
-
-		menu:AddSpacer()
-		menu:AddOption("Close", function() end)
-
-		menu:Open()
-	end
-
-	local hint = vgui.Create("DPanel", scroll)
-	hint:Dock(TOP)
-	hint:DockMargin(0, Elib.Scale(6), 0, 0)
-	hint:SetTall(Elib.Scale(20))
-	hint.Paint = function(s, w, h)
-		Elib.DrawSimpleText("Toggle features above, then click the button or right-click anywhere in this window.", "UI.Toast.Body", w / 2, h / 2, Elib.Colors.DisabledText, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-	end
-
-	local oldPressed = frame.OnMousePressed
-	frame.OnMousePressed = function(self2, mc)
-		if mc == MOUSE_RIGHT then
-			openBtn:DoClick()
-			return
-		end
-		if oldPressed then return oldPressed(self2, mc) end
-	end
-end)
