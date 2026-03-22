@@ -391,7 +391,7 @@ function PANEL:AddCVar(strText, convar, on, off, funcFunction)
 	return pnl
 end
 
-function PANEL:AddSpacer(text, func)
+function PANEL:AddSpacer(text)
 	local pnl = vgui.Create("Panel", self)
 
 	local spacerCol = Elib.OffsetColor(Elib.Colors.Background, 6)
