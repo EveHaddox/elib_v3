@@ -28,8 +28,8 @@ function OPTION:Init()
 	self:SetIconSize(16)
 
 	self.NormalCol = Elib.Colors.Transparent
-	self.HoverCol = Elib.CopyColor(Elib.Colors.Scroller)
-	self.HighlightCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
+	self.HoverCol = Elib.CopyColor(Elib.Colors.Header)
+	self.HighlightCol = Elib.OffsetColor(Elib.Colors.Header, 10)
 
 	self.BackgroundCol = Elib.CopyColor(self.NormalCol)
 	self.IsKeyboardFocused = false
@@ -39,8 +39,8 @@ end
 
 function OPTION:UpdateColors()
 	self.NormalCol = Elib.Colors.Transparent
-	self.HoverCol = Elib.CopyColor(Elib.Colors.Scroller)
-	self.HighlightCol = Elib.OffsetColor(Elib.Colors.Scroller, 10)
+	self.HoverCol = Elib.CopyColor(Elib.Colors.Header)
+	self.HighlightCol = Elib.OffsetColor(Elib.Colors.Header, 10)
 	self.BackgroundCol = Elib.CopyColor(self.NormalCol)
 end
 
@@ -300,7 +300,7 @@ function HEADER:Paint(w, h)
 
 	local pad = Elib.Scale(8)
 	local textX = pad
-	local lineCol = Elib.OffsetColor(Elib.Colors.Background, 20)
+	local lineCol = Elib.Colors.Scroller
 
 	Elib.DrawSimpleText(self.Text, "UI.MenuSectionHeader", textX, lineY, Elib.Colors.SecondaryText, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
@@ -341,7 +341,7 @@ function PANEL:Init()
 	self:SetPadding(0)
 
 	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
-	self.BorderCol = Elib.OffsetColor(Elib.Colors.Background, 25)
+	self.BorderCol = Elib.OffsetColor(Elib.Colors.Background, 15)
 
 	self.OpenAlpha = 0
 	self.OpenScale = 0.95
@@ -357,7 +357,7 @@ end
 
 function PANEL:UpdateColors()
 	self.BackgroundCol = Elib.OffsetColor(Elib.Colors.Background, 10)
-	self.BorderCol = Elib.OffsetColor(Elib.Colors.Background, 25)
+	self.BorderCol = Elib.OffsetColor(Elib.Colors.Background, 15)
 end
 
 function PANEL:AddPanel(pnl)
@@ -552,7 +552,7 @@ function PANEL:Paint(w, h)
 	Elib.DrawRoundedBox(radius, 0, 0, w, h, self.BackgroundCol)
 
 	if self:GetDrawBorder() then
-		Elib.DrawRoundedBox(radius, 0, 0, w, h, self.BorderCol, 1)
+		--Elib.DrawRoundedBox(radius, 0, 0, w, h, self.BorderCol, 1)
 	end
 end
 
