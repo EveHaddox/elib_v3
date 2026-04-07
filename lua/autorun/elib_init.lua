@@ -1,5 +1,5 @@
 // This library is based on Pixel UI by Tom.bat
-// This is Pixel UI's licence this library also follows
+// Any file from Pixel UI will have a licence diclosure like the following one at the top
 
 --[[
 	PIXEL UI - Copyright Notice
