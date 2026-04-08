@@ -313,13 +313,26 @@ end
 
 function DATABASE:CreateTable(tableName, columns, callback, errorCallback)
     local columnDefs = {}
-    
+    local constraints = {}
+
     for name, def in pairs(columns) do
-        table.insert(columnDefs, name .. " " .. def)
+        if name == "PRIMARY" or name == "UNIQUE" or name == "INDEX" then
+            table.insert(constraints, name .. " " .. def)
+        else
+            table.insert(columnDefs, name .. " " .. def)
+        end
     end
-    
-    local query = string.format("CREATE TABLE IF NOT EXISTS %s (%s)", tableName, table.concat(columnDefs, ", "))
-    
+
+    for _, c in ipairs(constraints) do
+        table.insert(columnDefs, c)
+    end
+
+    local query = string.format(
+        "CREATE TABLE IF NOT EXISTS %s (%s)",
+        tableName,
+        table.concat(columnDefs, ", ")
+    )
+
     self:Query(query, callback, errorCallback)
 end
 
