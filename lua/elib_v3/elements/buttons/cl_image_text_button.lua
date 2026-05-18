@@ -49,7 +49,7 @@ function PANEL:PaintExtra(w, h)
         return
     end
 
-    Elib.DrawSimpleText(self:GetText(), self:GetFont(), textX, h / 2, Elib.Colors.PrimaryText, textAlign, TEXT_ALIGN_CENTER)
+    Elib.DrawSimpleText(self:GetText(), self:GetFont(), textX, h / 2 - 2, Elib.Colors.PrimaryText, textAlign, TEXT_ALIGN_CENTER)
 end
 
 vgui.Register("Elib.ImageTextButton", PANEL, "Elib.Button")
