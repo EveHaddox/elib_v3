@@ -7,12 +7,14 @@
 ///////////////////
 local PANEL = {}
 
+Elib.RegisterFont("Elib.BarGraph", "Space Grotesk SemiBold", 12)
+
 function PANEL:Init()
     self.Data       = {}
     self.BarColor   = Elib.Colors.Primary
-    self.AxisColor  = Color(56,56,56,200)
+    self.AxisColor  = Color(56, 56, 56, 200)
     self.BasePad    = 10
-    self.Font       = "DermaDefaultBold"
+    self.Font       = "Elib.BarGraph"
     self.UnitY      = ""
     self.TickY      = 5
     self.BarSpacing = 0.5       -- as fraction of bar width
@@ -52,10 +54,10 @@ function PANEL:Paint(w, h)
     if maxY == 0 then maxY = 1 end
 
     -- Calculate the longest Y label width
-    surface.SetFont(self.Font)
+    Elib.SetFont(self.Font)
     local maxLabelW = 0
     for i = 0, self.TickY do
-        local lbl = fmt(maxY * (i/self.TickY)) .. self.UnitY
+        local lbl = fmt(maxY * (i/self.TickY)) .." ".. self.UnitY
         local tw, _ = surface.GetTextSize(lbl)
         if tw > maxLabelW then maxLabelW = tw end
     end
@@ -75,8 +77,8 @@ function PANEL:Paint(w, h)
         local y = h - padB - gh * (i/self.TickY)
         surface.DrawLine(padL, y, w-padR, y)
 
-        local lbl = fmt(maxY * (i/self.TickY)) .. self.UnitY
-        draw.SimpleText(lbl, self.Font, padL-6, y, Color(220,220,220,180), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
+        local lbl = fmt(maxY * (i/self.TickY)) .." ".. self.UnitY
+        Elib.DrawSimpleText(lbl, self.Font, padL-6, y, Elib.Colors.SecondaryText, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
     end
 
     -- bars & labels
@@ -96,7 +98,7 @@ function PANEL:Paint(w, h)
         render.SetStencilPassOperation(STENCIL_REPLACE)
         render.SetStencilCompareFunction(STENCIL_ALWAYS)
 
-        Elib.DrawRoundedBox(0, x, by, bw, bh, bar.color or self.BarColor)
+        Elib.DrawRoundedBoxEx(6, x, by, bw, bh, bar.color or self.BarColor, true, true, false, false)
 
         render.SetStencilCompareFunction(STENCIL_EQUAL)
         render.SetStencilPassOperation(STENCIL_KEEP)
@@ -110,7 +112,7 @@ function PANEL:Paint(w, h)
         render.SetStencilEnable(false)
 
 
-        draw.SimpleText(bar.label or "", self.Font, x + bw*0.5, h - padB + 2, Color(240,240,240), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
+        Elib.DrawSimpleText(bar.label or "", self.Font, x + bw*0.5, h - padB + 2, Elib.Colors.SecondaryText, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP)
 
         x = x + bw + gap
     end
