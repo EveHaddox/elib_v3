@@ -63,9 +63,10 @@ function Elib.Config.LoadSettings()
     end
 
     net.Start("Elib.Config.SendToAdmins")
-        net.WriteTable(Elib.Config.Addons)
+        local data = util.Compress(util.TableToJSON(Elib.Config.Addons))
+        net.WriteUInt(#data, 16)
+        net.WriteData(data, #data)
     net.Send(targets)
-    
 end
 
 // networking
@@ -109,7 +110,9 @@ net.Receive("Elib.Config.Save", function(len, ply)
     end
 
     net.Start("Elib.Config.SendToAdmins")
-        net.WriteTable(Elib.Config.Addons)
+        local data = util.Compress(util.TableToJSON(Elib.Config.Addons))
+        net.WriteUInt(#data, 16)
+        net.WriteData(data, #data)
     net.Send(targets)
 end)
 
@@ -123,7 +126,9 @@ hook.Add("PlayerInitialSpawn", "Elib.Config.SendOnJoin", function(ply)
 
         if ply:IsSuperAdmin() then
             net.Start("Elib.Config.SendToAdmins")
-                net.WriteTable(Elib.Config.Addons)
+                local data = util.Compress(util.TableToJSON(Elib.Config.Addons))
+                net.WriteUInt(#data, 16)
+                net.WriteData(data, #data)
             net.Send(ply)
         else
             local networkedSettings = {}
@@ -143,7 +148,9 @@ hook.Add("PlayerInitialSpawn", "Elib.Config.SendOnJoin", function(ply)
 
             if next(networkedSettings) then
                 net.Start("Elib.Config.SendToClient")
-                    net.WriteTable(networkedSettings)
+                    local data = util.Compress(util.TableToJSON(networkedSettings))
+                    net.WriteUInt(#data, 16)
+                    net.WriteData(data, #data)
                 net.Send(ply)
             end
         end

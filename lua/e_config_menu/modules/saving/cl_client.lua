@@ -84,10 +84,12 @@ end)
 
 // networking
 net.Receive("Elib.Config.SendToAdmins", function()
-    local updated = net.ReadTable()
+    local size = net.ReadUInt(16)
+    local data = net.ReadData(size)
+    local tbl = util.JSONToTable(util.Decompress(data))
 
     -- loop each addon
-    for addonName, addonData in pairs(updated) do
+    for addonName, addonData in pairs(tbl) do
         local localAddon = Elib.Config.Addons[addonName]
         if not localAddon then
             -- unknown addon, skip
@@ -134,10 +136,12 @@ net.Receive("Elib.Config.SendToAdmins", function()
 end)
 
 net.Receive("Elib.Config.SendToClient", function()
-    local updated = net.ReadTable()
+    local size = net.ReadUInt(16)
+    local data = net.ReadData(size)
+    local tbl = util.JSONToTable(util.Decompress(data))
 
     -- loop each addon
-    for addonName, addonData in pairs(updated) do
+    for addonName, addonData in pairs(tbl) do
         local localAddon = Elib.Config.Addons[addonName]
         if not localAddon then continue end
 
